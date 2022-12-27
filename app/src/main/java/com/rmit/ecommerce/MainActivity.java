@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup toolbar
         setupToolbar();
+        //asc
 
         // Set bottom nav with navcontroller
         NavigationUI.setupWithNavController(bottomNav, navController);
