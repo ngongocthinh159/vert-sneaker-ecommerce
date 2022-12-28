@@ -21,8 +21,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,16 +93,10 @@ public class HomeFragment extends Fragment {
         // Setup recycle view
         setupRecyclerView(view);
 
-        // Setup button
-        setupButton(view);
+
 
         // Setup search bar
         TextInputEditText searchBar = view.findViewById(R.id.searchBar);
-
-        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
-                .addSharedElement(searchBar, "secondTrans")
-                .build();
-
         searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -105,82 +105,59 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+//        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
+//                .addSharedElement(searchBar, "secondTrans")
+//                .build();
+
+        // Setup image slider
+        setupImageSlider(view);
+
+        // Setup see all buttons
+        setupSeeAllButton(view);
 
         return view;
     }
 
-    private void setupButton(View view) {
-        // Inflate sort picker view
-        View sortPickerDialog = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_sort_picker, null);
+    private void setupSeeAllButton(View view) {
+        Button seeAllBestSeller = view.findViewById(R.id.seeAllBestSeller);
+        Button seeAllPopular = view.findViewById(R.id.seeAllPopular);
+        Button seeAllNewArrival = view.findViewById(R.id.seeAllNewArrival);
 
-        // Get sort picker dialog from sort picker view
-        AlertDialog dialog = getSortDialog(sortPickerDialog);
-
-        // Get references
-        Button btnSort = view.findViewById(R.id.btnSort);
-        Button btnSortPriceLTH = sortPickerDialog.findViewById(R.id.btnSortPriceLTH);
-        Button btnSortPriceHTL = sortPickerDialog.findViewById(R.id.btnSortPriceHTL);
-        Button btnSortPriceATZ = sortPickerDialog.findViewById(R.id.btnSortPriceATZ);
-        Button btnSortPriceZTA = sortPickerDialog.findViewById(R.id.btnSortPriceZTA);
-
-        // Setup buttons action
-        btnSort.setOnClickListener(new View.OnClickListener() {
+        seeAllBestSeller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.show();
+                MainActivity.navController.navigate(R.id.action_global_searchFragment);
             }
         });
 
-        btnSortPriceLTH.setOnClickListener(new View.OnClickListener() {
+        seeAllPopular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                MainActivity.navController.navigate(R.id.action_global_searchFragment);
             }
         });
 
-        btnSortPriceHTL.setOnClickListener(new View.OnClickListener() {
+        seeAllNewArrival.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                MainActivity.navController.navigate(R.id.action_global_searchFragment);
             }
         });
-
-        btnSortPriceATZ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        btnSortPriceZTA.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-
     }
 
-    private AlertDialog getSortDialog(View sortPickerDialog) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setView(sortPickerDialog);
+    private void setupImageSlider(View view) {
+        ImageSlider imageSlider = view.findViewById(R.id.imageSlider);
 
-        AlertDialog dialog = alert.create();
+        ArrayList<SlideModel> slideModels = new ArrayList<>();
 
-        // Set position + background for dialog
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setDimAmount(0);
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        WindowManager.LayoutParams wmlp = dialog.getWindow().getAttributes();
-        wmlp.gravity = Gravity.TOP;
-//                wmlp.x = 350;   //x position
-        wmlp.y = 350;   //y position
-
-        return dialog;
+        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg",  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
+        imageSlider.setImageList(slideModels);
     }
+
 
     private void setupRecyclerView(View view) {
         RecyclerView rV1 = view.findViewById(R.id.rV1);

@@ -52,6 +52,6 @@ dependencies {
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
-
-
+    // Image slider
+    implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 }

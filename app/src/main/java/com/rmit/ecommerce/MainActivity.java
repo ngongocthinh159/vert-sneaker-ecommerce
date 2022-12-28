@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public static Toolbar toolbar;
     public static boolean isLoggedIn = true;
     public static BottomNavigationView bottomNav;
+    public static Context context;
 
     public static float device_height_pxl;
     public static float device_width_pxl;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
 
         // Get references
         toolbar = findViewById(R.id.toolbar);
@@ -45,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup toolbar
         setupToolbar();
-        //asc
 
         // Set bottom nav with navcontroller
         NavigationUI.setupWithNavController(bottomNav, navController);
