@@ -11,8 +11,5 @@
     <string name="search_bar_text">Looking for sneakers</string>
     <string name="see_all_text"><u>SEE ALL</u></string>
 
-    <string-array name="rangeSliderValues">
-        <item>0</item>
-        <item>50000000</item>
-    </string-array>
+    <string name="animation_time">300</string>
 </resources>

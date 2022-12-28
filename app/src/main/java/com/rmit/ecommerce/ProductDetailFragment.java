@@ -1,12 +1,21 @@
 package com.rmit.ecommerce;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +23,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProductDetailFragment extends Fragment {
+
+    String product_image_demo = "https://w7.pngwing.com/pngs/869/483/png-transparent-nike-" +
+            "free-air-force-1-sneakers-nike-air-max-nike-white-football-boot-outdoor-shoe.png";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,7 +70,39 @@ public class ProductDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_product_detail, container, false);
+
+        setupImageSlider(view);
+
+        Button btnBack = view.findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.navController.popBackStack();
+            }
+        });
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_product_detail, container, false);
+        return view;
+    }
+
+    private void setupImageSlider(View view) {
+        ImageSlider imageSlider = view.findViewById(R.id.imageSlider);
+
+        ArrayList<SlideModel> slideModels = new ArrayList<>();
+
+//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
+
+        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
+
+        imageSlider.setImageList(slideModels);
     }
 }

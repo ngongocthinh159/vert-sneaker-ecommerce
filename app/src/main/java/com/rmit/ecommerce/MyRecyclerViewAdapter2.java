@@ -12,16 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
-
-    String[] mDataSet;
+public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewAdapter2.ViewHolder>{
     Context context;
+    String[] mDataSet;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardView;
         ImageView productImage;
         TextView productBranch;
         TextView productName;
+        TextView productPrice;
+        TextView productQuantity;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -30,6 +31,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             productImage = itemView.findViewById(R.id.productImage);
             productBranch = itemView.findViewById(R.id.productBranch);
             productName = itemView.findViewById(R.id.productName);
+            productPrice = itemView.findViewById(R.id.productPrice);
+            productQuantity= itemView.findViewById(R.id.productQuantity);
         }
 
         public MaterialCardView getCardView() {
@@ -47,9 +50,17 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         public TextView getProductName() {
             return productName;
         }
+
+        public TextView getProductPrice() {
+            return productPrice;
+        }
+
+        public TextView getProductQuantity() {
+            return productQuantity;
+        }
     }
 
-    public MyRecyclerViewAdapter(String[] dataSet) {
+    public MyRecyclerViewAdapter2(String[] dataSet) {
         mDataSet = dataSet;
     }
 
@@ -58,29 +69,16 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_view_shoe, parent, false);
+                .inflate(R.layout.card_view_shopping_item, parent, false);
 
         context = parent.getContext();
 
-        return new ViewHolder(v);
+        return new MyRecyclerViewAdapter2.ViewHolder(v);
     }
 
-    // BEGIN_INCLUDE(recyclerViewOnBindViewHolder)
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull MyRecyclerViewAdapter.ViewHolder holder, int position) {
-        // Resize width for card view (responsive)
-        float cardWidthPixel = (MainActivity.device_width_pxl - Helper.convertDpToPixel(9*3, context)) / 2;
-        ViewGroup.LayoutParams params = holder.cardView.getLayoutParams();
-        params.width = (int) cardWidthPixel;
-        holder.getCardView().setLayoutParams(params);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.getCardView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.navController.navigate(R.id.action_global_productDetailFragment);
-            }
-        });
     }
 
     @Override

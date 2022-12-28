@@ -3,6 +3,8 @@ package com.rmit.ecommerce;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +60,18 @@ public class ShoppingCartFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
+
+        RecyclerView rv = view.findViewById(R.id.rv);
+        String[] data = {"NIKE", "NIKE", "NIKE", "NIKE", "NIKE", "NIKE", "NIKE", "NIKE"};
+        MyRecyclerViewAdapter2 adapter2 = new MyRecyclerViewAdapter2(data);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+        rv.setAdapter(adapter2);
+        rv.setLayoutManager(linearLayoutManager);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_shopping_cart, container, false);
+        return view;
     }
 }

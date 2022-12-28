@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -156,6 +157,13 @@ public class HomeFragment extends Fragment {
         slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
         slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
         imageSlider.setImageList(slideModels);
+
+        imageSlider.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onItemSelected(int i) {
+                MainActivity.navController.navigate(R.id.action_global_productDetailFragment);
+            }
+        });
     }
 
 
