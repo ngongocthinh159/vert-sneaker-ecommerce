@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.RepositoryManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isLoggedIn = false;
     public static BottomNavigationView bottomNav;
     public static Context context;
+    public RepositoryManager repositoryManager = new RepositoryManager();
 
     public static float device_height_pxl;
     public static float device_width_pxl;
@@ -35,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        repositoryManager.getAllSneakers();
         setContentView(R.layout.activity_main);
+
         context = this;
 
         // Get references
