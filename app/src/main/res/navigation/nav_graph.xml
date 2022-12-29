@@ -7,32 +7,32 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.rmit.ecommerce.HomeFragment"
+        android:name="com.rmit.ecommerce.fragment.HomeFragment"
         android:label="@string/home_fragment_title"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/shoppingCartFragment"
-        android:name="com.rmit.ecommerce.ShoppingCartFragment"
+        android:name="com.rmit.ecommerce.fragment.ShoppingCartFragment"
         android:label="@string/shopping_cart_fragment_title"
         tools:layout="@layout/fragment_shopping_cart" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.rmit.ecommerce.NotificationFragment"
+        android:name="com.rmit.ecommerce.fragment.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
     <fragment
         android:id="@+id/personalSettingFragment"
-        android:name="com.rmit.ecommerce.PersonalSettingFragment"
+        android:name="com.rmit.ecommerce.fragment.PersonalSettingFragment"
         android:label="fragment_personal_setting"
         tools:layout="@layout/fragment_personal_setting" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.rmit.ecommerce.LoginFragment"
+        android:name="com.rmit.ecommerce.fragment.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.rmit.ecommerce.WelcomeFragment"
+        android:name="com.rmit.ecommerce.fragment.WelcomeFragment"
         android:label="fragment_welcome"
         tools:layout="@layout/fragment_welcome">
         <action
@@ -52,11 +52,11 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.rmit.ecommerce.SignUpFragment"
+        android:name="com.rmit.ecommerce.fragment.SignUpFragment"
         android:label="Sign Up" />
     <fragment
         android:id="@+id/gettingStartedFragment"
-        android:name="com.rmit.ecommerce.GettingStartedFragment"
+        android:name="com.rmit.ecommerce.fragment.GettingStartedFragment"
         android:label="fragment_getting_started"
         tools:layout="@layout/fragment_getting_started">
         <action
@@ -69,7 +69,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.rmit.ecommerce.SearchFragment"
+        android:name="com.rmit.ecommerce.fragment.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <action
@@ -81,7 +81,7 @@
         app:popExitAnim="@anim/slide_out_right" />
     <fragment
         android:id="@+id/productDetailFragment"
-        android:name="com.rmit.ecommerce.ProductDetailFragment"
+        android:name="com.rmit.ecommerce.fragment.ProductDetailFragment"
         android:label="fragment_product_detail"
         tools:layout="@layout/fragment_product_detail" />
     <action

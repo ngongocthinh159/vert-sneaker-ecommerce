@@ -1,35 +1,28 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-import androidx.navigation.Navigator;
-import androidx.navigation.fragment.FragmentNavigator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ScrollView;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.textfield.TextInputEditText;
+import com.rmit.ecommerce.helper.Helper;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
+import com.rmit.ecommerce.R;
 
 import java.util.ArrayList;
 
@@ -40,7 +33,7 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment {
     int count = 0;
-
+    View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -86,7 +79,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Setup recycle view
         setupRecyclerView(view);
@@ -201,5 +194,21 @@ public class HomeFragment extends Fragment {
 
         rV3.setAdapter(myRecyclerViewAdapter3);
         rV3.setLayoutManager(layoutManager3);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ScrollView scrollView = view.findViewById(R.id.scrollViewHomeFrag);
+        outState.putInt("scrollYPosition", scrollView.getScrollY());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            ScrollView scrollView = view.findViewById(R.id.scrollViewHomeFrag);
+            scrollView.setScrollY(savedInstanceState.getInt("scrollYPosition"));
+        }
     }
 }

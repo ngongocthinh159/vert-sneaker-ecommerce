@@ -1,9 +1,11 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.helper;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.rmit.ecommerce.activity.MainActivity;
 
 import java.text.NumberFormat;
 import java.util.Locale;

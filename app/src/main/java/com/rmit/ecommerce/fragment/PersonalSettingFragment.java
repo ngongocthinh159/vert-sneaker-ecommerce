@@ -1,4 +1,4 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -11,6 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.rmit.ecommerce.helper.Helper;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.R;
 
 /**
  * A simple {@link Fragment} subclass.
