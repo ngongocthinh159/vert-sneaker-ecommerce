@@ -5,12 +5,12 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="20dp"
     android:id="@+id/cardView"
-
     android:layout_marginStart="4.5dp"
     android:layout_marginEnd="4.5dp"
     app:cardElevation="4dp"
     android:layout_marginBottom="8dp"
-    style="@style/Widget.Material3.CardView.Elevated">
+    style="@style/Widget.Material3.CardView.Elevated"
+    app:cardBackgroundColor="#67666f">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         <ImageView
             android:id="@+id/productImage"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="120dp"
             android:src="@drawable/af1_demo"
             android:layout_marginTop="18dp"
             android:layout_marginStart="9dp"
@@ -32,17 +32,18 @@
             android:layout_height="wrap_content"
             android:text="NIKE"
             android:textStyle="italic"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_marginTop="0dp"
             android:layout_marginStart="18dp"
-            android:layout_marginEnd="18dp"/>
+            android:layout_marginEnd="18dp" />
 
         <TextView
             android:id="@+id/productName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="AIR FORCE 1"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_marginBottom="9dp"
             android:layout_marginStart="18dp"

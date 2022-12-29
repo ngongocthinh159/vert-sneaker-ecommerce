@@ -1,6 +1,8 @@
 package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.rmit.ecommerce.activity.MainActivity;
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 
     String[] mDataSet;
+    String category;
     Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,8 +55,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         }
     }
 
-    public MyRecyclerViewAdapter(String[] dataSet) {
-        mDataSet = dataSet;
+    public MyRecyclerViewAdapter(String[] dataSet, String category) {
+        this.mDataSet = dataSet;
+        this.category = category;
     }
 
     @NonNull
@@ -73,17 +77,33 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     @Override
     public void onBindViewHolder(@NonNull MyRecyclerViewAdapter.ViewHolder holder, int position) {
         // Resize width for card view (responsive)
+        MaterialCardView cardView =  holder.getCardView();
         float cardWidthPixel = (MainActivity.device_width_pxl - Helper.convertDpToPixel(9*3, context)) / 2;
         ViewGroup.LayoutParams params = holder.cardView.getLayoutParams();
         params.width = (int) cardWidthPixel;
-        holder.getCardView().setLayoutParams(params);
+        cardView.setLayoutParams(params);
 
-        holder.getCardView().setOnClickListener(new View.OnClickListener() {
+        // Setup card view touch action
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 MainActivity.navController.navigate(R.id.action_global_productDetailFragment);
             }
         });
+
+        // Setup card view color
+//        if (position == 0) {
+//            cardView.setCardBackgroundColor(Color.parseColor("#67666f"));
+//        }
+
+        if (category.equals("best_seller") && position == 1) {
+            cardView.setCardBackgroundColor(Color.parseColor("#6c8694"));
+            TextView productBranch = holder.getProductBranch();
+            productBranch.setTextColor(Color.parseColor("#FFFFFF"));
+
+            TextView productName = holder.getProductName();
+            productName.setTextColor(Color.parseColor("#FFFFFF"));
+        }
     }
 
     @Override

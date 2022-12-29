@@ -142,11 +142,11 @@
         android:layout_marginEnd="9dp"
         android:layout_marginTop="135dp"
         app:cardCornerRadius="20dp"
-        style="@style/Widget.Material3.CardView.Filled"
         android:elevation="6dp"
         app:layout_anchor="@id/btnSort"
         android:visibility="gone"
-        android:id="@+id/sortPicker">
+        android:id="@+id/sortPicker"
+        style="?attr/materialCardViewOutlinedStyle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -202,11 +202,11 @@
         android:layout_marginEnd="9dp"
         android:layout_marginTop="135dp"
         app:cardCornerRadius="20dp"
-        style="@style/Widget.Material3.CardView.Filled"
         android:elevation="6dp"
         app:layout_anchor="@id/btnSort"
         android:visibility="gone"
-        android:id="@+id/rangePicker">
+        android:id="@+id/rangePicker"
+        style="?attr/materialCardViewOutlinedStyle">
 
         <LinearLayout
             android:layout_width="match_parent"

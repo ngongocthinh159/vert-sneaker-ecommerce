@@ -309,7 +309,7 @@ public class SearchFragment extends Fragment {
         String[] brand = {"NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE", "NIKE",
                 "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE",
                 "NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE"};
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(brand);
+        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(brand, "search");
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 

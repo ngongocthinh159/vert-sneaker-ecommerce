@@ -33,7 +33,8 @@
                 android:textStyle="italic"
                 android:textSize="22sp"
                 android:layout_marginEnd="50dp"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:textAllCaps="true"/>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -64,28 +65,73 @@
                 android:layout_marginStart="9dp"
                 android:layout_marginEnd="9dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="NIKE"
-                    android:textColor="?attr/colorPrimary"
-                    android:layout_marginTop="18dp"
-                    android:id="@+id/tvBranch"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="AIR FORCE 1"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    android:id="@+id/tvProductName"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="$110"
-                    android:textSize="24sp"
-                    android:id="@+id/tvProductPrice"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="NIKE"
+                            android:textStyle="italic"
+                            android:textAllCaps="true"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_marginTop="18dp"
+                            android:id="@+id/tvBranch"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AIR FORCE 1"
+                            android:textAllCaps="true"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            android:id="@+id/tvProductName"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$110"
+                            android:textSize="24sp"
+                            android:id="@+id/tvProductPrice"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_marginEnd="18dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:iconSize="24dp"
+                            app:iconTint="?attr/colorPrimary"
+                            app:icon="@drawable/ic_baseline_photo_camera_24"
+                            style="?attr/materialIconButtonFilledTonalStyle"
+                            android:layout_marginTop="18dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View AR"
+                            android:textSize="12sp"
+                            android:textStyle="italic"
+                            android:textColor="?attr/colorPrimary"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -135,17 +181,26 @@
                     </com.google.android.material.button.MaterialButtonToggleGroup>
                 </HorizontalScrollView>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="VIEW AR"
-                    android:layout_marginTop="9dp"/>
+                    android:layout_marginTop="9dp"
+                    app:iconPadding="10dp"
+                    app:iconSize="22dp"
+                    app:icon="@drawable/ic_baseline_photo_camera_24"
+                    style="?attr/materialIconButtonFilledTonalStyle"
+                    app:iconGravity="textEnd"/>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="ADD TO CART"
-                    android:layout_marginTop="9dp"/>
+                    android:layout_marginTop="9dp"
+                    app:iconSize="22dp"
+                    app:iconPadding="10dp"
+                    app:iconGravity="textEnd"
+                    app:icon="@drawable/ic_baseline_add_shopping_cart_24"/>
             </LinearLayout>
 
 

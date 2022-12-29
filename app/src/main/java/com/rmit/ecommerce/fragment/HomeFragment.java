@@ -166,9 +166,9 @@ public class HomeFragment extends Fragment {
         RecyclerView rV2 = view.findViewById(R.id.rV2);
         RecyclerView rV3 = view.findViewById(R.id.rV3);
         String[] brand = {"NIKE", "PUMA", "NIKE", "NIKE"};
-        MyRecyclerViewAdapter myRecyclerViewAdapter1 = new MyRecyclerViewAdapter(brand);
-        MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(brand);
-        MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(brand);
+        MyRecyclerViewAdapter myRecyclerViewAdapter1 = new MyRecyclerViewAdapter(brand, "best_seller");
+        MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(brand, "popular_sneakers");
+        MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(brand, "new_arrivals");
 
         LinearLayoutManager layoutManager1
                 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
