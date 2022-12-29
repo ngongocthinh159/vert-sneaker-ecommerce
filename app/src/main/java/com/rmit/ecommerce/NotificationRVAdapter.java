@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.helper.Helper;
 
 import java.util.ArrayList;
 

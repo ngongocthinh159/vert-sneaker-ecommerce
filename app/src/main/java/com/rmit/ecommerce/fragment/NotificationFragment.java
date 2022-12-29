@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+
+import com.rmit.ecommerce.NotificationRVAdapter;
 import com.rmit.ecommerce.R;
 
 /**
