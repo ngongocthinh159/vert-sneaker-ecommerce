@@ -13,8 +13,9 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 
 public class AssetManager {
+    private static AssetManager assetManager = new AssetManager();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private HashMap<String, Drawable> cache;
+    private HashMap<String, Drawable> cache = new HashMap<>();
 
     public Drawable fetchImage(String key) {
         Drawable drawable;
@@ -39,5 +40,11 @@ public class AssetManager {
                 return null;
             }
         }
+    }
+
+    private AssetManager() {}
+
+    public static AssetManager getInstance() {
+        return assetManager;
     }
 }
