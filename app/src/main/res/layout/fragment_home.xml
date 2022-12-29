@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment"
     android:orientation="vertical"
-    android:scrollbars="none">
+    android:scrollbars="none"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
