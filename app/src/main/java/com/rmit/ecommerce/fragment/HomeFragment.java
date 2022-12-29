@@ -24,6 +24,8 @@ import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.RepositoryManager;
+import com.rmit.ecommerce.repository.SneakerModel;
 
 import java.util.ArrayList;
 
@@ -165,10 +167,10 @@ public class HomeFragment extends Fragment {
         RecyclerView rV1 = view.findViewById(R.id.rV1);
         RecyclerView rV2 = view.findViewById(R.id.rV2);
         RecyclerView rV3 = view.findViewById(R.id.rV3);
-        String[] brand = {"NIKE", "PUMA", "NIKE", "NIKE"};
-        MyRecyclerViewAdapter myRecyclerViewAdapter1 = new MyRecyclerViewAdapter(brand, "best_seller");
-        MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(brand, "popular_sneakers");
-        MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(brand, "new_arrivals");
+        ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
+        MyRecyclerViewAdapter myRecyclerViewAdapter1 = new MyRecyclerViewAdapter(sneakers, "best_seller");
+        MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(sneakers, "popular_sneakers");
+        MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(sneakers, "new_arrivals");
 
         LinearLayoutManager layoutManager1
                 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);

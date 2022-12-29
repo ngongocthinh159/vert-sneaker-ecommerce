@@ -26,10 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static NavController navController;
     public static Toolbar toolbar;
-    public static boolean isLoggedIn = false;
     public static BottomNavigationView bottomNav;
     public static Context context;
-    public RepositoryManager repositoryManager = new RepositoryManager();
+    public static RepositoryManager repositoryManager = new RepositoryManager();
 
     public static float device_height_pxl;
     public static float device_width_pxl;
@@ -37,7 +36,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Fetch database
+        repositoryManager.signInAnonymously();
         repositoryManager.fetchAllSneakers();
+
+        // Set view
         setContentView(R.layout.activity_main);
 
         context = this;

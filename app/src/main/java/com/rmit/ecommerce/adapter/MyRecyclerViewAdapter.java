@@ -2,6 +2,7 @@ package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +14,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.storage.FirebaseStorage;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.repository.RepositoryManager;
+import com.rmit.ecommerce.repository.SneakerModel;
+
+import java.util.ArrayList;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 
-    String[] mDataSet;
+    ArrayList<SneakerModel> sneakers;
     String category;
     Context context;
 
@@ -55,8 +61,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         }
     }
 
-    public MyRecyclerViewAdapter(String[] dataSet, String category) {
-        this.mDataSet = dataSet;
+    public MyRecyclerViewAdapter(ArrayList<SneakerModel> sneakers, String category) {
+        this.sneakers = sneakers;
         this.category = category;
     }
 
@@ -76,8 +82,13 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull MyRecyclerViewAdapter.ViewHolder holder, int position) {
-        // Resize width for card view (responsive)
+        // Get references to View
         MaterialCardView cardView =  holder.getCardView();
+        ImageView productImage = holder.getProductImage();
+        TextView productBranch = holder.getProductBranch();
+        TextView productName = holder.getProductName();
+
+        // Resize width for card view (responsive)
         float cardWidthPixel = (MainActivity.device_width_pxl - Helper.convertDpToPixel(9*3, context)) / 2;
         ViewGroup.LayoutParams params = holder.cardView.getLayoutParams();
         params.width = (int) cardWidthPixel;
@@ -91,23 +102,25 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             }
         });
 
-        // Setup card view color
-//        if (position == 0) {
-//            cardView.setCardBackgroundColor(Color.parseColor("#67666f"));
-//        }
-
+        // Setup card view color (best seller category)
         if (category.equals("best_seller") && position == 1) {
             cardView.setCardBackgroundColor(Color.parseColor("#6c8694"));
-            TextView productBranch = holder.getProductBranch();
             productBranch.setTextColor(Color.parseColor("#FFFFFF"));
-
-            TextView productName = holder.getProductName();
             productName.setTextColor(Color.parseColor("#FFFFFF"));
         }
+
+        // Fetch data to app
+        productBranch.setText(sneakers.get(position).getBrand());
+        productName.setText(sneakers.get(position).getTitle());
+//        for (SneakerModel sneakerModel : sneakers) {
+//            System.out.println(sneakerModel.getBrand());
+//        }
+        Drawable image = MainActivity.repositoryManager.getImageInByte(sneakers.get(position).getImage());
+        if (image != null) productImage.setImageDrawable(image);
     }
 
     @Override
     public int getItemCount() {
-        return mDataSet.length;
+        return sneakers.size();
     }
 }
