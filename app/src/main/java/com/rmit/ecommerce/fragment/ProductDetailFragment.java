@@ -1,9 +1,7 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,6 +12,8 @@ import android.widget.Button;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.R;
 
 import java.util.ArrayList;
 

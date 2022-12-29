@@ -1,8 +1,7 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -10,12 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link WelcomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment {
+public class WelcomeFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +28,7 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public LoginFragment() {
+    public WelcomeFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +38,11 @@ public class LoginFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
+     * @return A new instance of fragment WelcomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
+    public static WelcomeFragment newInstance(String param1, String param2) {
+        WelcomeFragment fragment = new WelcomeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,18 +62,26 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_welcome, container, false);
 
-        Button loginBtn2 = view.findViewById(R.id.loginBtn2);
+        Button loginBtn = view.findViewById(R.id.loginBtn);
+        Button signupBtn = view.findViewById(R.id.signupBtn);
 
-        loginBtn2.setOnClickListener(new View.OnClickListener() {
+        // Set action for btn
+        loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.isLoggedIn = true;
-                MainActivity.navController.popBackStack(R.id.gettingStartedFragment, true);
-                MainActivity.navController.navigate(R.id.action_global_homeFragment3);
+                MainActivity.navController.navigate(R.id.action_welcomeFragment_to_loginFragment);
             }
         });
+
+        signupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.navController.navigate(R.id.action_welcomeFragment_to_signUpFragment);
+            }
+        });
+
         // Inflate the layout for this fragment
         return view;
     }

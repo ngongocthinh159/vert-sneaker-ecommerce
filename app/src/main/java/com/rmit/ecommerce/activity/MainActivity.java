@@ -1,4 +1,4 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,13 +18,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.rmit.ecommerce.R;
 
 
 public class MainActivity extends AppCompatActivity {
 
     public static NavController navController;
     public static Toolbar toolbar;
-    public static boolean isLoggedIn = true;
+    public static boolean isLoggedIn = false;
     public static BottomNavigationView bottomNav;
     public static Context context;
 
@@ -81,9 +82,11 @@ public class MainActivity extends AppCompatActivity {
                         currentNavId == R.id.shoppingCartFragment ||
                         currentNavId == R.id.notificationFragment ||
                         currentNavId == R.id.personalSettingFragment) {
+                    bottomNav.animate().translationY(0).setDuration(300);
                     bottomNav.setVisibility(View.VISIBLE);
                 } else {
-                    bottomNav.setVisibility(View.GONE);
+                    bottomNav.animate().translationY(bottomNav.getHeight() + 100).setDuration(300);
+//                    bottomNav.setVisibility(View.GONE);
                 }
             }
         });

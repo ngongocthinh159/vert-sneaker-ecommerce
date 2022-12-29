@@ -1,21 +1,27 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.SaveSharedPreference;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.helper.Helper;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link WelcomeFragment#newInstance} factory method to
+ * Use the {@link HomeAdminFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WelcomeFragment extends Fragment {
+public class HomeAdminFragment extends Fragment {
+
+    View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +32,7 @@ public class WelcomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public WelcomeFragment() {
+    public HomeAdminFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +42,11 @@ public class WelcomeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment WelcomeFragment.
+     * @return A new instance of fragment HomeAdminFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WelcomeFragment newInstance(String param1, String param2) {
-        WelcomeFragment fragment = new WelcomeFragment();
+    public static HomeAdminFragment newInstance(String param1, String param2) {
+        HomeAdminFragment fragment = new HomeAdminFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,23 +66,18 @@ public class WelcomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_welcome, container, false);
+        view = inflater.inflate(R.layout.fragment_home_admin, container, false);
 
-        Button loginBtn = view.findViewById(R.id.loginBtn);
-        Button signupBtn = view.findViewById(R.id.signupBtn);
-
-        // Set action for btn
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        Button btnLogout = view.findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.navController.navigate(R.id.action_welcomeFragment_to_loginFragment);
-            }
-        });
+                // Clear user login state
+                SaveSharedPreference.clearUser(view.getContext());
 
-        signupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.navController.navigate(R.id.action_welcomeFragment_to_signUpFragment);
+                // Redirect to getting started page
+                Helper.popBackStackAll();
+                MainActivity.navController.navigate(R.id.gettingStartedFragment);
             }
         });
 
