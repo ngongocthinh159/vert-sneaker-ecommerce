@@ -3,11 +3,16 @@ package com.rmit.ecommerce.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
+import com.rmit.ecommerce.NotificationRVAdapter;
 import com.rmit.ecommerce.R;
 
 /**
@@ -60,7 +65,23 @@ public class NotificationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_notification, container, false);
+        setupRecyclerView(view);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+        return view;
+    }
+
+    private void setupRecyclerView(View view) {
+        RecyclerView notiRV = view.findViewById(R.id.notiRV);
+        ArrayList<String> notifications = new ArrayList<String>();
+        notifications.add("1");
+        notifications.add("2");
+        NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+
+        notiRV.setAdapter(notificationRVAdapter);
+        notiRV.setLayoutManager(layoutManager);
+
     }
 }
