@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShoppingCartFragment"
-    android:orientation="vertical">
+    tools:context=".fragment.ShoppingCartFragment"
+    android:orientation="vertical"
+    android:scrollbars="none">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Cart fragment"
-        android:textSize="76sp"/>
-
+        android:layout_height="wrap_content"
+        android:id="@+id/rv"
+        android:layout_marginTop="4.5dp"
+        android:paddingBottom="72.5dp"
+        android:clipToPadding="false"/>
 </LinearLayout>

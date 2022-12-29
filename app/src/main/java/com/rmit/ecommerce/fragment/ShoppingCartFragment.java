@@ -1,4 +1,4 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
@@ -10,14 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter2;
+import com.rmit.ecommerce.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link NotificationFragment#newInstance} factory method to
+ * Use the {@link ShoppingCartFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NotificationFragment extends Fragment {
+public class ShoppingCartFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -28,7 +29,7 @@ public class NotificationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public NotificationFragment() {
+    public ShoppingCartFragment() {
         // Required empty public constructor
     }
 
@@ -38,11 +39,11 @@ public class NotificationFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment NotificationFragment.
+     * @return A new instance of fragment ShoppingCartFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NotificationFragment newInstance(String param1, String param2) {
-        NotificationFragment fragment = new NotificationFragment();
+    public static ShoppingCartFragment newInstance(String param1, String param2) {
+        ShoppingCartFragment fragment = new ShoppingCartFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -62,23 +63,18 @@ public class NotificationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notification, container, false);
-        setupRecyclerView(view);
+        View view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
+
+        RecyclerView rv = view.findViewById(R.id.rv);
+        String[] data = {"NIKE", "NIKE", "NIKE", "NIKE", "NIKE", "NIKE", "NIKE", "NIKE"};
+        MyRecyclerViewAdapter2 adapter2 = new MyRecyclerViewAdapter2(data);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+        rv.setAdapter(adapter2);
+        rv.setLayoutManager(linearLayoutManager);
+
         // Inflate the layout for this fragment
         return view;
-    }
-
-    private void setupRecyclerView(View view) {
-        RecyclerView notiRV = view.findViewById(R.id.notiRV);
-        ArrayList<String> notifications = new ArrayList<String>();
-        notifications.add("1");
-        notifications.add("2");
-        NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
-
-        notiRV.setAdapter(notificationRVAdapter);
-        notiRV.setLayoutManager(layoutManager);
-
     }
 }

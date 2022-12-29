@@ -8,6 +8,8 @@
     <string name="login_text">LOG IN</string>
     <string name="signup_text">SIGN UP</string>
     <string name="brand_name_cap">VERT</string>
-    <string name="looking_for_sneakers_text">Looking for sneakers</string>
+    <string name="search_bar_text">Looking for sneakers</string>
     <string name="see_all_text"><u>SEE ALL</u></string>
+
+    <string name="animation_time">300</string>
 </resources>

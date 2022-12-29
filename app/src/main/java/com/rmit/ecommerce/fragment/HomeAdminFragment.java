@@ -1,30 +1,27 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.Transition;
-import androidx.transition.TransitionInflater;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.SaveSharedPreference;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.helper.Helper;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
+ * Use the {@link HomeAdminFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment {
+public class HomeAdminFragment extends Fragment {
+
+    View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,7 +32,7 @@ public class SearchFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public SearchFragment() {
+    public HomeAdminFragment() {
         // Required empty public constructor
     }
 
@@ -45,11 +42,11 @@ public class SearchFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
+     * @return A new instance of fragment HomeAdminFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String param1, String param2) {
-        SearchFragment fragment = new SearchFragment();
+    public static HomeAdminFragment newInstance(String param1, String param2) {
+        HomeAdminFragment fragment = new HomeAdminFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -69,32 +66,20 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        view = inflater.inflate(R.layout.fragment_home_admin, container, false);
 
-        // Setup recycler view
-        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
-
-        String[] brand = {"NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE", "NIKE",
-        "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE"};
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(brand);
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-
-        rVSearch.setAdapter(myRecyclerViewAdapter);
-        rVSearch.setLayoutManager(gridLayoutManager);
-
-        // Setup back button
-        Button btnBack = view.findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        Button btnLogout = view.findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.navController.popBackStack();
+                // Clear user login state
+                SaveSharedPreference.clearUser(view.getContext());
+
+                // Redirect to getting started page
+                Helper.popBackStackAll();
+                MainActivity.navController.navigate(R.id.gettingStartedFragment);
             }
         });
-
-        // Setup search bar
-        TextInputEditText searchBar = view.findViewById(R.id.searchBar);
-        searchBar.requestFocus();
 
         // Inflate the layout for this fragment
         return view;

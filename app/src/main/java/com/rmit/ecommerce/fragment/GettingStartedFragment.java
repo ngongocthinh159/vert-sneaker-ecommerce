@@ -1,0 +1,102 @@
+package com.rmit.ecommerce.fragment;
+
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.rmit.ecommerce.SaveSharedPreference;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.helper.Helper;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link GettingStartedFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class GettingStartedFragment extends Fragment {
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    public GettingStartedFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment GettingStartedFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static GettingStartedFragment newInstance(String param1, String param2) {
+        GettingStartedFragment fragment = new GettingStartedFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_getting_started, container, false);
+
+        Button gettingStartedBtn = view.findViewById(R.id.gettingStartedBtn);
+
+        gettingStartedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.navController.navigate(R.id.action_gettingStartedFragment_to_welcomeFragment);
+            }
+        });
+
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // If a normal user logged in => Redirect to getting started page
+        if (SaveSharedPreference.getUserRole(view.getContext()).equals("normal")) {
+            Helper.popBackStackAll();
+            MainActivity.bottomNav.setVisibility(View.GONE);
+            MainActivity.navController.navigate(R.id.homeFragment);
+        }
+
+        // If user is logged in but admin user => Redirect to admin page
+        if (SaveSharedPreference.getUserRole(view.getContext()).equals("admin")) {
+            Helper.popBackStackAll();
+            MainActivity.bottomNav.setVisibility(View.GONE);
+            MainActivity.navController.navigate(R.id.homeAdminFragment);
+        }
+    }
+}
