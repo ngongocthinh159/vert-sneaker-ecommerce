@@ -67,9 +67,9 @@ public class LoginFragment extends Fragment {
         loginBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Helper.popBackStackAll();
                 MainActivity.isLoggedIn = true;
-                MainActivity.navController.popBackStack(R.id.gettingStartedFragment, true);
-                MainActivity.navController.navigate(R.id.action_global_homeFragment3);
+                MainActivity.navController.navigate(R.id.homeFragment);
             }
         });
         // Inflate the layout for this fragment

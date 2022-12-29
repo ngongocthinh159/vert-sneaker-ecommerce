@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -86,11 +88,6 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // If user not log in => Transition to getting started
-        if (!MainActivity.isLoggedIn) {
-            MainActivity.navController.navigate(R.id.action_homeFragment_to_gettingStartedFragment);
-        }
-
         // Setup recycle view
         setupRecyclerView(view);
 
@@ -117,6 +114,18 @@ public class HomeFragment extends Fragment {
         setupSeeAllButton(view);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // If user not log in => Transition to getting started
+        if (!MainActivity.isLoggedIn) {
+            Helper.popBackStackAll();
+            MainActivity.bottomNav.setVisibility(View.GONE);
+            MainActivity.navController.navigate(R.id.gettingStartedFragment);
+        }
     }
 
     private void setupSeeAllButton(View view) {

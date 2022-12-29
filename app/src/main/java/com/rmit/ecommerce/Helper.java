@@ -33,4 +33,8 @@ public class Helper {
     public static String getFormatedAmount(int amount){
         return NumberFormat.getNumberInstance(Locale.US).format(amount);
     }
+
+    public static void popBackStackAll() {
+        while (MainActivity.navController.getCurrentDestination() != null) MainActivity.navController.popBackStack();
+    }
 }

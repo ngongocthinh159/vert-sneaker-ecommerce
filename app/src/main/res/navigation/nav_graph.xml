@@ -9,13 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="com.rmit.ecommerce.HomeFragment"
         android:label="@string/home_fragment_title"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_gettingStartedFragment"
-            app:destination="@id/gettingStartedFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/shoppingCartFragment"
         android:name="com.rmit.ecommerce.ShoppingCartFragment"
@@ -44,11 +38,17 @@
         <action
             android:id="@+id/action_welcomeFragment_to_loginFragment"
             app:destination="@id/loginFragment"
-            app:popEnterAnim="@android:anim/slide_in_left" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_welcomeFragment_to_signUpFragment"
             app:destination="@id/signUpFragment"
-            app:popEnterAnim="@android:anim/slide_in_left" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -61,9 +61,12 @@
         tools:layout="@layout/fragment_getting_started">
         <action
             android:id="@+id/action_gettingStartedFragment_to_welcomeFragment"
-            app:destination="@id/welcomeFragment" />
+            app:destination="@id/welcomeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
-    <action android:id="@+id/action_global_homeFragment3" app:destination="@id/homeFragment" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.rmit.ecommerce.SearchFragment"
