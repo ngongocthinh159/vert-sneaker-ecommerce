@@ -8,7 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
@@ -19,6 +23,12 @@ import com.rmit.ecommerce.R;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
+
+    private View view;
+    private TextInputEditText userName;
+    private TextInputEditText passWord;
+
+    private static final String LOGIN_ERROR_TEXT = "Your user name or password is not correct!";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,19 +73,40 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        Button loginBtn2 = view.findViewById(R.id.loginBtn2);
+        Button loginBtn = view.findViewById(R.id.loginBtn);
+        userName = view.findViewById(R.id.userName);
+        passWord = view.findViewById(R.id.passWord);
 
-        loginBtn2.setOnClickListener(new View.OnClickListener() {
+        loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Helper.popBackStackAll();
-                MainActivity.isLoggedIn = true;
-                MainActivity.navController.navigate(R.id.homeFragment);
+                if (isValidAccount()) {
+                    // Save user login state
+                    SaveSharedPreference.setUserName(view.getContext(), userName.getText().toString());
+                    if (userName.getText().toString().equals("admin")) SaveSharedPreference.setUserRole(view.getContext(), "admin");
+                    else SaveSharedPreference.setUserRole(view.getContext(), "normal");
+
+                    // Redirect to home screen
+                    Helper.popBackStackAll();
+                    if (SaveSharedPreference.getUserRole(view.getContext()).equals("normal")) {
+                        MainActivity.navController.navigate(R.id.homeFragment);
+                    }
+                    if (SaveSharedPreference.getUserRole(view.getContext()).equals("admin")) {
+                        MainActivity.navController.navigate(R.id.homeAdminFragment);
+                    }
+                } else {
+                    Toast.makeText(view.getContext(), LOGIN_ERROR_TEXT, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private boolean isValidAccount() {
+        return userName.getText().toString().length() >= 1;
     }
 }

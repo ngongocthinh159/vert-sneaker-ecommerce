@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/gettingStartedFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -91,6 +91,10 @@
         app:exitAnim="@anim/slide_out_left"
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right" />
+    <fragment
+        android:id="@+id/homeAdminFragment"
+        android:name="com.rmit.ecommerce.fragment.HomeAdminFragment"
+        android:label="home_admin" />
 
     <!--Activity destination-->
 

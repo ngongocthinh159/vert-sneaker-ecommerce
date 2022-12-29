@@ -19,6 +19,7 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.textfield.TextInputEditText;
+import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
@@ -84,8 +85,6 @@ public class HomeFragment extends Fragment {
         // Setup recycle view
         setupRecyclerView(view);
 
-
-
         // Setup search bar
         TextInputEditText searchBar = view.findViewById(R.id.searchBar);
         searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -112,13 +111,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // If user not log in => Transition to getting started
-        if (!MainActivity.isLoggedIn) {
-            Helper.popBackStackAll();
-            MainActivity.bottomNav.setVisibility(View.GONE);
-            MainActivity.navController.navigate(R.id.gettingStartedFragment);
-        }
     }
 
     private void setupSeeAllButton(View view) {

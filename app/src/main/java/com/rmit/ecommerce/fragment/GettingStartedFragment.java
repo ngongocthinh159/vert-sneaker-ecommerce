@@ -2,6 +2,8 @@ package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -9,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.helper.Helper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,5 +79,24 @@ public class GettingStartedFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // If a normal user logged in => Redirect to getting started page
+        if (SaveSharedPreference.getUserRole(view.getContext()).equals("normal")) {
+            Helper.popBackStackAll();
+            MainActivity.bottomNav.setVisibility(View.GONE);
+            MainActivity.navController.navigate(R.id.homeFragment);
+        }
+
+        // If user is logged in but admin user => Redirect to admin page
+        if (SaveSharedPreference.getUserRole(view.getContext()).equals("admin")) {
+            Helper.popBackStackAll();
+            MainActivity.bottomNav.setVisibility(View.GONE);
+            MainActivity.navController.navigate(R.id.homeAdminFragment);
+        }
     }
 }
