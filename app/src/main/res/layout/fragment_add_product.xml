@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/back_ground_color"
+    >
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/previousBtn3"
+        android:layout_width="52dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="340dp"
+        android:backgroundTint="@color/primary_color"
+        android:drawableTop="@drawable/back_icon"
+        android:paddingLeft="30dp"
+        android:paddingTop="8dp"
+        android:text="back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="379dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="128dp"
+        android:hint="Title"
+        app:boxCornerRadiusBottomEnd="25dp"
+        app:boxCornerRadiusBottomStart="25dp"
+        app:boxCornerRadiusTopEnd="25dp"
+        app:boxCornerRadiusTopStart="25dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:endIconMode="clear_text"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/design_default_color_error"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_baseline_person_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout2"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="379dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="312dp"
+        android:hint="Sizes: eg: 42.5,43,44,45"
+        app:boxCornerRadiusBottomEnd="25dp"
+        app:boxCornerRadiusBottomStart="25dp"
+        app:boxCornerRadiusTopEnd="25dp"
+        app:boxCornerRadiusTopStart="25dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:endIconMode="clear_text"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/design_default_color_error"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_baseline_person_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sizes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout3"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="379dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="404dp"
+        android:hint="Description"
+        app:boxCornerRadiusBottomEnd="25dp"
+        app:boxCornerRadiusBottomStart="25dp"
+        app:boxCornerRadiusTopEnd="25dp"
+        app:boxCornerRadiusTopStart="25dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:endIconMode="clear_text"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/design_default_color_error"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_baseline_person_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="3"
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout4"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="379dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="220dp"
+        android:hint="Brand"
+        app:boxCornerRadiusBottomEnd="25dp"
+        app:boxCornerRadiusBottomStart="25dp"
+        app:boxCornerRadiusTopEnd="25dp"
+        app:boxCornerRadiusTopStart="25dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:endIconMode="clear_text"
+        app:helperText="Required*"
+        app:helperTextTextColor="@color/design_default_color_error"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconDrawable="@drawable/ic_baseline_person_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

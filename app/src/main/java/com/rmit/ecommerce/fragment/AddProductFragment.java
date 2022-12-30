@@ -3,8 +3,6 @@ package com.rmit.ecommerce.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +11,13 @@ import android.widget.Button;
 
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
-import com.rmit.ecommerce.repository.SneakerModel;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HomeAdminFragment#newInstance} factory method to
+ * Use the {@link AddProductFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeAdminFragment extends Fragment {
-
-    View view;
+public class AddProductFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,7 +28,7 @@ public class HomeAdminFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public HomeAdminFragment() {
+    public AddProductFragment() {
         // Required empty public constructor
     }
 
@@ -46,11 +38,11 @@ public class HomeAdminFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeAdminFragment.
+     * @return A new instance of fragment AddProductFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeAdminFragment newInstance(String param1, String param2) {
-        HomeAdminFragment fragment = new HomeAdminFragment();
+    public static AddProductFragment newInstance(String param1, String param2) {
+        AddProductFragment fragment = new AddProductFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -70,28 +62,12 @@ public class HomeAdminFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_home_admin, container, false);
-        Button addBtn = view.findViewById(R.id.addBtn);
-        addBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_homeAdminFragment_to_addProductFragment);
-        });
-        setupRecyclerView(view);
         // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_add_product, container, false);
+        Button prevBtn = view.findViewById(R.id.previousBtn3);
+        prevBtn.setOnClickListener(v -> {
+            MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment);
+        });
         return view;
-    }
-
-    private void setupRecyclerView(View view) {
-        // Setup recycler view
-        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
-
-        ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(sneakers, "search");
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-
-        rVSearch.setAdapter(myRecyclerViewAdapter);
-        rVSearch.setLayoutManager(gridLayoutManager);
-
-
     }
 }
