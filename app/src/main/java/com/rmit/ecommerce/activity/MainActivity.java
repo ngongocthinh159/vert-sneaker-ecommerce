@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.fragment.ArFragment;
+import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.RepositoryManager;
 
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public static BottomNavigationView bottomNav;
     public static Context context;
     public static RepositoryManager repositoryManager = new RepositoryManager();
+    public static boolean isARAvailable = false;
 
     public static float device_height_pxl;
     public static float device_width_pxl;
@@ -36,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
+
         // Fetch database
         repositoryManager.signInAnonymously();
         repositoryManager.fetchAllSneakers();
@@ -43,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
         // Set view
         setContentView(R.layout.activity_main);
 
-        context = this;
+//        // Check AR availability
+//        Helper.checkARAvailability();
 
         // Get references
         toolbar = findViewById(R.id.toolbar);
@@ -115,5 +121,16 @@ public class MainActivity extends AppCompatActivity {
         animationDrawable.setEnterFadeDuration(2500);
         animationDrawable.setExitFadeDuration(5000);
         animationDrawable.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (MainActivity.navController.getCurrentDestination().getId() == R.id.arFragment) {
+            ArFragment.sceneView.removeChild(ArFragment.arModelNode);
+            ArFragment.arModelNode = null;
+            ArFragment.sceneView = null;
+        }
+
+        super.onBackPressed();
     }
 }

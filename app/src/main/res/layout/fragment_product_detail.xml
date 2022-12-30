@@ -109,7 +109,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:gravity="center"
-                        android:layout_marginEnd="18dp">
+                        android:layout_marginEnd="18dp"
+                        android:id="@+id/layoutViewAR">
 
                         <com.google.android.material.button.MaterialButton
                             android:layout_width="wrap_content"
@@ -118,7 +119,8 @@
                             app:iconTint="?attr/colorPrimary"
                             app:icon="@drawable/ic_baseline_photo_camera_24"
                             style="?attr/materialIconButtonFilledTonalStyle"
-                            android:layout_marginTop="18dp"/>
+                            android:layout_marginTop="18dp"
+                            android:id="@+id/btnViewARSmall"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -190,7 +192,10 @@
                     app:iconSize="22dp"
                     app:icon="@drawable/ic_baseline_photo_camera_24"
                     style="?attr/materialIconButtonFilledTonalStyle"
-                    app:iconGravity="textEnd"/>
+                    android:layout_marginStart="-4dp"
+                    android:layout_marginEnd="-4dp"
+                    app:iconGravity="textEnd"
+                    android:id="@+id/btnViewAR"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
