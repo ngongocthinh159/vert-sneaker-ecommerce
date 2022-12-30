@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
@@ -24,6 +25,10 @@ import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.RepositoryManager;
+import com.rmit.ecommerce.repository.SneakerModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -306,10 +311,8 @@ public class SearchFragment extends Fragment {
         // Setup recycler view
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
-        String[] brand = {"NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE", "NIKE",
-                "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE",
-                "NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE", "NIKE", "PUMA", "NIKE", "NIKE"};
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(brand);
+        ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
+        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(sneakers, "search");
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
