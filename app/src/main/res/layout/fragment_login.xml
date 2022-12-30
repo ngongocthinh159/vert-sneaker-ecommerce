@@ -40,13 +40,13 @@
         app:endIconMode="password_toggle"
         app:counterEnabled="true"
         app:counterMaxLength="20"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:hint="Password">
+        android:hint="Password"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"

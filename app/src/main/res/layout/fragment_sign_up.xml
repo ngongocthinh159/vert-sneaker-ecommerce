@@ -79,7 +79,6 @@
             tools:layout_editor_absoluteY="201dp"
             android:textColor="@color/white"
             />
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -115,7 +114,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.442"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="326dp" />
+            tools:layout_editor_absoluteY="326dp"
+            android:inputType="textPassword"
+            android:textColor="@color/white"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,7 +154,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.442"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="459dp" />
+            tools:layout_editor_absoluteY="459dp"
+            android:inputType="textPassword"
+            android:textColor="@color/white"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
