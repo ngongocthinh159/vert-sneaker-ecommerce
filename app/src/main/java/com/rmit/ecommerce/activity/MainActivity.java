@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         // Set view
         setContentView(R.layout.activity_main);
 
-//        // Check AR availability
-//        Helper.checkARAvailability();
+        // Check AR availability
+        Helper.checkARAvailability();
 
         // Get references
         toolbar = findViewById(R.id.toolbar);
@@ -125,9 +125,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (MainActivity.navController.getCurrentDestination().getId() == R.id.arFragment) {
-            ArFragment.sceneView.removeChild(ArFragment.arModelNode);
-            ArFragment.arModelNode = null;
-            ArFragment.sceneView = null;
+            ArFragment.cleanArScene();
         }
 
         super.onBackPressed();

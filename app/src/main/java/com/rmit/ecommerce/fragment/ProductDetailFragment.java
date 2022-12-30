@@ -112,37 +112,27 @@ public class ProductDetailFragment extends Fragment {
         MaterialButton btnViewAR = view.findViewById(R.id.btnViewAR);
         MaterialButton btnViewARSmall = view.findViewById(R.id.btnViewARSmall);
 
-//        // Set visibility
-//        if (MainActivity.isARAvailable) {
-//            layoutViewAR.setVisibility(View.VISIBLE);
-//            btnViewAR.setVisibility(View.VISIBLE);
-//        } else { // The device is unsupported or unknown.
-//            layoutViewAR.setVisibility(View.GONE);
-//            btnViewAR.setVisibility(View.GONE);
-//        }
+        // Set visibility
+        if (MainActivity.isARAvailable) {
+            layoutViewAR.setVisibility(View.VISIBLE);
+            btnViewAR.setVisibility(View.VISIBLE);
+        } else { // The device is unsupported or unknown.
+            layoutViewAR.setVisibility(View.GONE);
+            btnViewAR.setVisibility(View.GONE);
+        }
 
         // Setup touch action
         btnViewAR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestCameraPermission();
-
-                if (cameraPermissionGranted()) {
-                    Toast.makeText(MainActivity.context, "AR now", Toast.LENGTH_SHORT).show();
-                    MainActivity.navController.navigate(R.id.action_productDetailFragment_to_arFragment);
-                }
+                MainActivity.navController.navigate(R.id.action_productDetailFragment_to_arFragment);
             }
         });
 
         btnViewARSmall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestCameraPermission();
-
-                if (cameraPermissionGranted()) {
-                    Toast.makeText(MainActivity.context, "AR now", Toast.LENGTH_SHORT).show();
-                    MainActivity.navController.navigate(R.id.action_productDetailFragment_to_arFragment);
-                }
+                MainActivity.navController.navigate(R.id.action_productDetailFragment_to_arFragment);
             }
         });
     }
