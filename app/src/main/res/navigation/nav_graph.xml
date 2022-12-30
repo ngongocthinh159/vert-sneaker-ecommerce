@@ -83,7 +83,15 @@
         android:id="@+id/productDetailFragment"
         android:name="com.rmit.ecommerce.fragment.ProductDetailFragment"
         android:label="fragment_product_detail"
-        tools:layout="@layout/fragment_product_detail" />
+        tools:layout="@layout/fragment_product_detail" >
+        <action
+            android:id="@+id/action_productDetailFragment_to_arFragment"
+            app:destination="@id/arFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <action
         android:id="@+id/action_global_productDetailFragment"
         app:destination="@id/productDetailFragment"
@@ -95,6 +103,11 @@
         android:id="@+id/homeAdminFragment"
         android:name="com.rmit.ecommerce.fragment.HomeAdminFragment"
         android:label="home_admin" />
+    <fragment
+        android:id="@+id/arFragment"
+        android:name="com.rmit.ecommerce.fragment.ArFragment"
+        android:label="fragment_ar"
+        tools:layout="@layout/fragment_ar" />
 
     <!--Activity destination-->
 
