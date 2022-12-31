@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.fragment.ArFragment;
+import com.rmit.ecommerce.fragment.GoogleMapFragment;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.RepositoryManager;
 
@@ -129,5 +131,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onBackPressed();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode
+                == GoogleMapFragment.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+//                finish();
+                MainActivity.navController.popBackStack();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }
