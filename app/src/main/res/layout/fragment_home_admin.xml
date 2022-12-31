@@ -11,7 +11,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout3"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="9dp"
 
@@ -63,14 +63,15 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addBtn"
-        android:layout_width="197dp"
-        android:layout_height="47dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         android:text="ADD"
         app:iconGravity="textEnd"
         app:iconPadding="10dp"
         app:iconSize="22dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnFilter"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
 
@@ -79,10 +80,12 @@
         android:layout_width="397dp"
         android:layout_height="594dp"
         android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnFilter" />
+        app:layout_constraintTop_toBottomOf="@+id/btnFilter"
+        app:layout_constraintVertical_bias="0.647" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

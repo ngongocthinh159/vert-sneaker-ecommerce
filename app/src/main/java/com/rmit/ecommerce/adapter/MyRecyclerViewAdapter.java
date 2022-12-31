@@ -115,8 +115,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 //        for (SneakerModel sneakerModel : sneakers) {
 //            System.out.println(sneakerModel.getBrand());
 //        }
-        Drawable image = MainActivity.repositoryManager.getImageInByte(sneakers.get(position).getImage());
-        if (image != null) productImage.setImageDrawable(image);
+//        Drawable image = MainActivity.repositoryManager.getImageInByte(sneakers.get(position).getImage());
+//        if (image != null) productImage.setImageDrawable(image);
     }
 
     @Override
