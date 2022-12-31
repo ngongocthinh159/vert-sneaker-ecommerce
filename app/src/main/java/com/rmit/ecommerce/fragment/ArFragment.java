@@ -86,7 +86,7 @@ public class ArFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_ar, container, false);
 
-
+        // Get refs
         sceneView = view.findViewById(R.id.sceneView);
 
         // Create new AR model
@@ -125,6 +125,10 @@ public class ArFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        requireInstallGoogleARIfNeeded();
+    }
+
+    private void requireInstallGoogleARIfNeeded() {
         try {
             switch (ArCoreApk.getInstance().requestInstall(getActivity(), mUserRequestedInstall)) {
                 case INSTALLED:

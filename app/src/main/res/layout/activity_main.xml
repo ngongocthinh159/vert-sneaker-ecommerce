@@ -44,13 +44,14 @@
             app:elevation="3dp"
             app:circularflow_radiusInDP="20dp"
 
-            app:itemIconTint="?attr/colorSurface"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginBottom="9dp"
             android:layout_marginStart="9dp"
             android:layout_marginEnd="9dp"
-            app:labelVisibilityMode="unlabeled"/>
+            app:labelVisibilityMode="unlabeled"
+            style="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
+            app:itemIconTint="@color/bottom_nav_icon_tint"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

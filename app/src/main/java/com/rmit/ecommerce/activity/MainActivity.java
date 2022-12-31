@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     bottomNav.animate().translationY(0).setDuration(300);
                     bottomNav.setVisibility(View.VISIBLE);
                 } else {
-                    bottomNav.animate().translationY(bottomNav.getHeight() + 100).setDuration(300);
+                    bottomNav.animate().translationY(bottomNav.getHeight() + 200).setDuration(300);
 //                    bottomNav.setVisibility(View.GONE);
                 }
             }
