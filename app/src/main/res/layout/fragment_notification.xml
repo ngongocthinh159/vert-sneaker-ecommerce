@@ -12,8 +12,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/notiRV"
-            android:layout_width="382dp"
-            android:layout_height="572dp"
+            android:layout_width="379dp"
+            android:layout_height="639dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -21,13 +21,15 @@
             app:layout_constraintVertical_bias="0.133" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/loginBtn"
+            android:id="@+id/clearNotiBtn"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:backgroundTint="@color/primary_color"
             android:text="CLEAR"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/notiRV" />
 
