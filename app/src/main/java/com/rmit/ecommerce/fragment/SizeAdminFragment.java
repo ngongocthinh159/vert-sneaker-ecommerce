@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
@@ -74,6 +75,10 @@ public class SizeAdminFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_size_admin, container, false);
+        Button previousBtn = view.findViewById(R.id.previousBtn);
+        previousBtn.setOnClickListener(v -> {
+            MainActivity.navController.navigate(R.id.action_sizeAdminFragment_to_productManageFragment);
+        });
         setupRecyclerView(view);
         return view;
     }

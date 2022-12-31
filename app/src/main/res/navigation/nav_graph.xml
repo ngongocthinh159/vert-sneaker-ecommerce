@@ -128,7 +128,11 @@
         android:id="@+id/sizeAdminFragment"
         android:name="com.rmit.ecommerce.fragment.SizeAdminFragment"
         android:label="fragment_size_admin"
-        tools:layout="@layout/fragment_size_admin" />
+        tools:layout="@layout/fragment_size_admin" >
+        <action
+            android:id="@+id/action_sizeAdminFragment_to_productManageFragment"
+            app:destination="@id/productManageFragment" />
+    </fragment>
 
     <!--Activity destination-->
 
