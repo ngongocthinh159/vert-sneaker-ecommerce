@@ -3,31 +3,21 @@ package com.rmit.ecommerce.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.adapter.AdminRVAdapter;
-import com.rmit.ecommerce.adapter.SizeRVAdapter;
-import com.rmit.ecommerce.repository.SizeModel;
-import com.rmit.ecommerce.repository.SneakerModel;
-
-import org.checkerframework.checker.units.qual.A;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SizeAdminFragment#newInstance} factory method to
+ * Use the {@link ProductManageFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SizeAdminFragment extends Fragment {
+public class ProductManageFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,7 +28,7 @@ public class SizeAdminFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public SizeAdminFragment() {
+    public ProductManageFragment() {
         // Required empty public constructor
     }
 
@@ -48,11 +38,11 @@ public class SizeAdminFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SizeAdminFragment.
+     * @return A new instance of fragment ProductManageFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SizeAdminFragment newInstance(String param1, String param2) {
-        SizeAdminFragment fragment = new SizeAdminFragment();
+    public static ProductManageFragment newInstance(String param1, String param2) {
+        ProductManageFragment fragment = new ProductManageFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -72,26 +62,15 @@ public class SizeAdminFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_size_admin, container, false);
-        setupRecyclerView(view);
+        View view = inflater.inflate(R.layout.fragment_product_manage, container, false);
+
+        Button updateDetailedButton = view.findViewById(R.id.updateDetailedBtn);
+        Button sizeManagerBtn = view.findViewById(R.id.sizeManagerBtn);
+
+        sizeManagerBtn.setOnClickListener(v -> {
+            MainActivity.navController.navigate(R.id.action_productManageFragment_to_sizeAdminFragment);
+        });
+
         return view;
-    }
-
-    private void setupRecyclerView(View view) {
-        // Setup recycler view
-        RecyclerView sizeRv = view.findViewById(R.id.sizesRv);
-
-        ArrayList<SizeModel> sizes = new ArrayList<>();
-        // TODO: Replace mock data with real data
-        for (int i = 0; i < 12; i++) {
-            sizes.add(new SizeModel("42", 4));
-        }
-        SizeRVAdapter sizeRVAdapter = new SizeRVAdapter(sizes);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), RecyclerView.VERTICAL, false);
-        sizeRv.setAdapter(sizeRVAdapter);
-        sizeRv.setLayoutManager(linearLayoutManager);
-
-
     }
 }

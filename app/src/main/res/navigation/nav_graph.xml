@@ -99,6 +99,9 @@
             android:id="@+id/action_homeAdminFragment_to_addProductFragment"
             app:destination="@id/addProductFragment"
             app:enterAnim="@anim/fade_in" />
+        <action
+            android:id="@+id/action_homeAdminFragment_to_productManageFragment"
+            app:destination="@id/productManageFragment" />
     </fragment>
     <fragment
         android:id="@+id/addProductFragment"
@@ -109,6 +112,23 @@
             app:destination="@id/homeAdminFragment"
             app:enterAnim="@anim/fade_in" />
     </fragment>
+    <fragment
+        android:id="@+id/productManageFragment"
+        android:name="com.rmit.ecommerce.fragment.ProductManageFragment"
+        android:label="fragment_product_manage"
+        tools:layout="@layout/fragment_product_manage" >
+        <action
+            android:id="@+id/action_productManageFragment_to_homeAdminFragment"
+            app:destination="@id/homeAdminFragment" />
+        <action
+            android:id="@+id/action_productManageFragment_to_sizeAdminFragment"
+            app:destination="@id/sizeAdminFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sizeAdminFragment"
+        android:name="com.rmit.ecommerce.fragment.SizeAdminFragment"
+        android:label="fragment_size_admin"
+        tools:layout="@layout/fragment_size_admin" />
 
     <!--Activity destination-->
 

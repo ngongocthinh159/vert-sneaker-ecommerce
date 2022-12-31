@@ -13,8 +13,11 @@ import android.widget.Button;
 
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.adapter.AdminRVAdapter;
 import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.repository.SneakerModel;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 
@@ -84,12 +87,17 @@ public class HomeAdminFragment extends Fragment {
         // Setup recycler view
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
-        ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(sneakers, "search");
+        ArrayList<SneakerModel> sneakers = new ArrayList<>();
+        // TODO: Replace mock data with real data
+        ArrayList<SneakerModel> s = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            s.add(new SneakerModel("Yasuo", "brand", "image", new ArrayList<>()));
+        }
 
+        AdminRVAdapter adminRVAdapter = new AdminRVAdapter(s);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
-        rVSearch.setAdapter(myRecyclerViewAdapter);
+        rVSearch.setAdapter(adminRVAdapter);
         rVSearch.setLayoutManager(gridLayoutManager);
 
 

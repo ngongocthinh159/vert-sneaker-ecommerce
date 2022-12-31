@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.SizeAdminFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -39,8 +40,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputSize"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="257dp"
-            android:layout_height="50dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="68dp"
             app:boxCornerRadiusBottomEnd="25dp"
@@ -48,6 +49,7 @@
             app:boxCornerRadiusTopEnd="25dp"
             app:boxCornerRadiusTopStart="25dp"
             app:endIconMode="clear_text"
+            app:layout_constraintEnd_toStartOf="@+id/addSizeBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -62,23 +64,28 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addSizeBtn"
-            android:layout_width="107dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="68dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="32dp"
             android:backgroundTint="@color/primary_color"
             android:text="Add"
             android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/textInputSize"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textInputSize"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/textInputSize" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="382dp"
-            android:layout_height="600dp"
-            android:layout_marginStart="16dp"
+            android:id="@+id/sizesRv"
+            android:layout_width="409dp"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputSize" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputSize"
+            app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

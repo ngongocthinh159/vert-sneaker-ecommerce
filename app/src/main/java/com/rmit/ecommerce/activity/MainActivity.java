@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration); // Set toolbar with nav, with setting of appBarConfiguration
-
         // Hide and show toolbar/bottomNavBar
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
