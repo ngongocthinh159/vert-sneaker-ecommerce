@@ -85,6 +85,7 @@ public class HomeAdminFragment extends Fragment {
         });
 
         sortBtn.setOnClickListener(v -> {
+            if (rangePicker.getVisibility() == View.VISIBLE) { rangePicker.setVisibility(View.GONE); }
             if (sortPicker.getVisibility() == View.VISIBLE) {
                 sortPicker.setVisibility(View.GONE);
             } else {
@@ -93,12 +94,15 @@ public class HomeAdminFragment extends Fragment {
         });
 
         filterBtn.setOnClickListener(v -> {
+            if (sortPicker.getVisibility() == View.VISIBLE) { sortPicker.setVisibility(View.GONE); }
             if (rangePicker.getVisibility() == View.VISIBLE) {
                 rangePicker.setVisibility(View.GONE);
             } else {
                 rangePicker.setVisibility(View.VISIBLE);
             }
         });
+
+
 
 
         setupRecyclerView(view);
