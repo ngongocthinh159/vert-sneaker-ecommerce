@@ -136,99 +136,96 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/sortPicker"
+        style="?attr/materialCardViewOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="9dp"
         android:layout_marginTop="135dp"
-        app:cardCornerRadius="20dp"
+        android:layout_marginEnd="9dp"
         android:elevation="6dp"
-        app:layout_anchor="@id/btnSort"
         android:visibility="gone"
-        android:id="@+id/sortPicker"
-        style="?attr/materialCardViewOutlinedStyle">
+        app:cardCornerRadius="20dp"
+        app:layout_anchor="@id/btnSort">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="9dp">
+            android:layout_margin="9dp"
+            android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSortPriceLTH"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Price: low to high"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:gravity="left|center"
+                android:text="Price: low to high"
                 android:textStyle="italic" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSortPriceHTL"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Price: high to low"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_marginTop="-10dp"
                 android:gravity="left|center"
-                android:textStyle="italic"/>
+                android:text="Price: high to low"
+                android:textStyle="italic" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSortPriceATZ"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="A to Z"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_marginTop="-10dp"
                 android:gravity="left|center"
-                android:textStyle="italic"/>
+                android:text="A to Z"
+                android:textStyle="italic" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSortPriceZTA"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Z to A"
-                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_marginTop="-10dp"
                 android:gravity="left|center"
-                android:textStyle="italic"/>
+                android:text="Z to A"
+                android:textStyle="italic" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/rangePicker"
+        style="?attr/materialCardViewOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginTop="135dp"
-        app:cardCornerRadius="20dp"
         android:elevation="6dp"
-        app:layout_anchor="@id/btnSort"
         android:visibility="gone"
-        android:id="@+id/rangePicker"
-        style="?attr/materialCardViewOutlinedStyle">
+        app:cardCornerRadius="20dp"
+        app:layout_anchor="@id/btnSort">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_margin="9dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvRange"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Range"
                 android:layout_marginTop="9dp"
-                android:id="@+id/tvRange"/>
+                android:gravity="center"
+                android:text="Range" />
 
 
             <com.google.android.material.slider.RangeSlider
+                android:id="@+id/rangeSlider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:id="@+id/rangeSlider" />
+                android:layout_marginTop="9dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -236,21 +233,21 @@
                 android:gravity="center">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnReset"
+                    style="@style/Widget.Material3.Button.ElevatedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="RESET"
-                    android:layout_marginBottom="9dp"
                     android:layout_marginEnd="4.5dp"
-                    style="@style/Widget.Material3.Button.ElevatedButton"
-                    android:id="@+id/btnReset"/>
+                    android:layout_marginBottom="9dp"
+                    android:text="RESET" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnApply"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="APPLY"
-                    android:layout_marginBottom="9dp"
                     android:layout_marginStart="4.5dp"
-                    android:id="@+id/btnApply"/>
+                    android:layout_marginBottom="9dp"
+                    android:text="APPLY" />
             </LinearLayout>
 
 

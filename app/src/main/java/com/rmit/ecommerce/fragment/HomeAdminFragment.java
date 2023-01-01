@@ -75,9 +75,32 @@ public class HomeAdminFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_admin, container, false);
         Button addBtn = view.findViewById(R.id.addBtn);
+        Button sortBtn = view.findViewById(R.id.btnSort);
+        Button filterBtn = view.findViewById(R.id.btnFilter);
+        View sortPicker = view.findViewById(R.id.sortPicker);
+        View rangePicker = view.findViewById(R.id.rangePicker);
+
         addBtn.setOnClickListener(v -> {
             MainActivity.navController.navigate(R.id.action_homeAdminFragment_to_addProductFragment);
         });
+
+        sortBtn.setOnClickListener(v -> {
+            if (sortPicker.getVisibility() == View.VISIBLE) {
+                sortPicker.setVisibility(View.GONE);
+            } else {
+                sortPicker.setVisibility(View.VISIBLE);
+            }
+        });
+
+        filterBtn.setOnClickListener(v -> {
+            if (rangePicker.getVisibility() == View.VISIBLE) {
+                rangePicker.setVisibility(View.GONE);
+            } else {
+                rangePicker.setVisibility(View.VISIBLE);
+            }
+        });
+
+
         setupRecyclerView(view);
         // Inflate the layout for this fragment
         return view;
