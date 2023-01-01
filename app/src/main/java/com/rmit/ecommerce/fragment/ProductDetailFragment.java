@@ -1,17 +1,26 @@
 package com.rmit.ecommerce.fragment;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.android.material.button.MaterialButton;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
 
@@ -23,6 +32,8 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class ProductDetailFragment extends Fragment {
+
+    View view;
 
     String product_image_demo = "https://w7.pngwing.com/pngs/869/483/png-transparent-nike-" +
             "free-air-force-1-sneakers-nike-air-max-nike-white-football-boot-outdoor-shoe.png";
@@ -70,10 +81,12 @@ public class ProductDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product_detail, container, false);
+        view = inflater.inflate(R.layout.fragment_product_detail, container, false);
 
+        // Setup image slider
         setupImageSlider(view);
 
+        // Setup back button
         Button btnBack = view.findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,20 +95,62 @@ public class ProductDetailFragment extends Fragment {
             }
         });
 
+        // Setup AR button (hide or show - AR avail or un avail)
+        setupARButton();
+
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void setupARButton() {
+        LinearLayout layoutViewAR = view.findViewById(R.id.layoutViewAR);
+        MaterialButton btnViewAR = view.findViewById(R.id.btnViewAR);
+        MaterialButton btnViewARSmall = view.findViewById(R.id.btnViewARSmall);
+
+//        // Set visibility
+//        if (MainActivity.isARAvailable) {
+//            layoutViewAR.setVisibility(View.VISIBLE);
+//            btnViewAR.setVisibility(View.VISIBLE);
+//        } else { // The device is unsupported or unknown.
+//            layoutViewAR.setVisibility(View.GONE);
+//            btnViewAR.setVisibility(View.GONE);
+//        }
+
+        // Setup touch action
+        btnViewAR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestCameraPermission();
+
+                if (cameraPermissionGranted()) {
+                    Toast.makeText(MainActivity.context, "AR now", Toast.LENGTH_SHORT).show();
+                    MainActivity.navController.navigate(R.id.action_productDetailFragment_to_arFragment);
+                }
+            }
+        });
+
+        btnViewARSmall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestCameraPermission();
+
+                if (cameraPermissionGranted()) {
+                    Toast.makeText(MainActivity.context, "AR now", Toast.LENGTH_SHORT).show();
+                    MainActivity.navController.navigate(R.id.action_productDetailFragment_to_arFragment);
+                }
+            }
+        });
     }
 
     private void setupImageSlider(View view) {
         ImageSlider imageSlider = view.findViewById(R.id.imageSlider);
 
         ArrayList<SlideModel> slideModels = new ArrayList<>();
-
-//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(product_image_demo,  ScaleTypes.CENTER_CROP));
 
         slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
         slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
@@ -104,5 +159,18 @@ public class ProductDetailFragment extends Fragment {
         slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
 
         imageSlider.setImageList(slideModels);
+    }
+
+    private void requestCameraPermission() {
+        if (ContextCompat.checkSelfPermission(MainActivity.context, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 100);
+            Toast.makeText(MainActivity.context, "Need camera permission for this feature!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean cameraPermissionGranted() {
+        return ContextCompat.checkSelfPermission(MainActivity.context, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED;
     }
 }

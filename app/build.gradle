@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'com.rmit.ecommerce'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.rmit.ecommerce"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -59,4 +59,8 @@ dependencies {
 
     // Image slider
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
+
+    // Google ARCore
+//    implementation 'com.google.ar:core:1.35.0'
+    implementation 'io.github.sceneview:arsceneview:0.9.1'
 }
