@@ -74,6 +74,8 @@ public class HomeAdminFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_admin, container, false);
+        setupRecyclerView(view);
+
         Button addBtn = view.findViewById(R.id.addBtn);
         Button sortBtn = view.findViewById(R.id.btnSort);
         Button filterBtn = view.findViewById(R.id.btnFilter);
@@ -105,7 +107,7 @@ public class HomeAdminFragment extends Fragment {
 
 
 
-        setupRecyclerView(view);
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -114,19 +116,12 @@ public class HomeAdminFragment extends Fragment {
         // Setup recycler view
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
-        ArrayList<SneakerModel> sneakers = new ArrayList<>();
-        // TODO: Replace mock data with real data
-        ArrayList<SneakerModel> s = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            s.add(new SneakerModel("Yasuo", "brand", "image", new ArrayList<>()));
-        }
+        AdminRVAdapter adminRVAdapter;
+        adminRVAdapter = new AdminRVAdapter();
 
-        AdminRVAdapter adminRVAdapter = new AdminRVAdapter(s);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
         rVSearch.setAdapter(adminRVAdapter);
         rVSearch.setLayoutManager(gridLayoutManager);
-
-
     }
 }

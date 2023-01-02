@@ -54,6 +54,10 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         }
     }
 
+    public AdminRVAdapter() {
+        sneakers = MainActivity.repositoryManager.getSneakers(AdminRVAdapter.this);
+    }
+
     public AdminRVAdapter(ArrayList<SneakerModel> sneakers) {
         this.sneakers = sneakers;
     }

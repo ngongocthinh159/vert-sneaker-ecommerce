@@ -6,8 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
 import android.os.Build;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,6 +50,7 @@ public class RepositoryManager {
                                         (String) data.get("image"),
                                         (ArrayList<String>) data.get("size")));
                             }
+
                             for (SneakerModel s : sneakers) {
                                 System.out.println(s.getTitle() + " - " + s.getBrand() + " - " + s.getImage());
                             }
@@ -58,7 +61,41 @@ public class RepositoryManager {
                 });
     }
 
+    public void fetchAllSneakers(RecyclerView.Adapter adapter) {
+        db.collection("sneakers")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
+                                Map<String, Object> data = document.getData();
+                                sneakers.add(new SneakerModel((String) data.get("title"),
+                                        (String) data.get("brand"),
+                                        (String) data.get("image"),
+                                        (ArrayList<String>) data.get("size")));
+                            }
+
+                            for (SneakerModel s : sneakers) {
+                                System.out.println(s.getTitle() + " - " + s.getBrand() + " - " + s.getImage());
+                            }
+                            adapter.notifyDataSetChanged();
+                            System.out.println("[Notified]");
+                        } else {
+                            Log.d(TAG, "Error", task.getException());
+                        }
+                    }
+                });
+    }
+
     public ArrayList<SneakerModel> getSneakers() {
         return sneakers;
     }
+
+    public ArrayList<SneakerModel> getSneakers(RecyclerView.Adapter adapter) {
+        fetchAllSneakers(adapter);
+        return sneakers;
+    }
+
 }
