@@ -116,8 +116,7 @@ public class HomeAdminFragment extends Fragment {
         // Setup recycler view
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
-        AdminRVAdapter adminRVAdapter;
-        adminRVAdapter = new AdminRVAdapter();
+        AdminRVAdapter adminRVAdapter = new AdminRVAdapter();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 

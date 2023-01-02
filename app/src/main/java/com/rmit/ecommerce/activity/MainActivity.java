@@ -10,24 +10,34 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.fragment.ArFragment;
 import com.rmit.ecommerce.fragment.GoogleMapFragment;
 import com.rmit.ecommerce.helper.Helper;
+import com.rmit.ecommerce.repository.AdminCrudService;
 import com.rmit.ecommerce.repository.AssetManager;
 import com.rmit.ecommerce.repository.RepositoryManager;
 import com.rmit.ecommerce.repository.UserManager;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -40,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
     public static RepositoryManager repositoryManager = new RepositoryManager();
     public static UserManager userManager = new UserManager();
     public static AssetManager assetManager = new AssetManager();
+    public static AdminCrudService adminCrudService = new AdminCrudService();
     public static boolean isARAvailable = false;
+
 
     public static float device_height_pxl;
     public static float device_width_pxl;
@@ -153,5 +165,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
