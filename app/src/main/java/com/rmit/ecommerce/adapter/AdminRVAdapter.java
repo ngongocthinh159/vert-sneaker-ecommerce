@@ -98,6 +98,10 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
 
         productBranch.setText(sneakers.get(position).getBrand());
         productName.setText(sneakers.get(position).getTitle());
+        String imageStr = sneakers.get(position).getImage();
+        if (!imageStr.isEmpty()) {
+            productImage.setImageDrawable(MainActivity.assetManager.fetchImage(imageStr, AdminRVAdapter.this));
+        }
     }
 
     @Override
