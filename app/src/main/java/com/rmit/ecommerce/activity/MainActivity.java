@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         context = this;
 
         // Fetch database
-        repositoryManager.signInAnonymously();
         repositoryManager.fetchAllSneakers();
 
         // Set view
