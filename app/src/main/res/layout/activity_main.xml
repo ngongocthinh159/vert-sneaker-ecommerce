@@ -41,17 +41,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/bottom_nav_menu"
-            app:elevation="3dp"
-            app:circularflow_radiusInDP="20dp"
+            app:elevation="6dp"
 
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="56dp"
             android:layout_marginBottom="9dp"
             android:layout_marginStart="9dp"
             android:layout_marginEnd="9dp"
             app:labelVisibilityMode="unlabeled"
+            app:itemActiveIndicatorStyle="@style/ActiveIndicator.custom"
             style="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
-            app:itemIconTint="@color/bottom_nav_icon_tint"/>
+            app:itemIconTint="@color/bottom_nav_icon_tint" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

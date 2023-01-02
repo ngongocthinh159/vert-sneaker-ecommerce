@@ -84,19 +84,5 @@ public class GettingStartedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // If a normal user logged in => Redirect to getting started page
-        if (SaveSharedPreference.getUserRole(view.getContext()).equals("normal")) {
-            Helper.popBackStackAll();
-            MainActivity.bottomNav.setVisibility(View.GONE);
-            MainActivity.navController.navigate(R.id.homeFragment);
-        }
-
-        // If user is logged in but admin user => Redirect to admin page
-        if (SaveSharedPreference.getUserRole(view.getContext()).equals("admin")) {
-            Helper.popBackStackAll();
-            MainActivity.bottomNav.setVisibility(View.GONE);
-            MainActivity.navController.navigate(R.id.homeAdminFragment);
-        }
     }
 }

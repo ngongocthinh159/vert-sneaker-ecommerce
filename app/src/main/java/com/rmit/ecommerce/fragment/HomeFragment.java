@@ -115,6 +115,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // If a normal user logged in => Redirect to getting started page
+        if (!MainActivity.userManager.isLoggedIn()) {
+            Helper.popBackStackAll();
+            MainActivity.bottomNav.setVisibility(View.GONE);
+            MainActivity.navController.navigate(R.id.gettingStartedFragment);
+        }
     }
 
     private void setupSeeAllButton(View view) {

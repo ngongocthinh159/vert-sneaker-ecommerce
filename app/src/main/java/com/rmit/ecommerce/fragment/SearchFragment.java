@@ -310,6 +310,19 @@ public class SearchFragment extends Fragment {
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
         ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers =  new ArrayList<>();
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
         MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(sneakers, "search");
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);

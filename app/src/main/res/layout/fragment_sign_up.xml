@@ -81,12 +81,12 @@
             android:layout_width="match_parent"
             android:layout_height="61dp"
             android:hint="Username"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.442"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="201dp"
-            android:textColor="@color/white"
-            />
+            android:id="@+id/userName"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -131,7 +131,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.442"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="326dp" />
+            tools:layout_editor_absoluteY="326dp"
+            android:id="@+id/password"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -176,7 +177,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.442"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="459dp" />
+            tools:layout_editor_absoluteY="459dp"
+            android:id="@+id/rePassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -193,7 +195,9 @@
         app:layout_constraintHorizontal_bias="0.232"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/retypeInput"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.3"
+        app:iconGravity="textEnd"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/textQuestion"

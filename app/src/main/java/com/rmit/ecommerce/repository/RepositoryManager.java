@@ -29,7 +29,6 @@ import java.util.Map;
 
 public class RepositoryManager {
     final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final FirebaseStorage storage = FirebaseStorage.getInstance();
     private static ArrayList<SneakerModel> sneakers = new ArrayList<>();
 
     public RepositoryManager() {}
@@ -61,35 +60,5 @@ public class RepositoryManager {
 
     public ArrayList<SneakerModel> getSneakers() {
         return sneakers;
-    }
-
-    public Drawable getImageInByte(String storageURL) {
-        if (storageURL == null || storageURL.isEmpty()) return null;
-        StorageReference gsReference = storage.getReferenceFromUrl(storageURL);
-
-        final long ONE_MEGABYTE = 1024 * 1024;
-        final byte[][] imageData = {null};
-        gsReference.getBytes(ONE_MEGABYTE * 30).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                imageData[0] = bytes;
-            }
-        });
-
-        // If get the image successfully => return drawable
-        if (imageData[0] != null) return Drawable.createFromStream(new ByteArrayInputStream(imageData[0]), null);
-
-        return null;
-    }
-
-    public void signInAnonymously() {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // do your stuff
-        } else {
-            mAuth.signInAnonymously();
-        }
     }
 }

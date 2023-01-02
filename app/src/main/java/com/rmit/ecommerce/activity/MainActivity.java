@@ -23,7 +23,12 @@ import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.fragment.ArFragment;
 import com.rmit.ecommerce.fragment.GoogleMapFragment;
 import com.rmit.ecommerce.helper.Helper;
+import com.rmit.ecommerce.repository.AssetManager;
 import com.rmit.ecommerce.repository.RepositoryManager;
+import com.rmit.ecommerce.repository.UserManager;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public static BottomNavigationView bottomNav;
     public static Context context;
     public static RepositoryManager repositoryManager = new RepositoryManager();
+    public static UserManager userManager = new UserManager();
+    public static AssetManager assetManager = new AssetManager();
     public static boolean isARAvailable = false;
 
     public static float device_height_pxl;
@@ -72,14 +79,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupToolbar() {
-        // Set toolbar with main activity
-        setSupportActionBar(toolbar);
-        toolbar.setVisibility(View.GONE);
-
         // Set toolbar with navcontroller
-        AppBarConfiguration appBarConfiguration =
-                new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration); // Set toolbar with nav, with setting of appBarConfiguration
+        toolbar.setVisibility(View.GONE);
+        Set<Integer> topLevelDestinations = new HashSet<>();
+        topLevelDestinations.add(R.id.homeFragment);
+        topLevelDestinations.add(R.id.shoppingCartFragment);
+        topLevelDestinations.add(R.id.notificationFragment);
+        topLevelDestinations.add(R.id.personalSettingFragment);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
+                .Builder(topLevelDestinations)
+                .build();
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+
         // Hide and show toolbar/bottomNavBar
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
@@ -138,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode
                 == GoogleMapFragment.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//                finish();
                 MainActivity.navController.popBackStack();
             }
         } else {
