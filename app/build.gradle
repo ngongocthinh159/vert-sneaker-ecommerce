@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'androidx.navigation.safeargs'
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -61,6 +62,9 @@ dependencies {
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
     // Google ARCore
-//    implementation 'com.google.ar:core:1.35.0'
     implementation 'io.github.sceneview:arsceneview:0.9.1'
+
+    // Google map - Auto complete
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.libraries.places:places:3.0.0'
 }

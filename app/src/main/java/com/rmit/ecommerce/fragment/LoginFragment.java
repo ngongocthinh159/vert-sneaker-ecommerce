@@ -1,7 +1,10 @@
 package com.rmit.ecommerce.fragment;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,11 +14,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.progressindicator.CircularProgressIndicatorSpec;
+import com.google.android.material.progressindicator.IndeterminateDrawable;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
 import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.UserManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +36,7 @@ import com.rmit.ecommerce.R;
 public class LoginFragment extends Fragment {
 
     private View view;
+    private MaterialButton loginBtn;
     private TextInputEditText userName;
     private TextInputEditText passWord;
 
@@ -75,38 +87,56 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        Button loginBtn = view.findViewById(R.id.loginBtn);
+        // Get refs
+        loginBtn = view.findViewById(R.id.loginBtn);
         userName = view.findViewById(R.id.userName);
         passWord = view.findViewById(R.id.passWord);
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isValidAccount()) {
-                    // Save user login state
-                    SaveSharedPreference.setUserName(view.getContext(), userName.getText().toString());
-                    if (userName.getText().toString().equals("admin")) SaveSharedPreference.setUserRole(view.getContext(), "admin");
-                    else SaveSharedPreference.setUserRole(view.getContext(), "normal");
-
-                    // Redirect to home screen
-                    Helper.popBackStackAll();
-                    if (SaveSharedPreference.getUserRole(view.getContext()).equals("normal")) {
-                        MainActivity.navController.navigate(R.id.homeFragment);
-                    }
-                    if (SaveSharedPreference.getUserRole(view.getContext()).equals("admin")) {
-                        MainActivity.navController.navigate(R.id.homeAdminFragment);
-                    }
-                } else {
-                    Toast.makeText(view.getContext(), LOGIN_ERROR_TEXT, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        // Setup login button
+        setupLoginBtn();
 
         // Inflate the layout for this fragment
         return view;
     }
 
-    private boolean isValidAccount() {
-        return userName.getText().toString().length() >= 1;
+    private void setupLoginBtn() {
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Loading icon
+                CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(getContext(), null, 0, com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator);
+                Drawable progress = IndeterminateDrawable.createCircularDrawable(getContext(), spec);
+                loginBtn.setIcon(progress);
+
+                // Check valid username and password
+                if (userName.getText().toString().isEmpty() || passWord.getText().toString().isEmpty()) {
+                    Toast.makeText(MainActivity.context, "Your user name or password is incorrect!", Toast.LENGTH_SHORT).show();
+                    loginBtn.setIcon(null);
+                    return;
+                }
+
+                if (userName.getText().toString().equals("admin")) {
+                    Helper.popBackStackAll();
+                    MainActivity.navController.navigate(R.id.homeAdminFragment);
+                    loginBtn.setIcon(null);
+                    return;
+                }
+
+                MainActivity.userManager.getAuth().signInWithEmailAndPassword(userName.getText().toString(),
+                        passWord.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Redirect to home screen
+                            Helper.popBackStackAll();
+                            MainActivity.navController.navigate(R.id.homeFragment);
+                        } else {
+                            Toast.makeText(MainActivity.context, "Your user name or password is incorrect!", Toast.LENGTH_SHORT).show();
+                            loginBtn.setIcon(null);
+                        }
+                    }
+                });
+            }
+        });
     }
 }

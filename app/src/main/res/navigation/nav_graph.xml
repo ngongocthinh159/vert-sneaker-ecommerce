@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/gettingStartedFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -146,6 +146,11 @@
         android:name="com.rmit.ecommerce.fragment.ArFragment"
         android:label="fragment_ar"
         tools:layout="@layout/fragment_ar" />
+    <fragment
+        android:id="@+id/googleMapFragment"
+        android:name="com.rmit.ecommerce.fragment.GoogleMapFragment"
+        android:label="fragment_google_map"
+        tools:layout="@layout/fragment_google_map" />
 
     <!--Activity destination-->
 

@@ -38,6 +38,8 @@ public class HomeFragment extends Fragment {
     int count = 0;
     View view;
 
+    String demo_image = "https://cdn.media.amplience.net/i/hibbett/DSC07514-1-scaled-e1614293221200";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -113,6 +115,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // If a normal user logged in => Redirect to getting started page
+        if (!MainActivity.userManager.isLoggedIn()) {
+            Helper.popBackStackAll();
+            MainActivity.bottomNav.setVisibility(View.GONE);
+            MainActivity.navController.navigate(R.id.gettingStartedFragment);
+        }
     }
 
     private void setupSeeAllButton(View view) {
@@ -147,11 +156,11 @@ public class HomeFragment extends Fragment {
 
         ArrayList<SlideModel> slideModels = new ArrayList<>();
 
-        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg",  ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel("https://cdn.vortexs.io/api/images/3cda9c91-d69c-493b-b0c9-4af8b958d220/1920/w/giay-nike-air-force-1-low-next-nature-white-university-blue-dn1430-100.jpeg", ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
         imageSlider.setImageList(slideModels);
 
         imageSlider.setItemClickListener(new ItemClickListener() {

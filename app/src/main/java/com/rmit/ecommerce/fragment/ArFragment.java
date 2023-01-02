@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.ar.core.ArCoreApk;
+import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
+import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 
@@ -33,6 +36,8 @@ public class ArFragment extends Fragment {
     View view;
     public static ArSceneView sceneView;
     public static ArModelNode arModelNode;
+
+    private boolean mUserRequestedInstall = true;
 
     String MODEL_3D_SNEAKER = "https://drive.google.com/uc?export=download&id=1K2A3s2zhHMumMkDL8JHWxOmQSC-VLfTz";
 
@@ -81,7 +86,7 @@ public class ArFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_ar, container, false);
 
-
+        // Get refs
         sceneView = view.findViewById(R.id.sceneView);
 
         // Create new AR model
@@ -114,5 +119,45 @@ public class ArFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        requireInstallGoogleARIfNeeded();
+    }
+
+    private void requireInstallGoogleARIfNeeded() {
+        try {
+            switch (ArCoreApk.getInstance().requestInstall(getActivity(), mUserRequestedInstall)) {
+                case INSTALLED:
+                    // Success: Safe to create the AR session.
+                    break;
+                case INSTALL_REQUESTED:
+                    // When this method returns `INSTALL_REQUESTED`:
+                    // 1. ARCore pauses this activity.
+                    // 2. ARCore prompts the user to install or update Google Play
+                    //    Services for AR (market://details?id=com.google.ar.core).
+                    // 3. ARCore downloads the latest device profile data.
+                    // 4. ARCore resumes this activity. The next invocation of
+                    //    requestInstall() will either return `INSTALLED` or throw an
+                    //    exception if the installation or update did not succeed.
+                    mUserRequestedInstall = false;
+            }
+        } catch (UnavailableUserDeclinedInstallationException e) {
+            // Display an appropriate message to the user and return gracefully.
+            Toast.makeText(getContext(), "Failed to install Google Play Services AR", Toast.LENGTH_LONG).show();
+            cleanArScene();
+            MainActivity.navController.popBackStack();
+        } catch (UnavailableDeviceNotCompatibleException | RuntimeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void cleanArScene() {
+        sceneView.removeChild(arModelNode);
+        arModelNode = null;
+        sceneView = null;
     }
 }

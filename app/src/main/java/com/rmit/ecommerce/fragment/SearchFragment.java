@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
@@ -25,7 +24,6 @@ import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.R;
-import com.rmit.ecommerce.repository.RepositoryManager;
 import com.rmit.ecommerce.repository.SneakerModel;
 
 import java.util.ArrayList;
@@ -156,15 +154,15 @@ public class SearchFragment extends Fragment {
             @NonNull
             @Override
             public String getFormattedValue(float value) {
-                return Helper.getFormatedAmount((int) value);
+                return Helper.getFormattedAmount((int) value);
             }
         });
 
 
         // Setup range text
         TextView tvRange = view.findViewById(R.id.tvRange);
-        tvRange.setText(Helper.getFormatedAmount((int) RANGE_MIN_VALUE) + LOCAL_COUNTRY[1] + " - " +
-                Helper.getFormatedAmount((int) RANGE_MAX_VALUE) + LOCAL_COUNTRY[1]);
+        tvRange.setText(Helper.getFormattedAmount((int) RANGE_MIN_VALUE) + LOCAL_COUNTRY[1] + " - " +
+                Helper.getFormattedAmount((int) RANGE_MAX_VALUE) + LOCAL_COUNTRY[1]);
 
         // Change range text on sliding
         rangeSlider.addOnChangeListener(new RangeSlider.OnChangeListener() {
@@ -172,8 +170,8 @@ public class SearchFragment extends Fragment {
             public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
                 float lower_bound_float = slider.getValues().get(0);
                 float upper_bound_float = slider.getValues().get(1);
-                String lower_bound_string = Helper.getFormatedAmount((int) lower_bound_float);
-                String upper_bound_string = Helper.getFormatedAmount((int) upper_bound_float);
+                String lower_bound_string = Helper.getFormattedAmount((int) lower_bound_float);
+                String upper_bound_string = Helper.getFormattedAmount((int) upper_bound_float);
 
                 // Set range text
                 String rangeText = lower_bound_string + LOCAL_COUNTRY[1] + " - " +
@@ -312,6 +310,19 @@ public class SearchFragment extends Fragment {
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
         ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers =  new ArrayList<>();
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+//        sneakers.add(new SneakerModel("title", "brand", "img", null));
         MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(sneakers, "search");
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);

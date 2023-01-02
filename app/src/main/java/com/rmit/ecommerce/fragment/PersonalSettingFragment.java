@@ -90,8 +90,7 @@ public class PersonalSettingFragment extends Fragment {
         builder.setMessage("You are about logging out")
                 .setPositiveButton("Log out", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Clear user login state
-                        SaveSharedPreference.clearUser(view.getContext());
+                        MainActivity.userManager.getAuth().signOut();
 
                         // Redirect to getting started page
                         Helper.popBackStackAll();

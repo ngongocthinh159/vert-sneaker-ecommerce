@@ -42,4 +42,12 @@
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
     </style>
+
+        <style name="ActiveIndicator.custom" parent="">
+                <item name="android:width">@dimen/m3_bottom_nav_item_active_indicator_width</item>
+                <item name="android:height">@dimen/m3_bottom_nav_item_active_indicator_height</item>
+                <item name="marginHorizontal">@dimen/m3_bottom_nav_item_active_indicator_margin_horizontal</item>
+                <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
+                <item name="android:color">#3F4759</item>
+        </style>
 </resources>

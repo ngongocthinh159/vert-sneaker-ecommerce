@@ -42,7 +42,7 @@ public class AssetManager {
         }
     }
 
-    private AssetManager() {}
+    public AssetManager() {}
 
     public static AssetManager getInstance() {
         return assetManager;

@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -20,8 +21,14 @@ import android.widget.LinearLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.fragment.ArFragment;
+import com.rmit.ecommerce.fragment.GoogleMapFragment;
 import com.rmit.ecommerce.helper.Helper;
+import com.rmit.ecommerce.repository.AssetManager;
 import com.rmit.ecommerce.repository.RepositoryManager;
+import com.rmit.ecommerce.repository.UserManager;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public static BottomNavigationView bottomNav;
     public static Context context;
     public static RepositoryManager repositoryManager = new RepositoryManager();
+    public static UserManager userManager = new UserManager();
+    public static AssetManager assetManager = new AssetManager();
     public static boolean isARAvailable = false;
 
     public static float device_height_pxl;
@@ -42,14 +51,13 @@ public class MainActivity extends AppCompatActivity {
         context = this;
 
         // Fetch database
-        repositoryManager.signInAnonymously();
         repositoryManager.fetchAllSneakers();
 
         // Set view
         setContentView(R.layout.activity_main);
 
-//        // Check AR availability
-//        Helper.checkARAvailability();
+        // Check AR availability
+        Helper.checkARAvailability();
 
         // Get references
         toolbar = findViewById(R.id.toolbar);
@@ -70,14 +78,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupToolbar() {
-        // Set toolbar with main activity
-        setSupportActionBar(toolbar);
-        toolbar.setVisibility(View.GONE);
-
         // Set toolbar with navcontroller
-        AppBarConfiguration appBarConfiguration =
-                new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration); // Set toolbar with nav, with setting of appBarConfiguration
+        toolbar.setVisibility(View.GONE);
+        Set<Integer> topLevelDestinations = new HashSet<>();
+        topLevelDestinations.add(R.id.homeFragment);
+        topLevelDestinations.add(R.id.shoppingCartFragment);
+        topLevelDestinations.add(R.id.notificationFragment);
+        topLevelDestinations.add(R.id.personalSettingFragment);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
+                .Builder(topLevelDestinations)
+                .build();
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+
         // Hide and show toolbar/bottomNavBar
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
@@ -97,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     bottomNav.animate().translationY(0).setDuration(300);
                     bottomNav.setVisibility(View.VISIBLE);
                 } else {
-                    bottomNav.animate().translationY(bottomNav.getHeight() + 100).setDuration(300);
+                    bottomNav.animate().translationY(bottomNav.getHeight() + 200).setDuration(300);
 //                    bottomNav.setVisibility(View.GONE);
                 }
             }
@@ -125,11 +137,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (MainActivity.navController.getCurrentDestination().getId() == R.id.arFragment) {
-            ArFragment.sceneView.removeChild(ArFragment.arModelNode);
-            ArFragment.arModelNode = null;
-            ArFragment.sceneView = null;
+            ArFragment.cleanArScene();
         }
 
         super.onBackPressed();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode
+                == GoogleMapFragment.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                MainActivity.navController.popBackStack();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

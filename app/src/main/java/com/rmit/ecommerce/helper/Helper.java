@@ -1,20 +1,13 @@
 package com.rmit.ecommerce.helper;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.google.android.material.button.MaterialButton;
 //import com.google.ar.core.ArCoreApk;
-import com.rmit.ecommerce.R;
+import com.google.ar.core.ArCoreApk;
 import com.rmit.ecommerce.activity.MainActivity;
 
 import java.text.NumberFormat;
@@ -42,7 +35,7 @@ public class Helper {
         manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public static String getFormatedAmount(int amount){
+    public static String getFormattedAmount(int amount){
         return NumberFormat.getNumberInstance(Locale.US).format(amount);
     }
 
@@ -50,24 +43,19 @@ public class Helper {
         while (MainActivity.navController.getCurrentDestination() != null) MainActivity.navController.popBackStack();
     }
 
-//    public static void checkARAvailability() {
-//        ArCoreApk.Availability availability = ArCoreApk.getInstance().checkAvailability(MainActivity.context);
-//        if (availability.isTransient()) {
-//            // Continue to query availability at 5Hz while compatibility is checked in the background.
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    checkARAvailability();
-//                }
-//            }, 200);
-//        }
-//
-//        if (availability.isSupported()) {
-//            MainActivity.isARAvailable = true;
-//        } else { // The device is unsupported or unknown.
-//            MainActivity.isARAvailable = false;
-//        }
-//    }
+    public static void checkARAvailability() {
+        ArCoreApk.Availability availability = ArCoreApk.getInstance().checkAvailability(MainActivity.context);
+        if (availability.isTransient()) {
+            // Continue to query availability at 5Hz while compatibility is checked in the background.
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    checkARAvailability();
+                }
+            }, 200);
+        }
 
-
+        // The device is unsupported or unknown.
+        MainActivity.isARAvailable = availability.isSupported();
+    }
 }

@@ -3,6 +3,8 @@ package com.rmit.ecommerce.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,11 +114,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         // Fetch data to app
         productBranch.setText(sneakers.get(position).getBrand());
         productName.setText(sneakers.get(position).getTitle());
-//        for (SneakerModel sneakerModel : sneakers) {
-//            System.out.println(sneakerModel.getBrand());
-//        }
-//        Drawable image = MainActivity.repositoryManager.getImageInByte(sneakers.get(position).getImage());
-//        if (image != null) productImage.setImageDrawable(image);
+        Drawable image = null;
+        if (!sneakers.get(position).getImage().isEmpty()) image = MainActivity.assetManager.fetchImage(sneakers.get(position).getImage());
+        if (image != null) productImage.setImageDrawable(image);
     }
 
     @Override
