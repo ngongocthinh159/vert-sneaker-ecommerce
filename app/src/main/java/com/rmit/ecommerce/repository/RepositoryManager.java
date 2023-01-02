@@ -42,6 +42,7 @@ public class RepositoryManager {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            sneakers.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
 //                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
                                 Map<String, Object> data = document.getData();
@@ -68,6 +69,7 @@ public class RepositoryManager {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            sneakers.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
 //                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
                                 Map<String, Object> data = document.getData();
