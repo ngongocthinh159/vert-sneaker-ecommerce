@@ -1,5 +1,6 @@
 package com.rmit.ecommerce.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
@@ -122,7 +123,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         MaterialCardView cardView = holder.getCardView();
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();
@@ -148,7 +149,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                     productBranch.setText(sneakerModel.getBrand());
                     productName.setText(sneakerModel.getTitle());
                     productPrice.setText("$" + String.valueOf(sneakerModel.getPrice()));
-                    maxQuantity[0] = sneakerModel.getSizes().get(0).get(size + "");
+                    maxQuantity[0] = sneakerModel.getSize().get(0).get(size + "");
                     productMaxQuantity.setText(maxQuantity[0] + " left over");
 
                     // Setup button visibility

@@ -9,7 +9,7 @@ public class SneakerBase {
     private String image;
     private String description;
     private double price;
-    private  ArrayList<HashMap<String, Integer>>sizes;
+    private  ArrayList<HashMap<String, Integer>>size;
 
     public SneakerBase() {}
 
@@ -19,14 +19,14 @@ public class SneakerBase {
         this.image = image;
         this.description = description;
         this.price = price;
-        this.sizes = sizes;
+        this.size = sizes;
     }
 
     public SneakerBase(String title, String brand, String image,  ArrayList<HashMap<String, Integer>> sizes) {
         this.title = title;
         this.brand = brand;
         this.image = image;
-        this.sizes = sizes;
+        this.size = sizes;
     }
 
     public String getTitle() {
@@ -69,11 +69,11 @@ public class SneakerBase {
         this.price = price;
     }
 
-    public ArrayList<HashMap<String, Integer>> getSizes() {
-        return sizes;
+    public ArrayList<HashMap<String, Integer>> getSize() {
+        return size;
     }
 
-    public void setSizes(ArrayList<HashMap<String, Integer>> sizes) {
-        this.sizes = sizes;
+    public void setSize(ArrayList<HashMap<String, Integer>> sizes) {
+        this.size = sizes;
     }
 }
