@@ -15,6 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.interfaces.ItemClickListener;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -44,6 +48,7 @@ import java.util.UUID;
  */
 public class AddProductFragment extends Fragment {
 
+    ImageSlider imageSlider;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -92,6 +97,7 @@ public class AddProductFragment extends Fragment {
         Button prevBtn = view.findViewById(R.id.previousBtn3);
         Button selectImageBtn = view.findViewById(R.id.selectImageBtn);
         Button submitBtn = view.findViewById(R.id.addProductBtn);
+        imageSlider = view.findViewById(R.id.imageSlider);
         TextInputEditText title = view.findViewById(R.id.title);
         TextInputEditText brand = view.findViewById(R.id.brand);
         TextInputEditText price = view.findViewById(R.id.price);
@@ -126,6 +132,8 @@ public class AddProductFragment extends Fragment {
         });
         return view;
     }
+
+
 
     private void handleUploadFirebaseStorage(String folderName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -178,6 +186,30 @@ public class AddProductFragment extends Fragment {
         super.onResume();
         Log.d("TAG", "Resume");
         System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
-
+        ArrayList<SlideModel> slideModels = new ArrayList<>();
+        for (Uri uri: MainActivity.adminCrudService.getInstance().getImagesEncodedList()) {
+            slideModels.add(new SlideModel(uri.toString(), ScaleTypes.CENTER_CROP));
+        }
+        imageSlider.setImageList(slideModels);
     }
+
+//    private void setupImageSlider(View view) {
+//        ImageSlider imageSlider = view.findViewById(R.id.imageSlider);
+//
+//        ArrayList<SlideModel> slideModels = new ArrayList<>();
+//
+//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
+//        imageSlider.setImageList(slideModels);
+//
+//        imageSlider.setItemClickListener(new ItemClickListener() {
+//            @Override
+//            public void onItemSelected(int i) {
+//                MainActivity.navController.navigate(R.id.action_global_productDetailFragment);
+//            }
+//        });
+//    }
 }
