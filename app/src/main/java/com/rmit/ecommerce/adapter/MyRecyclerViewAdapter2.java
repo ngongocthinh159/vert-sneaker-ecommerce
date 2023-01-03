@@ -3,10 +3,12 @@ package com.rmit.ecommerce.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,15 +17,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.SneakerModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -31,6 +38,18 @@ import java.util.Map;
 public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewAdapter2.ViewHolder>{
     Context context;
     ArrayList<CartItemModel> cartItems;
+    MaterialCardView cardView;
+    ImageView productImage;
+    TextView productBranch;
+    TextView productName;
+    TextView productPrice;
+    TextView productQuantity;
+    TextView productSize;
+    TextView productMaxQuantity;
+    MaterialButton btnIncrease;
+    MaterialButton btnDecrease;
+    MaterialButton btnDeleteItem;
+    ProgressBar progressBar;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardView;
@@ -44,12 +63,13 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         MaterialButton btnIncrease;
         MaterialButton btnDecrease;
         MaterialButton btnDeleteItem;
+        ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             cardView = itemView.findViewById(R.id.cardView);
-            productImage = itemView.findViewById(R.id.productImage);
+            productImage = itemView.findViewById(R.id.productImageItem);
             productBranch = itemView.findViewById(R.id.productBranch);
             productName = itemView.findViewById(R.id.productName);
             productPrice = itemView.findViewById(R.id.productPrice);
@@ -59,6 +79,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
             btnIncrease = itemView.findViewById(R.id.btnIncrease);
             btnDecrease = itemView.findViewById(R.id.btnDecrease);
             btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
+            progressBar = itemView.findViewById(R.id.progressBarItem);
         }
 
         public MaterialCardView getCardView() {
@@ -104,6 +125,10 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         public MaterialButton getBtnDeleteItem() {
             return btnDeleteItem;
         }
+
+        public ProgressBar getProgressBar() {
+            return progressBar;
+        }
     }
 
     public MyRecyclerViewAdapter2(ArrayList<CartItemModel> cartItems) {
@@ -124,19 +149,75 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        MaterialCardView cardView = holder.getCardView();
-        ImageView productImage = holder.getProductImage();
-        TextView productBranch = holder.getProductBranch();
-        TextView productName = holder.getProductName();
-        TextView productPrice = holder.getProductPrice();
-        TextView productQuantity = holder.getProductQuantity();
-        TextView productSize = holder.getProductSize();
-        TextView productMaxQuantity = holder.getProductMaxQuantity();
-        MaterialButton btnIncrease = holder.getBtnIncrease();
-        MaterialButton btnDecrease = holder.getBtnDecrease();
-        MaterialButton btnDeleteItem = holder.getBtnDeleteItem();
+        // Get refs
+        cardView = holder.getCardView();
+        productImage = holder.getProductImage();
+        productBranch = holder.getProductBranch();
+        productName = holder.getProductName();
+        productPrice = holder.getProductPrice();
+        productQuantity = holder.getProductQuantity();
+        productSize = holder.getProductSize();
+        productMaxQuantity = holder.getProductMaxQuantity();
+        btnIncrease = holder.getBtnIncrease();
+        btnDecrease = holder.getBtnDecrease();
+        btnDeleteItem = holder.getBtnDeleteItem();
+        progressBar = holder.getProgressBar();
 
-        // Map text data to view
+        // Map text data + setup button action to view
+        mapTextDataAndSetupButtonAction(position);
+
+        // Map image to view
+        mapImageData(position);
+    }
+
+    private void mapImageData(int position) {
+        // Find image link
+        String pid = cartItems.get(position).getPid().getId();
+        SneakerModel sneakerModel = null;
+        String imageStr = null;
+        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
+            if (sneaker.getId().equals(pid)) {
+                imageStr = sneaker.getImage();
+                sneakerModel = sneaker;
+                break;
+            }
+        }
+
+        // Fetch image into imageview
+        FirebaseStorage db = FirebaseStorage.getInstance();
+        if (sneakerModel != null && sneakerModel.getFigureImage() != null) { // If the url of the image already is already fetched
+            Picasso.get().load(sneakerModel.getFigureImage()).into(productImage);
+        } else {
+            productImage.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            if (imageStr != null && !imageStr.isEmpty()) {
+                SneakerModel finalSneakerModel = sneakerModel;
+                db.getReferenceFromUrl(imageStr).listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        productImage.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        Picasso.get().load(uri).into(productImage);
+                                        finalSneakerModel.setFigureImage(uri);
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Uh-oh, an error occurred!
+                            }
+                        });
+            }
+        }
+    }
+
+    private void mapTextDataAndSetupButtonAction(int position) {
         productQuantity.setText(String.valueOf(cartItems.get(position).getQuantity()));
         int size = cartItems.get(position).getSize();
         final int[] maxQuantity = {-1};
@@ -239,8 +320,10 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                 alertDialogBuilder.show();
             }
         });
+    }
 
-        // Map image to view
+    private void setupButton(int position, int maxQuantity) {
+
     }
 
     @Override

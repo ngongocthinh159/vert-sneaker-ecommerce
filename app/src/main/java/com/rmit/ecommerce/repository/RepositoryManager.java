@@ -66,29 +66,6 @@ public class RepositoryManager {
                 });
     }
 
-//    public void fetchCartId() {
-//        // Get cart id from user id
-//        if (userCartId == null) {
-//            DocumentReference userDoc = db.collection("users").document(MainActivity.userManager.getUserId());
-//            userDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//                        String cartId = (String) document.get("currentCartId");
-//                        if (cartId.isEmpty()) {
-//
-//                        }
-//                        userCartId = cartId;
-//                        fetchCartObject();
-//                    } else {
-//
-//                    }
-//                }
-//            });
-//        }
-//    }
-
     public void fetchCartObject() {
         // Get cart information
         DocumentReference cartDoc = db.collection("carts").document(user.getCurrentCartId());

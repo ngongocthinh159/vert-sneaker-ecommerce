@@ -144,13 +144,11 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                         .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                             @Override
                             public void onSuccess(ListResult listResult) {
-                                System.out.println("UH OH I HAVE TO FETCH AGAIN");
                                 listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         productImage.setVisibility(View.VISIBLE);
                                         progressBar.setVisibility(View.GONE);
-                                        System.out.println("RECEIVED URI: " + uri.toString());
                                         sneakers.get(position).setFigureImage(uri);
                                         Picasso.get().load(uri).into(productImage);
                                     }

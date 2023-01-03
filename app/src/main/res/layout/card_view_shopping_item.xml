@@ -15,12 +15,19 @@
         android:orientation="horizontal"
         android:gravity="center">
 
+        <ProgressBar
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/progressBarItem"
+            android:visibility="gone"/>
+
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/af1_demo"
             android:layout_marginStart="9dp"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            android:id="@+id/productImageItem"/>
 
         <LinearLayout
             android:layout_width="0dp"
