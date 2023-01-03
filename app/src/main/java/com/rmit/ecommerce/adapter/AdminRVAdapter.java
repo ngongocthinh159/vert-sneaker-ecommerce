@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         ImageView productImage;
         TextView productBranch;
         TextView productName;
+        ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -43,6 +45,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
             productImage = itemView.findViewById(R.id.productImage);
             productBranch = itemView.findViewById(R.id.productBranch);
             productName = itemView.findViewById(R.id.productName);
+            progressBar = itemView.findViewById(R.id.progressBar);
         }
 
         public MaterialCardView getCardView() {
@@ -59,6 +62,10 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
 
         public TextView getProductName() {
             return productName;
+        }
+
+        public ProgressBar getProgressBar() {
+            return progressBar;
         }
     }
 
@@ -89,6 +96,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();
         TextView productName = holder.getProductName();
+        ProgressBar progressBar = holder.getProgressBar();
 
         // Resize width for card view (responsive)
         float cardWidthPixel = (MainActivity.device_width_pxl - Helper.convertDpToPixel(9*3, context)) / 2;
@@ -112,6 +120,8 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         if (sneakers.get(position).getFigureImage() != null) {
             Picasso.get().load(sneakers.get(position).getFigureImage()).into(productImage);
         } else {
+            productImage.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
             if (!imageStr.isEmpty() && productImage.getDrawable() == null) {
                 db.getReferenceFromUrl(imageStr).listAll()
                         .addOnSuccessListener(new OnSuccessListener<ListResult>() {
@@ -121,6 +131,8 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
                                 listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
+                                        productImage.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
                                         System.out.println("RECEIVED URI: " + uri.toString());
                                         sneakers.get(position).setFigureImage(uri);
                                         Picasso.get().load(uri).into(productImage);

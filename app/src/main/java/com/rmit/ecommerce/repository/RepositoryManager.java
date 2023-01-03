@@ -30,66 +30,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class RepositoryManager {
-    final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static ArrayList<SneakerModel> sneakers = new ArrayList<>();
 
     public RepositoryManager() {}
-
-    public void fetchAllSneakers() {
-        db.collection("sneakers")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            sneakers.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
-                                Map<String, Object> data = document.getData();
-                                sneakers.add(new SneakerModel((String) data.get("title"),
-                                        (String) data.get("brand"),
-                                        (String) data.get("image"),
-                                        (ArrayList<String>) data.get("size")));
-                            }
-
-                            for (SneakerModel s : sneakers) {
-                                System.out.println(s.getTitle() + " - " + s.getBrand() + " - " + s.getImage());
-                            }
-                        } else {
-                            Log.d(TAG, "Error", task.getException());
-                        }
-                    }
-                });
-    }
-
-    public void fetchAllSneakers(RecyclerView.Adapter adapter) {
-        db.collection("sneakers")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            sneakers.clear();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
-                                Map<String, Object> data = document.getData();
-                                sneakers.add(new SneakerModel((String) data.get("title"),
-                                        (String) data.get("brand"),
-                                        (String) data.get("image"),
-                                        (ArrayList<String>) data.get("size")));
-                            }
-
-                            for (SneakerModel s : sneakers) {
-                                System.out.println(s.getTitle() + " - " + s.getBrand() + " - " + s.getImage());
-                            }
-                            adapter.notifyDataSetChanged();
-                            System.out.println("[Notified]");
-                        } else {
-                            Log.d(TAG, "Error", task.getException());
-                        }
-                    }
-                });
-    }
 
     public ArrayList<SneakerModel> getSneakers() {
         return sneakers;
