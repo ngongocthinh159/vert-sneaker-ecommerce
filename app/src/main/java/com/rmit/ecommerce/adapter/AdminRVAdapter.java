@@ -92,6 +92,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
     public void onBindViewHolder(@NonNull AdminRVAdapter.ViewHolder holder, int position) {
         System.out.println("ON BIND VIEW HOLDER CALLED");
         // Get references to View
+
         MaterialCardView cardView =  holder.getCardView();
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();

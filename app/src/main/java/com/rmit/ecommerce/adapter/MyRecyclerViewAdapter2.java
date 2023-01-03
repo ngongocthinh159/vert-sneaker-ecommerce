@@ -148,7 +148,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                     productBranch.setText(sneakerModel.getBrand());
                     productName.setText(sneakerModel.getTitle());
                     productPrice.setText("$" + String.valueOf(sneakerModel.getPrice()));
-                    maxQuantity[0] = sneakerModel.getSize().get(0).get(size + "");
+                    maxQuantity[0] = sneakerModel.getSizes().get(0).get(size + "");
                     productMaxQuantity.setText(maxQuantity[0] + " left over");
 
                     // Setup button visibility
