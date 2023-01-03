@@ -7,12 +7,21 @@ public class SneakerModel {
     private String brand;
     private String image;
     private ArrayList<String> sizes;
+    private String figureImage;
 
     public SneakerModel(String title, String brand, String image, ArrayList<String> sizes) {
         this.title = title;
         this.brand = brand;
         this.image = image;
         this.sizes = sizes;
+    }
+
+    public String getFigureImage() {
+        return figureImage;
+    }
+
+    public void setFigureImage(String figureImage) {
+        this.figureImage = figureImage;
     }
 
     public String getTitle() {

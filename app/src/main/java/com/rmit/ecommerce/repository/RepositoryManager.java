@@ -95,9 +95,7 @@ public class RepositoryManager {
         return sneakers;
     }
 
-    public ArrayList<SneakerModel> getSneakers(RecyclerView.Adapter adapter) {
-        fetchAllSneakers(adapter);
-        return sneakers;
+    public void setSneakers(ArrayList<SneakerModel> s) {
+        sneakers = s;
     }
-
 }

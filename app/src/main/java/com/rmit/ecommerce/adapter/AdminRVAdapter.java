@@ -1,6 +1,7 @@
 package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.SneakerModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -61,7 +63,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
     }
 
     public AdminRVAdapter() {
-        sneakers = MainActivity.repositoryManager.getSneakers(AdminRVAdapter.this);
+        sneakers = new ArrayList<>();
     }
 
     public AdminRVAdapter(ArrayList<SneakerModel> sneakers) {
@@ -81,6 +83,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull AdminRVAdapter.ViewHolder holder, int position) {
+        System.out.println("ON BIND VIEW HOLDER CALLED");
         // Get references to View
         MaterialCardView cardView =  holder.getCardView();
         ImageView productImage = holder.getProductImage();
@@ -106,18 +109,19 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         productName.setText(sneakers.get(position).getTitle());
         String imageStr = sneakers.get(position).getImage();
         FirebaseStorage db = FirebaseStorage.getInstance();
-        if (!imageStr.isEmpty()) {
-//            MainActivity.assetManager.fetchImageFromFolder(imageStr, AdminRVAdapter.this);
-//            productImage.setImageDrawable(MainActivity.assetManager.fetchImage(imageStr, AdminRVAdapter.this));
+        if (!imageStr.isEmpty() && productImage.getDrawable() == null) {
             db.getReferenceFromUrl(imageStr).listAll()
                     .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                         @Override
                         public void onSuccess(ListResult listResult) {
-                            System.out.println("ON SUCCESS INVOKED: " + imageStr);
-                            String key = imageStr + "/" + listResult.getItems().get(0).getName();
-                            System.out.println(key);
-                            MainActivity.assetManager.fetchImage(key, AdminRVAdapter.this, productImage, position);
-
+                            System.out.println("UH OH I HAVE TO FETCH AGAIN");
+                            listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    System.out.println("RECEIVED URI: " + uri.toString());
+                                    Picasso.get().load(uri).into(productImage);
+                                }
+                            });
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
