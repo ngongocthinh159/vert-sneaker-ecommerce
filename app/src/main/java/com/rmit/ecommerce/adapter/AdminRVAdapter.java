@@ -10,7 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.helper.Helper;
@@ -99,9 +105,30 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         productBranch.setText(sneakers.get(position).getBrand());
         productName.setText(sneakers.get(position).getTitle());
         String imageStr = sneakers.get(position).getImage();
+        FirebaseStorage db = FirebaseStorage.getInstance();
         if (!imageStr.isEmpty()) {
-            productImage.setImageDrawable(MainActivity.assetManager.fetchImage(imageStr, AdminRVAdapter.this));
+//            MainActivity.assetManager.fetchImageFromFolder(imageStr, AdminRVAdapter.this);
+//            productImage.setImageDrawable(MainActivity.assetManager.fetchImage(imageStr, AdminRVAdapter.this));
+            db.getReferenceFromUrl(imageStr).listAll()
+                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            System.out.println("ON SUCCESS INVOKED: " + imageStr);
+                            String key = imageStr + "/" + listResult.getItems().get(0).getName();
+                            System.out.println(key);
+                            MainActivity.assetManager.fetchImage(key, AdminRVAdapter.this, productImage, position);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Uh-oh, an error occurred!
+                        }
+                    });
+
         }
+
     }
 
     @Override
