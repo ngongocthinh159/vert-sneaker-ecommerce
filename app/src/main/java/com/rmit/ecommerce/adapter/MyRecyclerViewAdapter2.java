@@ -1,5 +1,6 @@
 package com.rmit.ecommerce.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
@@ -122,7 +123,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         MaterialCardView cardView = holder.getCardView();
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();
