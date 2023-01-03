@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.LoginFragment"
-    android:orientation="vertical"
-    android:background="@color/back_ground_color">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"

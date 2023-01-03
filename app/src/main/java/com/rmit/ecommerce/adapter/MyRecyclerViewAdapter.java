@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -97,10 +98,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         cardView.setLayoutParams(params);
 
         // Setup card view touch action
+        Bundle bundle = new Bundle();
+        bundle.putString("pid", sneakers.get(position).getId());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.navController.navigate(R.id.action_global_productDetailFragment);
+                MainActivity.navController.navigate(R.id.action_global_productDetailFragment, bundle);
             }
         });
 
@@ -114,9 +117,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         // Fetch data to app
         productBranch.setText(sneakers.get(position).getBrand());
         productName.setText(sneakers.get(position).getTitle());
-        Drawable image = null;
-        if (!sneakers.get(position).getImage().isEmpty()) image = MainActivity.assetManager.fetchImage(sneakers.get(position).getImage());
-        if (image != null) productImage.setImageDrawable(image);
+//        Drawable image = null;
+//        if (!sneakers.get(position).getImage().isEmpty()) image = MainActivity.assetManager.fetchImage(sneakers.get(position).getImage());
+//        if (image != null) productImage.setImageDrawable(image);
     }
 
     @Override

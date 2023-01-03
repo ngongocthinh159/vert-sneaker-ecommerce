@@ -1,18 +1,30 @@
 package com.rmit.ecommerce.repository;
 
+import com.google.firebase.firestore.DocumentId;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SneakerModel {
+    @DocumentId
+    private String id;
+
     private String title;
     private String brand;
     private String image;
-    private ArrayList<String> sizes;
+    private String description;
+    private double price;
+    private ArrayList<HashMap<String, Integer>> size;
 
-    public SneakerModel(String title, String brand, String image, ArrayList<String> sizes) {
+    public SneakerModel() {};
+
+    public SneakerModel(String title, String brand, String image, String description, double price, ArrayList<HashMap<String, Integer>> size) {
         this.title = title;
         this.brand = brand;
         this.image = image;
-        this.sizes = sizes;
+        this.description = description;
+        this.price = price;
+        this.size = size;
     }
 
     public String getTitle() {
@@ -39,11 +51,31 @@ public class SneakerModel {
         this.image = image;
     }
 
-    public ArrayList<String> getSizes() {
-        return sizes;
+    public String getDescription() {
+        return description;
     }
 
-    public void setSizes(ArrayList<String> sizes) {
-        this.sizes = sizes;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public ArrayList<HashMap<String, Integer>> getSize() {
+        return size;
+    }
+
+    public void setSize(ArrayList<HashMap<String, Integer>> size) {
+        this.size = size;
+    }
+
+    public String getId() {
+        return id;
     }
 }

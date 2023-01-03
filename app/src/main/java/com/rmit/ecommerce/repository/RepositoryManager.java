@@ -2,34 +2,30 @@ package com.rmit.ecommerce.repository;
 
 import static android.content.ContentValues.TAG;
 
-import android.graphics.drawable.Drawable;
-import android.nfc.Tag;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.fragment.ShoppingCartFragment;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
 public class RepositoryManager {
-    final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static ArrayList<SneakerModel> sneakers = new ArrayList<>();
+    private String userCartId;
+    private CartModel cartObject;
+    private ArrayList<CartItemModel> cartItems = new ArrayList<>();
 
     public RepositoryManager() {}
 
@@ -41,12 +37,8 @@ public class RepositoryManager {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
                                 Map<String, Object> data = document.getData();
-                                sneakers.add(new SneakerModel((String) data.get("title"),
-                                        (String) data.get("brand"),
-                                        (String) data.get("image"),
-                                        (ArrayList<String>) data.get("size")));
+                                sneakers.add(document.toObject(SneakerModel.class));
                             }
                             for (SneakerModel s : sneakers) {
                                 System.out.println(s.getTitle() + " - " + s.getBrand() + " - " + s.getImage());
@@ -58,7 +50,85 @@ public class RepositoryManager {
                 });
     }
 
+    public void fetchCartId() {
+        // Get cart id from user id
+        if (userCartId == null) {
+            DocumentReference userDoc = db.collection("users").document(MainActivity.userManager.getUserId());
+            userDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        userCartId = (String) document.get("currentCartId");
+                        fetchCartObject();
+                    } else {
+
+                    }
+                }
+            });
+        }
+    }
+
+    public void fetchCartObject() {
+        // Get cart information
+        DocumentReference cartDoc = db.collection("carts").document(userCartId);
+        cartDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    cartObject = document.toObject(CartModel.class);
+                    fetchCartItems();
+                } else {
+
+                }
+            }
+        });
+    }
+
+    public void fetchCartItems() {
+        cartItems.clear();
+        ArrayList<String> cartItemIds = cartObject.getCartItemIds();
+        CollectionReference collection = db.collection("cartItems");
+        collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (cartItemIds.contains(document.getId())) {
+                            cartItems.add(document.toObject(CartItemModel.class));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public ArrayList<CartItemModel> getCartItems() {
+        return cartItems;
+    }
+
+    public FirebaseFirestore getFireStore() {
+        return db;
+    }
+
+    public String getUserCartId() {
+        return userCartId;
+    }
+
+    public CartModel getCartObject() {
+        return cartObject;
+    }
+
+    public void setCartObject(CartModel cartObject) {
+        this.cartObject = cartObject;
+    }
+
     public ArrayList<SneakerModel> getSneakers() {
         return sneakers;
+    }
+
+    public FirebaseFirestore getInstance() {
+        return db;
     }
 }

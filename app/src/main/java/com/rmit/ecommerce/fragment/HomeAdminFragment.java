@@ -102,30 +102,27 @@ public class HomeAdminFragment extends Fragment {
             }
         });
 
-
-
-
         setupRecyclerView(view);
         // Inflate the layout for this fragment
         return view;
     }
 
     private void setupRecyclerView(View view) {
-        // Setup recycler view
-        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
-
-        ArrayList<SneakerModel> sneakers = new ArrayList<>();
-        // TODO: Replace mock data with real data
-        ArrayList<SneakerModel> s = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
-            s.add(new SneakerModel("Yasuo", "brand", "image", new ArrayList<>()));
-        }
-
-        AdminRVAdapter adminRVAdapter = new AdminRVAdapter(s);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-
-        rVSearch.setAdapter(adminRVAdapter);
-        rVSearch.setLayoutManager(gridLayoutManager);
+//        // Setup recycler view
+//        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
+//
+//        ArrayList<SneakerModel> sneakers = new ArrayList<>();
+//        // TODO: Replace mock data with real data
+//        ArrayList<SneakerModel> s = new ArrayList<>();
+//        for (int i = 0; i < 12; i++) {
+//            s.add(new SneakerModel("Yasuo", "brand", "image", new ArrayList<>()));
+//        }
+//
+//        AdminRVAdapter adminRVAdapter = new AdminRVAdapter(s);
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+//
+//        rVSearch.setAdapter(adminRVAdapter);
+//        rVSearch.setLayoutManager(gridLayoutManager);
 
 
     }

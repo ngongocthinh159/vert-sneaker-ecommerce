@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         context = this;
 
         // Fetch database
-        repositoryManager.signInAnonymously();
         repositoryManager.fetchAllSneakers();
+        repositoryManager.fetchCartId();
 
         // Set view
         setContentView(R.layout.activity_main);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="125dp"
+    android:layout_height="145dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="20dp"
     android:id="@+id/cardView"
@@ -16,20 +16,20 @@
         android:gravity="center">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/af1_demo"
             android:layout_marginStart="9dp"
             android:scaleType="fitCenter"/>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginStart="9dp"
             android:layout_marginTop="18dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -37,30 +37,52 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NIKE"
-                    android:textSize="12sp"
-                    android:textColor="?attr/colorPrimary"
-                    android:id="@+id/productBranch"
-                    android:textStyle="italic"/>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/productBranch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NIKE"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
+                        android:layout_marginEnd="4dp"/>
+
+                    <TextView
+                        android:id="@+id/productName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="AIR FORCE 1"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="AIR FORCE 1"
-                    android:textSize="12sp"
-                    android:id="@+id/productName"/>
-
-                <TextView
+                    android:id="@+id/productPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="$110"
-                    android:id="@+id/productPrice"
-                    android:textSize="12sp"/>
-            </LinearLayout>
+                    android:textSize="12sp" />
 
+                <TextView
+                    android:id="@+id/productSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Size: 42"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/productMaxQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5 left over"
+                    android:layout_marginTop="4dp"
+                    android:textSize="12sp"
+                    android:textColor="#83878d"
+                    android:textStyle="italic|bold" />
+            </LinearLayout>
 
 
             <LinearLayout
@@ -69,29 +91,33 @@
                 android:gravity="center">
 
                 <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.Material3.Button.IconButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:icon="@drawable/ic_baseline_remove_24"
                     app:backgroundTint="?attr/colorSurface"
+                    app:icon="@drawable/ic_baseline_remove_24"
                     app:iconTint="?attr/colorOnSurface"
-                    style="@style/Widget.Material3.Button.IconButton"/>
+                    android:id="@+id/btnDecrease"
+                    android:visibility="invisible"/>
 
                 <TextView
+                    android:id="@+id/productQuantity"
                     android:layout_width="50dp"
                     android:layout_height="30dp"
-                    android:text="2"
-                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:background="@drawable/background_round_corner"
                     android:gravity="center"
-                    android:id="@+id/productQuantity"/>
+                    android:text="2"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.Material3.Button.IconButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.Material3.Button.IconButton"
-                    app:icon="@drawable/ic_baseline_add_24"
                     app:backgroundTint="?attr/colorSurface"
-                    app:iconTint="?attr/colorOnSurface"/>
+                    app:icon="@drawable/ic_baseline_add_24"
+                    app:iconTint="?attr/colorOnSurface"
+                    android:id="@+id/btnIncrease"
+                    android:visibility="invisible"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -103,6 +129,8 @@
             app:iconTint="?attr/colorError"
             android:layout_marginEnd="9dp"
             style="?attr/materialIconButtonFilledTonalStyle"/>
+
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
