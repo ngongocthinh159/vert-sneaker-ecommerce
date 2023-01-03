@@ -58,8 +58,9 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="$90.00"
-                    android:gravity="end"/>
+                    android:text="$0.00"
+                    android:gravity="end"
+                    android:id="@+id/subtotal"/>
             </LinearLayout>
 
             <LinearLayout
@@ -76,8 +77,9 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="$10.00"
-                    android:gravity="end"/>
+                    android:text="$0.00"
+                    android:gravity="end"
+                    android:id="@+id/shippingFee"/>
             </LinearLayout>
 
             <LinearLayout
@@ -97,8 +99,9 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:text="$100.00"
-                    android:gravity="end"/>
+                    android:text="$0.00"
+                    android:gravity="end"
+                    android:id="@+id/total"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -115,7 +118,8 @@
                 android:text="CHECKOUT"
                 android:textStyle="italic|bold"
                 android:layout_marginBottom="74.5dp"
-                android:layout_marginTop="9dp"/>
+                android:layout_marginTop="9dp"
+                android:id="@+id/btnCheckout"/>
         </LinearLayout>
 
     </LinearLayout>

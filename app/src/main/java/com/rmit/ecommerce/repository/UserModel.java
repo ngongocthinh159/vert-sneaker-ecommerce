@@ -11,17 +11,17 @@ public class UserModel {
     String address;
     String cardNumber;
     String currentCartId;
-    ArrayList<String> historyCarts;
+    ArrayList<String> historyCartIds;
     boolean isAdmin;
     String phone;
 
     public UserModel() {};
 
-    public UserModel(String address, String cardNumber, String currentCartId, ArrayList<String> historyCarts, boolean isAdmin, String phone) {
+    public UserModel(String address, String cardNumber, String currentCartId, ArrayList<String> historyCartIds, boolean isAdmin, String phone) {
         this.address = address;
         this.cardNumber = cardNumber;
         this.currentCartId = currentCartId;
-        this.historyCarts = historyCarts;
+        this.historyCartIds = historyCartIds;
         this.isAdmin = isAdmin;
         this.phone = phone;
     }
@@ -54,12 +54,12 @@ public class UserModel {
         this.currentCartId = currentCartId;
     }
 
-    public ArrayList<String> getHistoryCarts() {
-        return historyCarts;
+    public ArrayList<String> getHistoryCartIds() {
+        return historyCartIds;
     }
 
-    public void setHistoryCarts(ArrayList<String> historyCarts) {
-        this.historyCarts = historyCarts;
+    public void setHistoryCartIds(ArrayList<String> historyCartIds) {
+        this.historyCartIds = historyCartIds;
     }
 
     public boolean isAdmin() {

@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 
 //import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.ArCoreApk;
+import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 
 import java.text.NumberFormat;
@@ -41,6 +42,10 @@ public class Helper {
 
     public static void popBackStackAll() {
         while (MainActivity.navController.getCurrentDestination() != null) MainActivity.navController.popBackStack();
+    }
+
+    public static void popBackStackUntilHome() {
+        while (MainActivity.navController.getCurrentDestination().getId() != R.id.homeFragment) MainActivity.navController.popBackStack();
     }
 
     public static void checkARAvailability() {

@@ -38,18 +38,6 @@ import java.util.Map;
 public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewAdapter2.ViewHolder>{
     Context context;
     ArrayList<CartItemModel> cartItems;
-    MaterialCardView cardView;
-    ImageView productImage;
-    TextView productBranch;
-    TextView productName;
-    TextView productPrice;
-    TextView productQuantity;
-    TextView productSize;
-    TextView productMaxQuantity;
-    MaterialButton btnIncrease;
-    MaterialButton btnDecrease;
-    MaterialButton btnDeleteItem;
-    ProgressBar progressBar;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardView;
@@ -150,78 +138,24 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Get refs
-        cardView = holder.getCardView();
-        productImage = holder.getProductImage();
-        productBranch = holder.getProductBranch();
-        productName = holder.getProductName();
-        productPrice = holder.getProductPrice();
-        productQuantity = holder.getProductQuantity();
-        productSize = holder.getProductSize();
-        productMaxQuantity = holder.getProductMaxQuantity();
-        btnIncrease = holder.getBtnIncrease();
-        btnDecrease = holder.getBtnDecrease();
-        btnDeleteItem = holder.getBtnDeleteItem();
-        progressBar = holder.getProgressBar();
+        MaterialCardView cardView = holder.getCardView();
+        ImageView productImage = holder.getProductImage();
+        TextView productBranch = holder.getProductBranch();
+        TextView productName = holder.getProductName();
+        TextView productPrice = holder.getProductPrice();
+        TextView productQuantity = holder.getProductQuantity();
+        TextView productSize = holder.getProductSize();
+        TextView productMaxQuantity = holder.getProductMaxQuantity();
+        TextView btnIncrease = holder.getBtnIncrease();
+        TextView btnDecrease = holder.getBtnDecrease();
+        MaterialButton btnDeleteItem = holder.getBtnDeleteItem();
+        ProgressBar progressBar = holder.getProgressBar();
 
-        // Map text data + setup button action to view
-        mapTextDataAndSetupButtonAction(position);
-
-        // Map image to view
-        mapImageData(position);
-    }
-
-    private void mapImageData(int position) {
-        // Find image link
-        String pid = cartItems.get(position).getPid().getId();
-        SneakerModel sneakerModel = null;
-        String imageStr = null;
-        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
-            if (sneaker.getId().equals(pid)) {
-                imageStr = sneaker.getImage();
-                sneakerModel = sneaker;
-                break;
-            }
-        }
-
-        // Fetch image into imageview
-        FirebaseStorage db = FirebaseStorage.getInstance();
-        if (sneakerModel != null && sneakerModel.getFigureImage() != null) { // If the url of the image already is already fetched
-            Picasso.get().load(sneakerModel.getFigureImage()).into(productImage);
-        } else {
-            productImage.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-            if (imageStr != null && !imageStr.isEmpty()) {
-                SneakerModel finalSneakerModel = sneakerModel;
-                db.getReferenceFromUrl(imageStr).listAll()
-                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                            @Override
-                            public void onSuccess(ListResult listResult) {
-                                listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        productImage.setVisibility(View.VISIBLE);
-                                        progressBar.setVisibility(View.GONE);
-                                        Picasso.get().load(uri).into(productImage);
-                                        finalSneakerModel.setFigureImage(uri);
-                                    }
-                                });
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Uh-oh, an error occurred!
-                            }
-                        });
-            }
-        }
-    }
-
-    private void mapTextDataAndSetupButtonAction(int position) {
+        // Map text data to view
         productQuantity.setText(String.valueOf(cartItems.get(position).getQuantity()));
         int size = cartItems.get(position).getSize();
-        final int[] maxQuantity = {-1};
         productSize.setText(String.valueOf(size));
+        final int[] maxQuantity = {-1};
         cartItems.get(position).getPid().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -320,10 +254,51 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                 alertDialogBuilder.show();
             }
         });
-    }
 
-    private void setupButton(int position, int maxQuantity) {
-
+        // Map image to view
+        // Find image link
+        String pid = cartItems.get(position).getPid().getId();
+        SneakerModel sneakerModel = null;
+        String imageStr = null;
+        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
+            if (sneaker.getId().equals(pid)) {
+                imageStr = sneaker.getImage();
+                sneakerModel = sneaker;
+                break;
+            }
+        }
+        // Fetch image into imageview
+        FirebaseStorage db = FirebaseStorage.getInstance();
+        if (sneakerModel != null && sneakerModel.getFigureImage() != null) { // If the url of the image already is already fetched
+            Picasso.get().load(sneakerModel.getFigureImage()).into(productImage);
+        } else {
+            productImage.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            if (imageStr != null && !imageStr.isEmpty()) {
+                SneakerModel finalSneakerModel = sneakerModel;
+                db.getReferenceFromUrl(imageStr).listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        productImage.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        Picasso.get().load(uri).into(productImage);
+                                        finalSneakerModel.setFigureImage(uri);
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Uh-oh, an error occurred!
+                            }
+                        });
+            }
+        }
     }
 
     @Override
@@ -334,6 +309,9 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
-//        System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
+    }
+
+    public ArrayList<CartItemModel> getCartItems() {
+        return cartItems;
     }
 }
