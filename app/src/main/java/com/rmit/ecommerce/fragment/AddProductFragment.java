@@ -193,23 +193,4 @@ public class AddProductFragment extends Fragment {
         imageSlider.setImageList(slideModels);
     }
 
-//    private void setupImageSlider(View view) {
-//        ImageSlider imageSlider = view.findViewById(R.id.imageSlider);
-//
-//        ArrayList<SlideModel> slideModels = new ArrayList<>();
-//
-//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-//        imageSlider.setImageList(slideModels);
-//
-//        imageSlider.setItemClickListener(new ItemClickListener() {
-//            @Override
-//            public void onItemSelected(int i) {
-//                MainActivity.navController.navigate(R.id.action_global_productDetailFragment);
-//            }
-//        });
-//    }
 }

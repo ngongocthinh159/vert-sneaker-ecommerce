@@ -21,12 +21,7 @@ import javax.annotation.Nullable;
 
 public class AdminCrudService {
     public static AdminCrudService adminCrudService = new AdminCrudService();
-    private Uri imageEncoded;
     private List<Uri> imagesEncodedList = new ArrayList<>();
-
-    public Uri getImageEncoded() {
-        return imageEncoded;
-    }
 
     public List<Uri> getImagesEncodedList() {
         return imagesEncodedList;
@@ -48,15 +43,10 @@ public class AdminCrudService {
             // When an Image is picked
             if (resultCode == RESULT_OK
                     && null != data) {
-                // Get the Image from data
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 imagesEncodedList = new ArrayList<>();
                 if(data.getData()!=null){
-
                     Uri mImageUri=data.getData();
-
-                    imageEncoded  = mImageUri;
-                    System.out.println("IMAGE ENCODED: " + imageEncoded);
+                    imagesEncodedList.add(mImageUri);
                 } else {
                     if (data.getClipData() != null) {
                         ClipData mClipData = data.getClipData();
