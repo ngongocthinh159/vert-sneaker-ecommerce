@@ -2,17 +2,23 @@ package com.rmit.ecommerce.repository;
 
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.rmit.ecommerce.R;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,9 +52,36 @@ public class AssetManager {
         }
     }
 
+    public ArrayList<Drawable> fetchAllImages(String imgUrl, ImageSlider imageSlider, ArrayList<SlideModel> slideModels) {
+        ArrayList<Drawable> drawables = new ArrayList<>();
+
+        StorageReference gsReference = storage.getReferenceFromUrl(imgUrl);
+        gsReference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                for (StorageReference item : listResult.getItems()) {
+                    // All the items under listRef.
+                    item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            slideModels.add(new SlideModel(String.valueOf(uri),  ScaleTypes.CENTER_INSIDE));
+                            imageSlider.setImageList(slideModels);
+                        }
+                    });
+                }
+            }
+        });
+
+        return drawables;
+    }
+
     public AssetManager() {}
 
     public static AssetManager getInstance() {
         return assetManager;
+    }
+
+    public FirebaseStorage getStorage() {
+        return storage;
     }
 }
