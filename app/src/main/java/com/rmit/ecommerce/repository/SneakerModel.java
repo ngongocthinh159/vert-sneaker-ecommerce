@@ -1,5 +1,7 @@
 package com.rmit.ecommerce.repository;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class SneakerModel {
@@ -7,7 +9,7 @@ public class SneakerModel {
     private String brand;
     private String image;
     private ArrayList<String> sizes;
-    private String figureImage;
+    private Uri figureImage;
 
     public SneakerModel(String title, String brand, String image, ArrayList<String> sizes) {
         this.title = title;
@@ -16,11 +18,11 @@ public class SneakerModel {
         this.sizes = sizes;
     }
 
-    public String getFigureImage() {
+    public Uri getFigureImage() {
         return figureImage;
     }
 
-    public void setFigureImage(String figureImage) {
+    public void setFigureImage(Uri figureImage) {
         this.figureImage = figureImage;
     }
 

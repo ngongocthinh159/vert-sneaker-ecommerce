@@ -109,29 +109,34 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         productName.setText(sneakers.get(position).getTitle());
         String imageStr = sneakers.get(position).getImage();
         FirebaseStorage db = FirebaseStorage.getInstance();
-        if (!imageStr.isEmpty() && productImage.getDrawable() == null) {
-            db.getReferenceFromUrl(imageStr).listAll()
-                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                        @Override
-                        public void onSuccess(ListResult listResult) {
-                            System.out.println("UH OH I HAVE TO FETCH AGAIN");
-                            listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    System.out.println("RECEIVED URI: " + uri.toString());
-                                    Picasso.get().load(uri).into(productImage);
-                                }
-                            });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Uh-oh, an error occurred!
-                        }
-                    });
-
+        if (sneakers.get(position).getFigureImage() != null) {
+            Picasso.get().load(sneakers.get(position).getFigureImage()).into(productImage);
+        } else {
+            if (!imageStr.isEmpty() && productImage.getDrawable() == null) {
+                db.getReferenceFromUrl(imageStr).listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                System.out.println("UH OH I HAVE TO FETCH AGAIN");
+                                listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        System.out.println("RECEIVED URI: " + uri.toString());
+                                        sneakers.get(position).setFigureImage(uri);
+                                        Picasso.get().load(uri).into(productImage);
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Uh-oh, an error occurred!
+                            }
+                        });
+            }
         }
+
 
     }
 
