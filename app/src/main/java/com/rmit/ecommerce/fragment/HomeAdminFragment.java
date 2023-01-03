@@ -114,10 +114,6 @@ public class HomeAdminFragment extends Fragment {
             }
         });
 
-
-
-
-
         // Inflate the layout for this fragment
         return view;
     }
@@ -126,8 +122,9 @@ public class HomeAdminFragment extends Fragment {
         // Setup recycler view
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // If there are no data
         if (MainActivity.repositoryManager.getSneakers().isEmpty()) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("sneakers")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -154,6 +151,7 @@ public class HomeAdminFragment extends Fragment {
                         }
                     });
         } else {
+            // Reuse data
             AdminRVAdapter adminRVAdapter = new AdminRVAdapter(MainActivity.repositoryManager.getSneakers());
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
             rVSearch.setAdapter(adminRVAdapter);

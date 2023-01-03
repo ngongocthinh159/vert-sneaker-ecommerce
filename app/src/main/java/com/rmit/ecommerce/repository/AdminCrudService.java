@@ -21,14 +21,14 @@ import javax.annotation.Nullable;
 
 public class AdminCrudService {
     public static AdminCrudService adminCrudService = new AdminCrudService();
-    private String imageEncoded = "";
-    private List<String> imagesEncodedList = new ArrayList<>();
+    private Uri imageEncoded;
+    private List<Uri> imagesEncodedList = new ArrayList<>();
 
-    public String getImageEncoded() {
+    public Uri getImageEncoded() {
         return imageEncoded;
     }
 
-    public List<String> getImagesEncodedList() {
+    public List<Uri> getImagesEncodedList() {
         return imagesEncodedList;
     }
 
@@ -55,7 +55,7 @@ public class AdminCrudService {
 
                     Uri mImageUri=data.getData();
 
-                    imageEncoded  = mImageUri.toString();
+                    imageEncoded  = mImageUri;
                     System.out.println("IMAGE ENCODED: " + imageEncoded);
                 } else {
                     if (data.getClipData() != null) {
@@ -65,7 +65,7 @@ public class AdminCrudService {
 
                             ClipData.Item item = mClipData.getItemAt(i);
                             Uri uri = item.getUri();
-                            imagesEncodedList.add(uri.toString());
+                            imagesEncodedList.add(uri);
                         }
                         Log.v("LOG_TAG", "Selected Images" + imagesEncodedList.size());
                     }
