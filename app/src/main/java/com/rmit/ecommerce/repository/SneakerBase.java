@@ -1,16 +1,19 @@
 package com.rmit.ecommerce.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SneakerBase {
     private String title;
     private String brand;
     private String image;
     private String description;
-    private String price;
-    private ArrayList<String> sizes;
+    private double price;
+    private  ArrayList<HashMap<String, Integer>>sizes;
 
-    public SneakerBase(String title, String brand, String image, String description, String price, ArrayList<String> sizes) {
+    public SneakerBase() {}
+
+    public SneakerBase(String title, String brand, String image, String description, double price,  ArrayList<HashMap<String, Integer>> sizes) {
         this.title = title;
         this.brand = brand;
         this.image = image;
@@ -19,7 +22,7 @@ public class SneakerBase {
         this.sizes = sizes;
     }
 
-    public SneakerBase(String title, String brand, String image, ArrayList<String> sizes) {
+    public SneakerBase(String title, String brand, String image,  ArrayList<HashMap<String, Integer>> sizes) {
         this.title = title;
         this.brand = brand;
         this.image = image;
@@ -58,19 +61,19 @@ public class SneakerBase {
         this.description = description;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public ArrayList<String> getSizes() {
+    public ArrayList<HashMap<String, Integer>> getSizes() {
         return sizes;
     }
 
-    public void setSizes(ArrayList<String> sizes) {
+    public void setSizes(ArrayList<HashMap<String, Integer>> sizes) {
         this.sizes = sizes;
     }
 }

@@ -12,17 +12,21 @@ public class SneakerModel extends SneakerBase {
     private String id;
     private Uri figureImage;
 
-    public SneakerModel(String title, String brand, String image, ArrayList<String> sizes) {
+    public SneakerModel() {
+        super();
+    }
+
+    public SneakerModel(String title, String brand, String image, ArrayList<HashMap<String, Integer>> sizes) {
         super(title, brand, image, sizes);
     }
 
-    public SneakerModel(String title, String brand, String image, String description, String price, ArrayList<HashMap<String, Integer>> sizes, Uri figureImage) {
+    public SneakerModel(String title, String brand, String image, String description, double price, ArrayList<HashMap<String, Integer>> sizes, Uri figureImage) {
         super(title, brand, image, description, price, sizes);
         this.figureImage = figureImage;
     }
 
     public SneakerModel(String title, String brand, String image, String description, double price, ArrayList<HashMap<String, Integer>> size) {
-        super(title, brand, image, description, price, size)
+        super(title, brand, image, description, price, size);
     }
 
     public SneakerModel(String title, String brand, String image, ArrayList<HashMap<String, Integer>> sizes, Uri figureImage) {
@@ -32,6 +36,14 @@ public class SneakerModel extends SneakerBase {
 
     public Uri getFigureImage() {
         return figureImage;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setFigureImage(Uri figureImage) {

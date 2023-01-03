@@ -121,7 +121,7 @@ public class AddProductFragment extends Fragment {
                     brand.getText().toString(),
                     "gs://vert-ecommerce.appspot.com/images/" + folderName,
                     description.getText().toString(),
-                    price.getText().toString());
+                    Double.valueOf(price.getText().toString()));
 
         });
         return view;
@@ -155,7 +155,7 @@ public class AddProductFragment extends Fragment {
         }
     }
 
-    private void handleUploadFireStore(String title, String brand, String image, String description, String price) {
+    private void handleUploadFireStore(String title, String brand, String image, String description, double price) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         SneakerBase sneakerModel = new SneakerBase(title, brand, image, description, price, new ArrayList<>());
         firestore.collection("sneakers").add(sneakerModel)
