@@ -2,6 +2,8 @@ package com.rmit.ecommerce.repository;
 
 import com.google.firebase.firestore.DocumentId;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,6 +17,7 @@ public class SneakerModel {
     private String description;
     private double price;
     private ArrayList<HashMap<String, Integer>> size;
+    private Uri figureImage;
 
     public SneakerModel() {};
 
@@ -25,6 +28,14 @@ public class SneakerModel {
         this.description = description;
         this.price = price;
         this.size = size;
+    }
+
+    public Uri getFigureImage() {
+        return figureImage;
+    }
+
+    public void setFigureImage(Uri figureImage) {
+        this.figureImage = figureImage;
     }
 
     public String getTitle() {

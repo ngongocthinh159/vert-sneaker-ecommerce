@@ -3,8 +3,10 @@ package com.rmit.ecommerce.repository;
 import static android.content.ContentValues.TAG;
 
 import android.util.Log;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -130,5 +132,9 @@ public class RepositoryManager {
 
     public FirebaseFirestore getInstance() {
         return db;
+    }
+
+    public void setSneakers(ArrayList<SneakerModel> s) {
+        sneakers = s;
     }
 }

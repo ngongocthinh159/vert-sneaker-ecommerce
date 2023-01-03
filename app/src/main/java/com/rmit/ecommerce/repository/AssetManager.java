@@ -1,9 +1,11 @@
 package com.rmit.ecommerce.repository;
 
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
@@ -18,6 +20,7 @@ import com.rmit.ecommerce.R;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AssetManager {
     private static AssetManager assetManager = new AssetManager();

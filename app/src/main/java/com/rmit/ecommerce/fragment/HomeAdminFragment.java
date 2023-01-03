@@ -1,16 +1,25 @@
 package com.rmit.ecommerce.fragment;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.AdminRVAdapter;
@@ -20,6 +29,7 @@ import com.rmit.ecommerce.repository.SneakerModel;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,6 +84,8 @@ public class HomeAdminFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_admin, container, false);
+        setupRecyclerView(view);
+
         Button addBtn = view.findViewById(R.id.addBtn);
         Button sortBtn = view.findViewById(R.id.btnSort);
         Button filterBtn = view.findViewById(R.id.btnFilter);
@@ -102,28 +114,51 @@ public class HomeAdminFragment extends Fragment {
             }
         });
 
+
+
         setupRecyclerView(view);
+
         // Inflate the layout for this fragment
         return view;
     }
 
     private void setupRecyclerView(View view) {
-//        // Setup recycler view
-//        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
-//
-//        ArrayList<SneakerModel> sneakers = new ArrayList<>();
-//        // TODO: Replace mock data with real data
-//        ArrayList<SneakerModel> s = new ArrayList<>();
-//        for (int i = 0; i < 12; i++) {
-//            s.add(new SneakerModel("Yasuo", "brand", "image", new ArrayList<>()));
-//        }
-//
-//        AdminRVAdapter adminRVAdapter = new AdminRVAdapter(s);
-//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-//
-//        rVSearch.setAdapter(adminRVAdapter);
-//        rVSearch.setLayoutManager(gridLayoutManager);
+        // Setup recycler view
+        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (MainActivity.repositoryManager.getSneakers().isEmpty()) {
+            db.collection("sneakers")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                ArrayList<SneakerModel> sneakers = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
+                                    Map<String, Object> data = document.getData();
+                                    sneakers.add(new SneakerModel((String) data.get("title"),
+                                            (String) data.get("brand"),
+                                            (String) data.get("image"),
+                                            (ArrayList<String>) data.get("size")));
+                                }
+                                MainActivity.repositoryManager.setSneakers(sneakers);
+                                AdminRVAdapter adminRVAdapter = new AdminRVAdapter(sneakers);
+                                GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+                                rVSearch.setAdapter(adminRVAdapter);
+                                rVSearch.setLayoutManager(gridLayoutManager);
+                            } else {
+                                Log.d(TAG, "Error", task.getException());
+                            }
+                        }
+                    });
+        } else {
+            AdminRVAdapter adminRVAdapter = new AdminRVAdapter(MainActivity.repositoryManager.getSneakers());
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            rVSearch.setAdapter(adminRVAdapter);
+            rVSearch.setLayoutManager(gridLayoutManager);
+        }
 
     }
 }
