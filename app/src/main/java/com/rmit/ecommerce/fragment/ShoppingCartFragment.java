@@ -101,6 +101,9 @@ public class ShoppingCartFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Fetch cart object (all cart item ids)
+        // Then fetch all cart items
         fetchCartObject();
     }
 
@@ -108,6 +111,7 @@ public class ShoppingCartFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
+        // Save cart item information (quantity change)
         for (CartItemModel cartItem : MainActivity.repositoryManager.getCartItems()) {
             MainActivity.repositoryManager.getFireStore().collection("cartItems").
                     document(cartItem.getId()).

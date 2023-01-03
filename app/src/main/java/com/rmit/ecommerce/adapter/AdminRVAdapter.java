@@ -148,8 +148,6 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
                         });
             }
         }
-
-
     }
 
     @Override

@@ -1,20 +1,26 @@
 package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.SneakerModel;
 
@@ -36,6 +42,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         TextView productMaxQuantity;
         MaterialButton btnIncrease;
         MaterialButton btnDecrease;
+        MaterialButton btnDeleteItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -50,6 +57,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
             productMaxQuantity= itemView.findViewById(R.id.productMaxQuantity);
             btnIncrease = itemView.findViewById(R.id.btnIncrease);
             btnDecrease = itemView.findViewById(R.id.btnDecrease);
+            btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
         }
 
         public MaterialCardView getCardView() {
@@ -91,6 +99,10 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         public MaterialButton getBtnDecrease() {
             return btnDecrease;
         }
+
+        public MaterialButton getBtnDeleteItem() {
+            return btnDeleteItem;
+        }
     }
 
     public MyRecyclerViewAdapter2(ArrayList<CartItemModel> cartItems) {
@@ -121,6 +133,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         TextView productMaxQuantity = holder.getProductMaxQuantity();
         MaterialButton btnIncrease = holder.getBtnIncrease();
         MaterialButton btnDecrease = holder.getBtnDecrease();
+        MaterialButton btnDeleteItem = holder.getBtnDeleteItem();
 
         // Map text data to view
         productQuantity.setText(String.valueOf(cartItems.get(position).getQuantity()));
@@ -178,8 +191,55 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
             }
         });
 
+        btnDeleteItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.context);
+                alertDialogBuilder.setTitle("Confirm")
+                        .setMessage("Do you want to delete this item?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Delete item Id from cart object's cartItemIDs list
+                                String itemId = cartItems.get(position).getId();
+                                ArrayList<String> itemIds = MainActivity.repositoryManager.getCartObject().getCartItemIds();
+                                ArrayList<String> newList = new ArrayList<>();
+                                for (String id : itemIds) {
+                                    if (!id.equals(itemId)) newList.add(id);
+                                }
+                                MainActivity.repositoryManager.getCartObject().setCartItemIds(newList); // Update local
+                                MainActivity.repositoryManager.getFireStore()
+                                        .collection("carts")
+                                        .document(MainActivity.repositoryManager.getUserCartId())
+                                        .update("cartItemIds", newList).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                // Delete cart item
+                                                cartItems.remove(position); // Update local
+                                                MainActivity.repositoryManager.getFireStore().
+                                                        collection("cartItems").
+                                                        document(itemId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                MyRecyclerViewAdapter2.this.notifyDataSetChanged();
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
+                                            }
+                                        });
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialogBuilder.show();
+            }
+        });
+
         // Map image to view
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
     }
 
     @Override
