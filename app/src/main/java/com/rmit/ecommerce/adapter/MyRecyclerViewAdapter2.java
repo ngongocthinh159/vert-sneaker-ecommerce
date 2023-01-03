@@ -221,7 +221,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                                                         document(itemId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
-                                                                MyRecyclerViewAdapter2.this.notifyDataSetChanged();
+                                                                MyRecyclerViewAdapter2.this.notifyItemChanged(position);
                                                                 dialog.dismiss();
                                                             }
                                                         });

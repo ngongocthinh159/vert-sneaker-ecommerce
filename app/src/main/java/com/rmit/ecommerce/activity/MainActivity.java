@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Fetch database
         repositoryManager.fetchAllSneakers();
-        repositoryManager.fetchCartId();
+        if (userManager.isLoggedIn()) repositoryManager.fetchCartId();
 
         // Set view
         setContentView(R.layout.activity_main);
