@@ -218,7 +218,7 @@ public class ProductDetailFragment extends Fragment {
         // Get available size
         ArrayList<Integer> sizes = new ArrayList<>();
         for (String size : sneakerModel.getSize().get(0).keySet()) {
-            sizes.add(Integer.valueOf(size));
+            if (size != null) sizes.add(Integer.valueOf(size));
         }
         Collections.sort(sizes);
 
