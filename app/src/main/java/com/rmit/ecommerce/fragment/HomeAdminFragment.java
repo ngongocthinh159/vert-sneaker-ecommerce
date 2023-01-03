@@ -138,10 +138,7 @@ public class HomeAdminFragment extends Fragment {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
 //                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
                                     Map<String, Object> data = document.getData();
-                                    sneakers.add(new SneakerModel((String) data.get("title"),
-                                            (String) data.get("brand"),
-                                            (String) data.get("image"),
-                                            (ArrayList<String>) data.get("size")));
+                                    sneakers.add(document.toObject(SneakerModel.class));
                                 }
                                 MainActivity.repositoryManager.setSneakers(sneakers);
                                 AdminRVAdapter adminRVAdapter = new AdminRVAdapter(sneakers);
