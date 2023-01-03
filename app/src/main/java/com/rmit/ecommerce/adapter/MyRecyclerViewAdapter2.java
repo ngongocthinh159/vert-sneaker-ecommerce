@@ -210,7 +210,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                                 MainActivity.repositoryManager.getCartObject().setCartItemIds(newList); // Update local
                                 MainActivity.repositoryManager.getFireStore()
                                         .collection("carts")
-                                        .document(MainActivity.repositoryManager.getUserCartId())
+                                        .document(MainActivity.repositoryManager.getUser().getCurrentCartId())
                                         .update("cartItemIds", newList).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {

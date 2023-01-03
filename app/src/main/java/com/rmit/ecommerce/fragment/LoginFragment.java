@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -22,11 +23,21 @@ import com.google.android.material.progressindicator.CircularProgressIndicatorSp
 import com.google.android.material.progressindicator.IndeterminateDrawable;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.CartItemModel;
+import com.rmit.ecommerce.repository.CartModel;
 import com.rmit.ecommerce.repository.UserManager;
+import com.rmit.ecommerce.repository.UserModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -127,15 +138,71 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Redirect to home screen
-                            Helper.popBackStackAll();
-                            MainActivity.navController.navigate(R.id.homeFragment);
+                            // If successfully login => fetch user information
+                            fetchUserInformation();
                         } else {
                             Toast.makeText(MainActivity.context, "Your user name or password is incorrect!", Toast.LENGTH_SHORT).show();
                             loginBtn.setIcon(null);
                         }
                     }
                 });
+            }
+        });
+    }
+
+    private void fetchUserInformation() {
+        MainActivity.repositoryManager.getFireStore().collection("users").document(MainActivity.userManager.getUser().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            MainActivity.repositoryManager.setUser(documentSnapshot.toObject(UserModel.class));
+                            fetchCartObject();
+                        }
+                    }
+                });
+    }
+
+    private void fetchCartObject() {
+        // Get cart information
+        DocumentReference cartDoc =  MainActivity.repositoryManager
+                .getFireStore()
+                .collection("carts")
+                .document(MainActivity.repositoryManager.getUser().getCurrentCartId());
+        cartDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    MainActivity.repositoryManager.setCartObject(document.toObject(CartModel.class));
+                    fetchCartItems();
+                } else {
+
+                }
+            }
+        });
+    }
+
+    private void fetchCartItems() {
+        MainActivity.repositoryManager.getCartItems().clear();
+        ArrayList<String> cartItemIds = MainActivity.repositoryManager.getCartObject().getCartItemIds();
+        CollectionReference collection = MainActivity.repositoryManager
+                .getFireStore().collection("cartItems");
+        collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (cartItemIds.contains(document.getId())) {
+                            MainActivity.repositoryManager
+                                    .getCartItems().add(document.toObject(CartItemModel.class));
+                        }
+                    }
+
+                    // Redirect to home screen
+                    Helper.popBackStackAll();
+                    MainActivity.navController.navigate(R.id.homeFragment);
+                }
             }
         });
     }

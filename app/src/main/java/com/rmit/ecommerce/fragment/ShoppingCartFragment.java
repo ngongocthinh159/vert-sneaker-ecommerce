@@ -129,7 +129,7 @@ public class ShoppingCartFragment extends Fragment {
         // Get cart information
         DocumentReference cartDoc = MainActivity.repositoryManager.getFireStore().
                 collection("carts").
-                document(MainActivity.repositoryManager.getUserCartId());
+                document(MainActivity.repositoryManager.getUser().getCurrentCartId());
         cartDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

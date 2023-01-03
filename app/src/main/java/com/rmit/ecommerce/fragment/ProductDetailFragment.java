@@ -196,7 +196,7 @@ public class ProductDetailFragment extends Fragment {
                         data.put("cartItemIds", list);
                         MainActivity.repositoryManager.getCartObject().getCartItemIds().add(itemId);
                         MainActivity.repositoryManager.getCartItems().add(cartItemModel);
-                        MainActivity.repositoryManager.getFireStore().collection("carts").document(MainActivity.repositoryManager.getUserCartId()).set(data, SetOptions.merge());
+                        MainActivity.repositoryManager.getFireStore().collection("carts").document(MainActivity.repositoryManager.getUser().getCurrentCartId()).set(data, SetOptions.merge());
                     }
                 });
 
