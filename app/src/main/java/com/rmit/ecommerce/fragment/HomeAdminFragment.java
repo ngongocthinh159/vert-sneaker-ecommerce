@@ -119,11 +119,15 @@ public class HomeAdminFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        // Setup recycler view
+        // Setup recycler view, init will no data
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
+        AdminRVAdapter emptyAdapter = new AdminRVAdapter();
+        GridLayoutManager emptyGridLayoutManager = new GridLayoutManager(getContext(), 2);
+        rVSearch.setAdapter(emptyAdapter);
+        rVSearch.setLayoutManager(emptyGridLayoutManager);
 
         // If there are no data
-        if (MainActivity.repositoryManager.getSneakers().isEmpty()) {
+        if (MainActivity.repositoryManager.getShouldFetch()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("sneakers")
                     .get()
@@ -137,6 +141,7 @@ public class HomeAdminFragment extends Fragment {
                                     Map<String, Object> data = document.getData();
                                     sneakers.add(document.toObject(SneakerModel.class));
                                 }
+                                MainActivity.repositoryManager.setShouldFetch(false);
                                 MainActivity.repositoryManager.setSneakers(sneakers);
                                 AdminRVAdapter adminRVAdapter = new AdminRVAdapter(sneakers);
                                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);

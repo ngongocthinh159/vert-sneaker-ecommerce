@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
@@ -21,6 +22,7 @@ import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.MissingFormatArgumentException;
 import java.util.UUID;
 
 /**
@@ -49,6 +52,7 @@ import java.util.UUID;
 public class AddProductFragment extends Fragment {
 
     ImageSlider imageSlider;
+    View loadingView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -97,6 +101,8 @@ public class AddProductFragment extends Fragment {
         Button prevBtn = view.findViewById(R.id.previousBtn3);
         Button selectImageBtn = view.findViewById(R.id.selectImageBtn);
         Button submitBtn = view.findViewById(R.id.addProductBtn);
+        loadingView = view.findViewById(R.id.loadingOverlay);
+        loadingView.setVisibility(View.GONE);
         imageSlider = view.findViewById(R.id.imageSlider);
         TextInputEditText title = view.findViewById(R.id.title);
         TextInputEditText brand = view.findViewById(R.id.brand);
@@ -113,6 +119,7 @@ public class AddProductFragment extends Fragment {
             MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment);
         });
         submitBtn.setOnClickListener(v -> {
+            loadingView.setVisibility(View.VISIBLE);
             System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
 
 
@@ -132,9 +139,7 @@ public class AddProductFragment extends Fragment {
         });
         return view;
     }
-
-
-
+    
     private void handleUploadFirebaseStorage(String folderName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference().child("images");
@@ -171,14 +176,25 @@ public class AddProductFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("FIRESTORE", "DocumentSnapshot written with ID: " + documentReference.getId());
+                        cleanUpAfterUpload();
+                        Toast.makeText(MainActivity.context, "New sneaker created", Toast.LENGTH_SHORT);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("FIRESTORE", "Error adding document", e);
+                        Toast.makeText(MainActivity.context, "There's an error occured", Toast.LENGTH_SHORT);
                     }
                 });
+    }
+
+    private void cleanUpAfterUpload() {
+        loadingView.setVisibility(View.GONE); // Hide loading
+        MainActivity.repositoryManager.setShouldFetch(true); // Fetch new data
+        imageSlider.setImageList(new ArrayList<>());  // Clear carousel
+        MainActivity.adminCrudService.getInstance().setImagesEncodedList(new ArrayList<>()); // Clear current selected images
+        MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment); // Return to home screen
     }
 
     @Override

@@ -28,6 +28,17 @@ public class RepositoryManager {
     private String userCartId;
     private CartModel cartObject;
     private ArrayList<CartItemModel> cartItems = new ArrayList<>();
+    private Boolean shouldFetch = true;
+
+    public Boolean getShouldFetch() {
+        return shouldFetch;
+    }
+
+    public void setShouldFetch(Boolean shouldFetch) {
+        this.shouldFetch = shouldFetch;
+    }
+
+
 
     public RepositoryManager() {}
 

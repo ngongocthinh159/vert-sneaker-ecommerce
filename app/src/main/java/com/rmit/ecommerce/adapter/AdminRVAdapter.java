@@ -1,5 +1,6 @@
 package com.rmit.ecommerce.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -89,8 +90,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdminRVAdapter.ViewHolder holder, int position) {
-        System.out.println("ON BIND VIEW HOLDER CALLED");
+    public void onBindViewHolder(@NonNull AdminRVAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Get references to View
 
         MaterialCardView cardView =  holder.getCardView();
@@ -129,6 +129,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
                             @Override
                             public void onSuccess(ListResult listResult) {
                                 System.out.println("UH OH I HAVE TO FETCH AGAIN");
+                                if (listResult.getItems().isEmpty()) return;
                                 listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {

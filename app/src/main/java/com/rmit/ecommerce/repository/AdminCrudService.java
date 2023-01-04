@@ -23,6 +23,10 @@ public class AdminCrudService {
     public static AdminCrudService adminCrudService = new AdminCrudService();
     private List<Uri> imagesEncodedList = new ArrayList<>();
 
+    public void setImagesEncodedList(List<Uri> imagesEncodedList) {
+        this.imagesEncodedList = imagesEncodedList;
+    }
+
     public List<Uri> getImagesEncodedList() {
         return imagesEncodedList;
     }
