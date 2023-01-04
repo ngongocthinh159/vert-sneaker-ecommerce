@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.SizeModel;
@@ -23,6 +24,9 @@ public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder
         MaterialCardView cardView;
         TextView sizeLabel;
         TextView quantity;
+        MaterialButton minusQuantity;
+        MaterialButton plusQuantity;
+        MaterialButton deleteSize;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -30,6 +34,10 @@ public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder
             cardView = itemView.findViewById(R.id.cardView);
             sizeLabel = itemView.findViewById(R.id.sizeLabel);
             quantity = itemView.findViewById(R.id.quantity);
+            minusQuantity = itemView.findViewById(R.id.minusQuantity);
+            plusQuantity = itemView.findViewById(R.id.plusQuantity);
+            deleteSize = itemView.findViewById(R.id.btnDeleteSize);
+
         }
 
         public MaterialCardView getCardView() {
@@ -42,6 +50,18 @@ public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder
 
         public TextView getQuantity() {
             return quantity;
+        }
+
+        public MaterialButton getMinusQuantity() {
+            return minusQuantity;
+        }
+
+        public MaterialButton getPlusQuantity() {
+            return plusQuantity;
+        }
+
+        public MaterialButton getDeleteSize() {
+            return deleteSize;
         }
     }
 
@@ -66,10 +86,39 @@ public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder
         MaterialCardView materialCardView = holder.getCardView();
         TextView sizeLabel = holder.getSizeLabel();
         TextView quantity =  holder.getQuantity();
-
+        MaterialButton minusQuantity = holder.getMinusQuantity();
+        MaterialButton plusQuantity = holder.getPlusQuantity();
+        MaterialButton deleteSize = holder.getDeleteSize();
         SizeModel sizeModel = sizes.get(position);
         sizeLabel.setText(sizeModel.getSizeLabel());
         quantity.setText(Integer.toString(sizeModel.getQuantity()));
+
+        plusQuantity.setOnClickListener(v -> {
+            Integer newQuantity = sizes.get(position).getQuantity() + 1;
+            sizes.get(position).setQuantity(newQuantity);
+            quantity.setText(Integer.toString(newQuantity));
+            if (minusQuantity.getVisibility() == View.GONE) {
+                minusQuantity.setVisibility(View.VISIBLE);
+            }
+        });
+
+        minusQuantity.setOnClickListener(v -> {
+            Integer newQuantity = sizes.get(position).getQuantity() - 1;
+            sizes.get(position).setQuantity(newQuantity);
+            quantity.setText(Integer.toString(newQuantity));
+            if (newQuantity == 0) {
+                minusQuantity.setVisibility(View.GONE);
+            } else {
+                minusQuantity.setVisibility(View.VISIBLE);
+            }
+        });
+
+        deleteSize.setOnClickListener(v -> {
+
+        });
+
+
+
     }
 
     @Override
