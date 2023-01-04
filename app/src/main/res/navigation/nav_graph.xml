@@ -14,7 +14,15 @@
         android:id="@+id/shoppingCartFragment"
         android:name="com.rmit.ecommerce.fragment.ShoppingCartFragment"
         android:label="@string/shopping_cart_fragment_title"
-        tools:layout="@layout/fragment_shopping_cart" />
+        tools:layout="@layout/fragment_shopping_cart" >
+        <action
+            android:id="@+id/action_shoppingCartFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.rmit.ecommerce.fragment.NotificationFragment"
@@ -151,6 +159,11 @@
         android:name="com.rmit.ecommerce.fragment.GoogleMapFragment"
         android:label="fragment_google_map"
         tools:layout="@layout/fragment_google_map" />
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.rmit.ecommerce.fragment.PaymentFragment"
+        android:label="fragment_payment"
+        tools:layout="@layout/fragment_payment" />
 
     <!--Activity destination-->
 

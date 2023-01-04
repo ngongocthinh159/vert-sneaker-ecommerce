@@ -3,10 +3,12 @@ package com.rmit.ecommerce.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,15 +17,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.SneakerModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -44,12 +51,13 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         MaterialButton btnIncrease;
         MaterialButton btnDecrease;
         MaterialButton btnDeleteItem;
+        ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             cardView = itemView.findViewById(R.id.cardView);
-            productImage = itemView.findViewById(R.id.productImage);
+            productImage = itemView.findViewById(R.id.productImageItem);
             productBranch = itemView.findViewById(R.id.productBranch);
             productName = itemView.findViewById(R.id.productName);
             productPrice = itemView.findViewById(R.id.productPrice);
@@ -59,6 +67,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
             btnIncrease = itemView.findViewById(R.id.btnIncrease);
             btnDecrease = itemView.findViewById(R.id.btnDecrease);
             btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
+            progressBar = itemView.findViewById(R.id.progressBarItem);
         }
 
         public MaterialCardView getCardView() {
@@ -104,6 +113,10 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         public MaterialButton getBtnDeleteItem() {
             return btnDeleteItem;
         }
+
+        public ProgressBar getProgressBar() {
+            return progressBar;
+        }
     }
 
     public MyRecyclerViewAdapter2(ArrayList<CartItemModel> cartItems) {
@@ -124,6 +137,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        // Get refs
         MaterialCardView cardView = holder.getCardView();
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();
@@ -132,15 +146,16 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         TextView productQuantity = holder.getProductQuantity();
         TextView productSize = holder.getProductSize();
         TextView productMaxQuantity = holder.getProductMaxQuantity();
-        MaterialButton btnIncrease = holder.getBtnIncrease();
-        MaterialButton btnDecrease = holder.getBtnDecrease();
+        TextView btnIncrease = holder.getBtnIncrease();
+        TextView btnDecrease = holder.getBtnDecrease();
         MaterialButton btnDeleteItem = holder.getBtnDeleteItem();
+        ProgressBar progressBar = holder.getProgressBar();
 
         // Map text data to view
         productQuantity.setText(String.valueOf(cartItems.get(position).getQuantity()));
         int size = cartItems.get(position).getSize();
-        final int[] maxQuantity = {-1};
         productSize.setText(String.valueOf(size));
+        final int[] maxQuantity = {-1};
         cartItems.get(position).getPid().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -211,7 +226,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                                 MainActivity.repositoryManager.getCartObject().setCartItemIds(newList); // Update local
                                 MainActivity.repositoryManager.getFireStore()
                                         .collection("carts")
-                                        .document(MainActivity.repositoryManager.getUserCartId())
+                                        .document(MainActivity.repositoryManager.getUser().getCurrentCartId())
                                         .update("cartItemIds", newList).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -241,6 +256,49 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         });
 
         // Map image to view
+        // Find image link
+        String pid = cartItems.get(position).getPid().getId();
+        SneakerModel sneakerModel = null;
+        String imageStr = null;
+        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
+            if (sneaker.getId().equals(pid)) {
+                imageStr = sneaker.getImage();
+                sneakerModel = sneaker;
+                break;
+            }
+        }
+        // Fetch image into imageview
+        FirebaseStorage db = FirebaseStorage.getInstance();
+        if (sneakerModel != null && sneakerModel.getFigureImage() != null) { // If the url of the image already is already fetched
+            Picasso.get().load(sneakerModel.getFigureImage()).into(productImage);
+        } else {
+            productImage.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            if (imageStr != null && !imageStr.isEmpty()) {
+                SneakerModel finalSneakerModel = sneakerModel;
+                db.getReferenceFromUrl(imageStr).listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        productImage.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        Picasso.get().load(uri).into(productImage);
+                                        finalSneakerModel.setFigureImage(uri);
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Uh-oh, an error occurred!
+                            }
+                        });
+            }
+        }
     }
 
     @Override
@@ -251,6 +309,9 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
     @Override
     public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
-//        System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
+    }
+
+    public ArrayList<CartItemModel> getCartItems() {
+        return cartItems;
     }
 }

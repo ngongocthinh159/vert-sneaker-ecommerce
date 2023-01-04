@@ -34,7 +34,9 @@
                 android:textSize="22sp"
                 android:gravity="center"
                 android:textAllCaps="true"
-                android:id="@+id/largeTitle"/>
+                android:id="@+id/largeTitle"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="50dp"

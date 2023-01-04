@@ -187,16 +187,23 @@ public class ProductDetailFragment extends Fragment {
                 MainActivity.repositoryManager.getFireStore().collection("cartItems").add(cartItemModel).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        String itemId = documentReference.getId();
+                        String itemId = documentReference.getId(); // Newly created cart's item id
 
-                        // Add itemId to current cart
+                        // Update local: Add new cart's item to current cart
                         Map<String, Object> data = new HashMap<>();
                         ArrayList<String> list = new ArrayList<>(MainActivity.repositoryManager.getCartObject().getCartItemIds());
                         list.add(itemId);
                         data.put("cartItemIds", list);
-                        MainActivity.repositoryManager.getCartObject().getCartItemIds().add(itemId);
                         MainActivity.repositoryManager.getCartItems().add(cartItemModel);
-                        MainActivity.repositoryManager.getFireStore().collection("carts").document(MainActivity.repositoryManager.getUserCartId()).set(data, SetOptions.merge());
+                        MainActivity.repositoryManager.getCartObject().getCartItemIds().add(itemId);
+
+                        // Update remote: Add new cart's item to current cart
+                        MainActivity.repositoryManager.getFireStore()
+                                .collection("carts")
+                                .document(MainActivity.repositoryManager.getUser().getCurrentCartId())
+                                .set(data, SetOptions.merge());
+
+                        Toast.makeText(MainActivity.context, "Added to cart!", Toast.LENGTH_SHORT).show();
                     }
                 });
 

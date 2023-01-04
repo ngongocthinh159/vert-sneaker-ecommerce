@@ -11,9 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,8 +28,11 @@ import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter2;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.CartModel;
+import com.rmit.ecommerce.repository.SneakerModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +42,10 @@ import java.util.ArrayList;
 public class ShoppingCartFragment extends Fragment {
 
     private MyRecyclerViewAdapter2 adapter2;
+    TextView subtotal;
+    TextView shippingFee;
+    TextView total;
+    private static final double SHIPPING_FEE = 10.00;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -82,6 +92,11 @@ public class ShoppingCartFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
 
+        // Get refs
+        subtotal = view.findViewById(R.id.subtotal);
+        shippingFee = view.findViewById(R.id.shippingFee);
+        total = view.findViewById(R.id.total);
+
         // Setup recycler view
         RecyclerView rv = view.findViewById(R.id.rv);
         ArrayList<CartItemModel> cartItems = MainActivity.repositoryManager.getCartItems();
@@ -93,6 +108,19 @@ public class ShoppingCartFragment extends Fragment {
         rv.setLayoutManager(linearLayoutManager);
 
         // Setup button
+        MaterialButton btnCheckout = view.findViewById(R.id.btnCheckout);
+        btnCheckout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cartItems.size() == 0) {
+                    Toast.makeText(MainActivity.context, "Please add somethings to the shopping cart!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                bundle.putString("total", total.getText().toString().substring(1));
+                MainActivity.navController.navigate(R.id.action_shoppingCartFragment_to_paymentFragment, bundle);
+            }
+        });
 
         // Inflate the layout for this fragment
         return view;
@@ -129,7 +157,7 @@ public class ShoppingCartFragment extends Fragment {
         // Get cart information
         DocumentReference cartDoc = MainActivity.repositoryManager.getFireStore().
                 collection("carts").
-                document(MainActivity.repositoryManager.getUserCartId());
+                document(MainActivity.repositoryManager.getUser().getCurrentCartId());
         cartDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -160,10 +188,39 @@ public class ShoppingCartFragment extends Fragment {
                         if (cartItemIds.contains(document.getId())) {
                             MainActivity.repositoryManager.getCartItems().add(document.toObject(CartItemModel.class));
                             if (adapter2 != null) adapter2.notifyDataSetChanged();
+                            updatePrice();
                         }
                     }
                 }
             }
         });
+    }
+
+    private void updatePrice() {
+        // Get products (with quantity) inside cart list
+        HashMap<SneakerModel, Integer> sneaker_quantity = new HashMap<>();
+        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
+            for (CartItemModel item : adapter2.getCartItems()) {
+                if (item.getPid().getId().equals(sneaker.getId())) {
+                    sneaker_quantity.put(sneaker, item.getQuantity());
+                }
+            }
+        }
+
+        // Get price
+        double subtotal_double = 0.0;
+        double shippingFee_double = SHIPPING_FEE;
+        double total_double;
+        for (Map.Entry<SneakerModel, Integer> entry : sneaker_quantity.entrySet()) {
+            int quantity = entry.getValue();
+            double price = entry.getKey().getPrice();
+            subtotal_double += (price * quantity);
+        }
+        total_double = subtotal_double + shippingFee_double;
+
+        // Map data to view
+        subtotal.setText("$" + String.valueOf(subtotal_double));
+        shippingFee.setText("$" + String.valueOf(shippingFee_double));
+        total.setText("$" + String.valueOf(total_double));
     }
 }

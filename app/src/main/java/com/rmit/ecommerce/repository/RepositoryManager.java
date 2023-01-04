@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,7 +26,6 @@ import java.util.Map;
 public class RepositoryManager {
     private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static ArrayList<SneakerModel> sneakers = new ArrayList<>();
-    private String userCartId;
     private CartModel cartObject;
     private ArrayList<CartItemModel> cartItems = new ArrayList<>();
     private Boolean shouldFetch = true;
@@ -39,6 +39,7 @@ public class RepositoryManager {
     }
 
 
+    private UserModel user;
 
     public RepositoryManager() {}
 
@@ -63,28 +64,22 @@ public class RepositoryManager {
                 });
     }
 
-    public void fetchCartId() {
-        // Get cart id from user id
-        if (userCartId == null) {
-            DocumentReference userDoc = db.collection("users").document(MainActivity.userManager.getUserId());
-            userDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        userCartId = (String) document.get("currentCartId");
-                        fetchCartObject();
-                    } else {
-
+    public void fetchUserInformation() {
+        db.collection("users").document(MainActivity.userManager.getUser().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            user = documentSnapshot.toObject(UserModel.class);
+                            fetchCartObject();
+                        }
                     }
-                }
-            });
-        }
+                });
     }
 
     public void fetchCartObject() {
         // Get cart information
-        DocumentReference cartDoc = db.collection("carts").document(userCartId);
+        DocumentReference cartDoc = db.collection("carts").document(user.getCurrentCartId());
         cartDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -125,10 +120,6 @@ public class RepositoryManager {
         return db;
     }
 
-    public String getUserCartId() {
-        return userCartId;
-    }
-
     public CartModel getCartObject() {
         return cartObject;
     }
@@ -147,5 +138,13 @@ public class RepositoryManager {
 
     public void setSneakers(ArrayList<SneakerModel> s) {
         sneakers = s;
+    }
+
+    public UserModel getUser() {
+        return user;
+    }
+
+    public void setUser(UserModel user) {
+        this.user = user;
     }
 }

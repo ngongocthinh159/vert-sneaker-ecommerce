@@ -13,16 +13,32 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicatorSpec;
 import com.google.android.material.progressindicator.IndeterminateDrawable;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.helper.Helper;
+import com.rmit.ecommerce.repository.CartItemModel;
+import com.rmit.ecommerce.repository.CartModel;
 import com.rmit.ecommerce.repository.UserManager;
+import com.rmit.ecommerce.repository.UserModel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +52,6 @@ public class SignUpFragment extends Fragment {
     TextInputEditText password;
     TextInputEditText rePassword;
     MaterialButton submitBtn;
-    MaterialButton loginBtn;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,19 +103,9 @@ public class SignUpFragment extends Fragment {
         password = view.findViewById(R.id.password);
         rePassword = view.findViewById(R.id.rePassword);
         submitBtn = view.findViewById(R.id.submitBtn);
-        loginBtn = view.findViewById(R.id.loginBtn);
 
         // Setup submit button
         setupSubmitBtn();
-
-        // Setup login button
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.navController.popBackStack();
-                MainActivity.navController.navigate(R.id.action_welcomeFragment_to_loginFragment);
-            }
-        });
 
         // Inflate the layout for this fragment
         return view;
@@ -126,9 +131,36 @@ public class SignUpFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Redirect to home screen
-                            Helper.popBackStackAll();
-                            MainActivity.navController.navigate(R.id.homeFragment);
+                            // Create new cart
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("cartItemIds", new ArrayList<>());
+                            data.put("status", false);
+                            data.put("timestamp", Timestamp.now());
+                            data.put("total", "");
+                            MainActivity.repositoryManager.getFireStore().
+                                    collection("carts").
+                                    add(data).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            String newCartId = documentReference.getId();
+
+                                            // Create new user profile
+                                            String newUserId = task.getResult().getUser().getUid();
+                                            Map<String, Object> data2 = new HashMap<>();
+                                            data2.put("address", "");
+                                            data2.put("cardNumber", "");
+                                            data2.put("currentCartId", newCartId);
+                                            data2.put("historyCardIds", new ArrayList<>());
+                                            data2.put("isAdmin", false);
+                                            data2.put("phone", "");
+                                            MainActivity.repositoryManager.getFireStore()
+                                                    .collection("users")
+                                                    .document(newUserId).set(data2);
+
+                                            // Fetch user infor
+                                            fetchUserInformation();
+                                        }
+                                    });
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(MainActivity.context, "Failed to create your account!",
@@ -142,18 +174,31 @@ public class SignUpFragment extends Fragment {
     }
 
     private boolean isNotValid() {
+        // Check empty
         if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
             Toast.makeText(MainActivity.context, "User name or password cannot be empty!",
                     Toast.LENGTH_SHORT).show();
             return true;
         }
 
+        // Check email valid (form of: abc@mail.com)
+        String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(userName.getText().toString());
+        if (!matcher.matches()) {
+            Toast.makeText(MainActivity.context, "User name must be an email!",
+                    Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        // Check password valid (length >= 6)
         if (!(password.getText().toString().length() >= 6)) {
             Toast.makeText(MainActivity.context, "Password length must be greater than 6!",
                     Toast.LENGTH_SHORT).show();
             return true;
         }
 
+        // Check re-type password
         if (!password.getText().toString().equals(rePassword.getText().toString())) {
             Toast.makeText(MainActivity.context, "Re-typed password is not identical to password!",
                     Toast.LENGTH_SHORT).show();
@@ -161,5 +206,62 @@ public class SignUpFragment extends Fragment {
         }
 
         return false;
+    }
+
+    private void fetchUserInformation() {
+        MainActivity.repositoryManager.getFireStore().collection("users").document(MainActivity.userManager.getUser().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            MainActivity.repositoryManager.setUser(documentSnapshot.toObject(UserModel.class));
+                            fetchCartObject();
+                        }
+                    }
+                });
+    }
+
+    private void fetchCartObject() {
+        // Get cart information
+        DocumentReference cartDoc =  MainActivity.repositoryManager
+                .getFireStore()
+                .collection("carts")
+                .document(MainActivity.repositoryManager.getUser().getCurrentCartId());
+        cartDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    MainActivity.repositoryManager.setCartObject(document.toObject(CartModel.class));
+                    fetchCartItems();
+                } else {
+
+                }
+            }
+        });
+    }
+
+    private void fetchCartItems() {
+        MainActivity.repositoryManager.getCartItems().clear();
+        ArrayList<String> cartItemIds = MainActivity.repositoryManager.getCartObject().getCartItemIds();
+        CollectionReference collection = MainActivity.repositoryManager
+                .getFireStore().collection("cartItems");
+        collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (cartItemIds.contains(document.getId())) {
+                            MainActivity.repositoryManager
+                                    .getCartItems().add(document.toObject(CartItemModel.class));
+                        }
+                    }
+
+                    // Redirect to home screen
+                    Helper.popBackStackAll();
+                    MainActivity.navController.navigate(R.id.homeFragment);
+                }
+            }
+        });
     }
 }
