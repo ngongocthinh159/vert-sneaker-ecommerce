@@ -93,6 +93,7 @@ public class SizeAdminFragment extends Fragment {
         TextInputLayout sizeInput = view.findViewById(R.id.textInputSize);
         Button addSizeBtn = view.findViewById(R.id.addSizeBtn);
         previousBtn.setOnClickListener(v -> {
+            handleSaveData(view);
             MainActivity.navController.navigate(R.id.action_sizeAdminFragment_to_productManageFragment);
         });
 
@@ -107,7 +108,33 @@ public class SizeAdminFragment extends Fragment {
         return view;
     }
 
-    private void handleSaveData() {
+    private void handleSaveData(View view) {
+        ArrayList<HashMap<String, Integer>> data = new ArrayList<>();
+        RecyclerView sizesRv = view.findViewById(R.id.sizesRv);
+        SizeRVAdapter sizeRVAdapter = (SizeRVAdapter) sizesRv.getAdapter();
+        HashMap<String, Integer> sizes = new HashMap<>();
+
+        for (SizeModel s : ((SizeRVAdapter) sizesRv.getAdapter()).getSizes()) {
+            sizes.put(s.getSizeLabel(), s.getQuantity());
+        }
+
+        data.add(sizes);
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                .update("size", data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("ADD SIZE", "DocumentSnapshot successfully updated!");
+                        setupRecyclerView(view);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("ADD SIZE", "Error updating document", e);
+                    }
+                });
 
     }
 
