@@ -100,42 +100,50 @@ public class SizeAdminFragment extends Fragment {
             String inputContent = sizeInput.getEditText().getText().toString();
             sizeInput.getEditText().setText("");
             // TODO: Add form validation is integer?
-            if (!inputContent.isEmpty()) {
-                FirebaseFirestore fs = FirebaseFirestore.getInstance();
-                ArrayList<HashMap<String, Integer>> data = new ArrayList<>();
-                RecyclerView sizesRv = view.findViewById(R.id.sizesRv);
-                SizeRVAdapter sizeRVAdapter = (SizeRVAdapter) sizesRv.getAdapter();
-                sizeRVAdapter.getSizes().add(new SizeModel(inputContent, 0));
-                HashMap<String, Integer> sizes = new HashMap<>();
-
-                for (SizeModel s : ((SizeRVAdapter) sizesRv.getAdapter()).getSizes()) {
-                    sizes.put(s.getSizeLabel(), s.getQuantity());
-                }
-
-                data.add(sizes);
-
-                fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
-                        .update("size", data)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("UPDATE", "DocumentSnapshot successfully updated!");
-
-                                setupRecyclerView(view);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("UPDATE", "Error updating document", e);
-                            }
-                        });
-            } else {
-                Toast.makeText(MainActivity.context, "Invalid input", Toast.LENGTH_LONG);
-            }
+            handleAddSize(view, inputContent);
         });
+
         setupRecyclerView(view);
         return view;
+    }
+
+    private void handleSaveData() {
+
+    }
+
+    private void handleAddSize(View view, String inputContent) {
+        if (!inputContent.isEmpty()) {
+            FirebaseFirestore fs = FirebaseFirestore.getInstance();
+            ArrayList<HashMap<String, Integer>> data = new ArrayList<>();
+            RecyclerView sizesRv = view.findViewById(R.id.sizesRv);
+            SizeRVAdapter sizeRVAdapter = (SizeRVAdapter) sizesRv.getAdapter();
+            sizeRVAdapter.getSizes().add(new SizeModel(inputContent, 0));
+            HashMap<String, Integer> sizes = new HashMap<>();
+
+            for (SizeModel s : ((SizeRVAdapter) sizesRv.getAdapter()).getSizes()) {
+                sizes.put(s.getSizeLabel(), s.getQuantity());
+            }
+
+            data.add(sizes);
+
+            fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                    .update("size", data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ADD SIZE", "DocumentSnapshot successfully updated!");
+                            setupRecyclerView(view);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ADD SIZE", "Error updating document", e);
+                        }
+                    });
+        } else {
+            Toast.makeText(MainActivity.context, "Invalid input", Toast.LENGTH_LONG);
+        }
     }
 
     private void setupRecyclerView(View view) {
@@ -147,7 +155,6 @@ public class SizeAdminFragment extends Fragment {
         sizeRv.setLayoutManager(emptyLayoutManager);
 
         // Handle firebase41
-        ArrayList<SizeModel> sizes = new ArrayList<>();
         FirebaseFirestore fs = FirebaseFirestore.getInstance();
         String currentSneakerId = MainActivity.adminCrudService.getInstance().getCurrentSneakerId();
         if (currentSneakerId != null) {

@@ -1,20 +1,32 @@
 package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.SizeModel;
+import com.rmit.ecommerce.repository.SneakerModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder> {
     ArrayList<SizeModel> sizes;
@@ -130,11 +142,44 @@ public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder
         });
 
         deleteSize.setOnClickListener(v -> {
-
+            handleDelete(position);
         });
+    }
 
+    private void handleDelete(int position) {
+        String toBeDeletedKey = sizes.get(position).getSizeLabel();
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
 
+        ArrayList<HashMap<String, Integer>> data = new ArrayList<>();
+        HashMap<String, Integer> sizesMap = new HashMap<>();
 
+        for (int i = 0; i < sizes.size(); i++) {
+            if (sizes.get(i).getSizeLabel() == toBeDeletedKey) {
+                sizes.remove(i);
+                break;
+            }
+        }
+
+        for (SizeModel s : sizes) {
+            sizesMap.put(s.getSizeLabel(), s.getQuantity());
+        }
+        data.add(sizesMap);
+
+        fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                .update("size", data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("DELETE SIZE", "DocumentSnapshot successfully updated!");
+                        SizeRVAdapter.this.notifyDataSetChanged();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DELETE SIZE", "Error updating document", e);
+                    }
+                });
     }
 
     @Override
