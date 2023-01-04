@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 public class UpdateAdminFragment extends Fragment {
     ImageSlider imageSlider;
     View loadingView;
+    SneakerModel sneakerModel;
     ArrayList<SlideModel> slideModels = new ArrayList<>();
 
     // TODO: Rename parameter arguments, choose names that match
@@ -88,6 +91,7 @@ public class UpdateAdminFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_update_admin, container, false);
         Button previousBtn = view.findViewById(R.id.previousBtn3);
+        Button saveBtn = view.findViewById(R.id.saveBtn);
         TextInputEditText title = view.findViewById(R.id.title);
         TextInputEditText brand = view.findViewById(R.id.brand);
         TextInputEditText price = view.findViewById(R.id.price);
@@ -95,50 +99,76 @@ public class UpdateAdminFragment extends Fragment {
         imageSlider = view.findViewById(R.id.imageSlider);
         loadingView = view.findViewById(R.id.loadingOverlay);
 
+        fetchSneakerData(title, brand, price, description);
+
         previousBtn.setOnClickListener(v -> {
             MainActivity.navController.navigate(R.id.action_updateAdminFragment_to_productManageFragment);
         });
 
-        FirebaseFirestore fs = FirebaseFirestore.getInstance();
-        fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                SneakerModel sneakerModel = documentSnapshot.toObject(SneakerModel.class);
-                title.setText(sneakerModel.getTitle());
-                brand.setText(sneakerModel.getBrand());
-                price.setText(Double.toString(sneakerModel.getPrice()));
-                description.setText(sneakerModel.getDescription());
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                storage.getReferenceFromUrl(sneakerModel.getImage()).listAll()
-                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                            @Override
-                            public void onSuccess(ListResult listResult) {
-                                System.out.println("UH OH I HAVE TO FETCH AGAIN");
-                                if (listResult.getItems().isEmpty()) return;
-                                for (StorageReference storageReference : listResult.getItems()) {
-                                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        slideModels.add(new SlideModel(uri.toString(), ScaleTypes.CENTER_CROP));
-                                        imageSlider.setImageList(slideModels);
-                                    }
-                                });
-                                }
-
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Uh-oh, an error occurred!
-                            }
-                        });
-
-            }
+        saveBtn.setOnClickListener(v -> {
+            sneakerModel.setTitle(title.getText().toString());
+            sneakerModel.setBrand(brand.getText().toString());
+            sneakerModel.setPrice(Double.valueOf(price.getText().toString()));
+            sneakerModel.setDescription(description.getText().toString());
+            FirebaseFirestore fs = FirebaseFirestore.getInstance();
+            fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                    .set(sneakerModel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("PUT SNEAKER", "DocumentSnapshot successfully written!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("PUT SNEAKER", "Error writing document", e);
+                        }
+                    });
         });
 
 
+
         return view;
+    }
+
+    private void fetchSneakerData(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        sneakerModel = documentSnapshot.toObject(SneakerModel.class);
+                        title.setText(sneakerModel.getTitle());
+                        brand.setText(sneakerModel.getBrand());
+                        price.setText(Double.toString(sneakerModel.getPrice()));
+                        description.setText(sneakerModel.getDescription());
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        storage.getReferenceFromUrl(sneakerModel.getImage()).listAll()
+                                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                                    @Override
+                                    public void onSuccess(ListResult listResult) {
+                                        System.out.println("UH OH I HAVE TO FETCH AGAIN");
+                                        if (listResult.getItems().isEmpty()) return;
+                                        for (StorageReference storageReference : listResult.getItems()) {
+                                            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    slideModels.add(new SlideModel(uri.toString(), ScaleTypes.CENTER_CROP));
+                                                    imageSlider.setImageList(slideModels);
+                                                }
+                                            });
+                                        }
+
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Uh-oh, an error occurred!
+                                    }
+                                });
+                    }
+                });
     }
 }
