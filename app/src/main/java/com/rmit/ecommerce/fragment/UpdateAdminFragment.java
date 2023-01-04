@@ -93,6 +93,7 @@ public class UpdateAdminFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_update_admin, container, false);
         Button previousBtn = view.findViewById(R.id.previousBtn3);
         Button saveBtn = view.findViewById(R.id.saveBtn);
+        Button deleteBtn = view.findViewById(R.id.deleteBtn);
         TextInputEditText title = view.findViewById(R.id.title);
         TextInputEditText brand = view.findViewById(R.id.brand);
         TextInputEditText price = view.findViewById(R.id.price);
@@ -107,35 +108,71 @@ public class UpdateAdminFragment extends Fragment {
         });
 
         saveBtn.setOnClickListener(v -> {
-            loadingView.setVisibility(View.VISIBLE);
-            sneakerModel.setTitle(title.getText().toString());
-            sneakerModel.setBrand(brand.getText().toString());
-            sneakerModel.setPrice(Double.valueOf(price.getText().toString()));
-            sneakerModel.setDescription(description.getText().toString());
-            FirebaseFirestore fs = FirebaseFirestore.getInstance();
-            fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
-                    .set(sneakerModel)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            loadingView.setVisibility(View.GONE);
-                            Log.d("PUT SNEAKER", "DocumentSnapshot successfully written!");
-                            Toast.makeText(MainActivity.context, "Sneaker updated!", Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            loadingView.setVisibility(View.GONE);
-                            Log.w("PUT SNEAKER", "Error writing document", e);
-                            Toast.makeText(MainActivity.context, "Failed to updated!", Toast.LENGTH_LONG).show();
-                        }
-                    });
+            handleSaveData(title, brand, price, description);
+        });
+
+        deleteBtn.setOnClickListener(v -> {
+            handleDeleteData();
         });
 
 
-
         return view;
+    }
+
+    private void handleDeleteData() {
+        loadingView.setVisibility(View.VISIBLE);
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("DELETE SNEAKER", "DocumentSnapshot successfully deleted!");
+                        MainActivity.repositoryManager.setShouldFetch(true);
+                        loadingView.setVisibility(View.GONE);
+                        MainActivity.navController.navigate(R.id.action_updateAdminFragment_to_homeAdminFragment);
+                        Toast.makeText(MainActivity.context, "Deleted!", Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("DELETE SNEAKER", "Error deleting document", e);
+                        loadingView.setVisibility(View.GONE);
+                        Toast.makeText(MainActivity.context, "Failed to delete", Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+    }
+
+    private void handleSaveData(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
+        loadingView.setVisibility(View.VISIBLE);
+        sneakerModel.setTitle(title.getText().toString());
+        sneakerModel.setBrand(brand.getText().toString());
+        sneakerModel.setPrice(Double.valueOf(price.getText().toString()));
+        sneakerModel.setDescription(description.getText().toString());
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                .set(sneakerModel)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        loadingView.setVisibility(View.GONE);
+                        Log.d("PUT SNEAKER", "DocumentSnapshot successfully written!");
+                        MainActivity.repositoryManager.setShouldFetch(true);
+                        Toast.makeText(MainActivity.context, "Sneaker updated!", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadingView.setVisibility(View.GONE);
+                        Log.w("PUT SNEAKER", "Error writing document", e);
+                        Toast.makeText(MainActivity.context, "Failed to updated!", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void fetchSneakerData(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {

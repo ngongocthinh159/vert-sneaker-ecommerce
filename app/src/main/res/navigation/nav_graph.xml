@@ -175,6 +175,9 @@
         <action
             android:id="@+id/action_updateAdminFragment_to_productManageFragment"
             app:destination="@id/productManageFragment" />
+        <action
+            android:id="@+id/action_updateAdminFragment_to_homeAdminFragment"
+            app:destination="@id/homeAdminFragment" />
     </fragment>
 
     <!--Activity destination-->
