@@ -306,27 +306,36 @@ public class SearchFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
+        if (getArguments() == null) return;
+
         // Setup recycler view
         RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
 
-        ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers =  new ArrayList<>();
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
-//        sneakers.add(new SneakerModel("title", "brand", "img", null));
+        // Get search list
+        ArrayList<SneakerModel> sneakers = new ArrayList<>();
+        String category = getArguments().getString("category");
+        switch (category) {
+            case "all":
+                sneakers = MainActivity.repositoryManager.getSneakers();
+                break;
+            case "bestseller":
+                sneakers = MainActivity.repositoryManager.getBestSellerSneakers();
+                break;
+            case "popular":
+                sneakers = MainActivity.repositoryManager.getPopularSneakers();
+                break;
+            case "newarrival":
+                sneakers = MainActivity.repositoryManager.getNewArrivalSneakers();
+                break;
+        }
+
+        // Adapter
         MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(sneakers, "search");
 
+        // Layout
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
+        // Bind adapter and layout
         rVSearch.setAdapter(myRecyclerViewAdapter);
         rVSearch.setLayoutManager(gridLayoutManager);
 

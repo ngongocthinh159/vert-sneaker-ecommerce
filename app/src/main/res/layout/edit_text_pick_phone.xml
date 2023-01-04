@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="18dp"
+        android:hint="Your phone number"
+        app:counterEnabled="true"
+        app:counterMaxLength="12"
+        app:prefixText="+84">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:inputType="phone"
+            android:maxLength="12"
+            android:id="@+id/pickPhone"/>
+    </com.google.android.material.textfield.TextInputLayout>
+</FrameLayout>

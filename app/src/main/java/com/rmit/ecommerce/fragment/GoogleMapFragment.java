@@ -29,13 +29,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.button.MaterialButton;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 
@@ -52,6 +57,8 @@ import java.util.Objects;
  */
 public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
 
+    View view;
+
     private final LatLng defaultLocation = new LatLng(10.73, 106.69); // RMIT viet nam
     private GoogleMap mMap;
     private AutocompleteSupportFragment autocompleteFragment;
@@ -59,7 +66,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
     private Location lastKnownLocation;
     private final int DEFAULT_ZOOM = 15;
 
-    private String API_KEY = "AIzaSyDVP7a-X--bfTh8KR5a1zj4t6A9f0koAPo";
+    private static final String API_KEY = "AIzaSyCUQdAvLWpSelf5T9yh_qxNb9J1lrq2LjQ";
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     public static final String DEFAULT_COUNTRY = "VN";
@@ -105,14 +112,28 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_google_map, container, false);
+        view = inflater.inflate(R.layout.fragment_google_map, container, false);
+
+        // Setup back + cancel button
+        MaterialButton btnBack = view.findViewById(R.id.btnBackMap);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.navController.popBackStack();
+            }
+        });
+        MaterialButton btnCancel = view.findViewById(R.id.btnCancelMap);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.navController.popBackStack();
+            }
+        });
 
         // Setup google map
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
@@ -127,6 +148,30 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    private void setupSaveBtn() {
+        MaterialButton btnSave = view.findViewById(R.id.btnSaveMap);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Update local
+                MainActivity.repositoryManager.getUser().setAddress(pickedAddress.getText().toString());
+
+                // Update remote
+                MainActivity.repositoryManager.getFireStore().collection("users")
+                        .document(MainActivity.userManager.getUser().getUid())
+                        .update("address", pickedAddress.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(MainActivity.context, "Address updated!", Toast.LENGTH_SHORT).show();
+                                    MainActivity.navController.popBackStack();
+                                }
+                            }
+                        });
+            }
+        });
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -157,7 +202,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-
 
     private void updateLocationUI() {
         if (mMap == null) {
@@ -208,6 +252,9 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
                                 // Move camera + add marker
                                 setMapAtLocation(new LatLng(lastKnownLocation.getLatitude(),
                                         lastKnownLocation.getLongitude()), true);
+
+                                // Setup save button
+                                setupSaveBtn();
                             }
                         } else {
                             Log.d("Location", "Current location is null. Using defaults.");
@@ -235,19 +282,20 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback {
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
 
         // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                setMapAtLocation(place);
-            }
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onPlaceSelected(@NonNull Place place) {
+                    setMapAtLocation(place);
+                }
 
-            @Override
-            public void onError(@NonNull Status status) {
-                Toast.makeText(MainActivity.context, "Cancelled!", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onError(@NonNull Status status) {
+                    Toast.makeText(MainActivity.context, "Cancelled!", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         autocompleteFragment.setHint("Search locations..");
+        autocompleteFragment.setActivityMode(AutocompleteActivityMode.OVERLAY);
     }
 
     private void setMapAtLocation(Place place) {

@@ -11,23 +11,23 @@ public class UserModel {
     String address;
     String cardNumber;
     String currentCartId;
+    String displayName;
     ArrayList<String> historyCartIds;
+    String image;
     boolean isAdmin;
     String phone;
 
     public UserModel() {};
 
-    public UserModel(String address, String cardNumber, String currentCartId, ArrayList<String> historyCartIds, boolean isAdmin, String phone) {
+    public UserModel(String address, String cardNumber, String currentCartId, String displayName, ArrayList<String> historyCartIds, String image, boolean isAdmin, String phone) {
         this.address = address;
         this.cardNumber = cardNumber;
         this.currentCartId = currentCartId;
+        this.displayName = displayName;
         this.historyCartIds = historyCartIds;
+        this.image = image;
         this.isAdmin = isAdmin;
         this.phone = phone;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getAddress() {
@@ -54,12 +54,28 @@ public class UserModel {
         this.currentCartId = currentCartId;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public ArrayList<String> getHistoryCartIds() {
         return historyCartIds;
     }
 
     public void setHistoryCartIds(ArrayList<String> historyCartIds) {
         this.historyCartIds = historyCartIds;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public boolean isAdmin() {
@@ -76,5 +92,9 @@ public class UserModel {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getId() {
+        return id;
     }
 }

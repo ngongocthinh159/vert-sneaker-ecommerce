@@ -1,5 +1,6 @@
 package com.rmit.ecommerce.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,13 +13,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
@@ -26,8 +36,12 @@ import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.RepositoryManager;
 import com.rmit.ecommerce.repository.SneakerModel;
+import com.squareup.picasso.Picasso;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,13 +109,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    MainActivity.navController.navigate(R.id.action_global_searchFragment);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("category", "all");
+                    MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
                 }
             }
         });
-//        FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
-//                .addSharedElement(searchBar, "secondTrans")
-//                .build();
 
         // Setup image slider
         setupImageSlider(view);
@@ -132,21 +145,27 @@ public class HomeFragment extends Fragment {
         seeAllBestSeller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.navController.navigate(R.id.action_global_searchFragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("category", "bestseller");
+                MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
             }
         });
 
         seeAllPopular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.navController.navigate(R.id.action_global_searchFragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("category", "popular");
+                MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
             }
         });
 
         seeAllNewArrival.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.navController.navigate(R.id.action_global_searchFragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("category", "newarrival");
+                MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
             }
         });
     }
@@ -173,30 +192,117 @@ public class HomeFragment extends Fragment {
 
 
     private void setupRecyclerView(View view) {
-        RecyclerView rV1 = view.findViewById(R.id.rV1);
-        RecyclerView rV2 = view.findViewById(R.id.rV2);
-        RecyclerView rV3 = view.findViewById(R.id.rV3);
-        ArrayList<SneakerModel> sneakers = MainActivity.repositoryManager.getSneakers();
-        MyRecyclerViewAdapter myRecyclerViewAdapter1 = new MyRecyclerViewAdapter(sneakers, "best_seller");
-        MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(sneakers, "popular_sneakers");
-        MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(sneakers, "new_arrivals");
+        // Setup first category recycler view
+        setupFirstCategoryRecyclerView(view);
 
-        LinearLayoutManager layoutManager1
-                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        // Setup 2nd recycler view
+        ArrayList<SneakerModel> sneakers_popular = MainActivity.repositoryManager.getPopularSneakers();
+        if (sneakers_popular.size() >= 1) {
+            RecyclerView rV2 = view.findViewById(R.id.rV2);
 
-        LinearLayoutManager layoutManager2
-                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        LinearLayoutManager layoutManager3
-                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+            // Adapter
+            MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(sneakers_popular, "popular_sneakers");
 
-        rV1.setAdapter(myRecyclerViewAdapter1);
-        rV1.setLayoutManager(layoutManager1);
+            // Layout
+            LinearLayoutManager layoutManager2
+                    = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
 
-        rV2.setAdapter(myRecyclerViewAdapter2);
-        rV2.setLayoutManager(layoutManager2);
+            // Bind adapter and layout
+            rV2.setAdapter(myRecyclerViewAdapter2);
+            rV2.setLayoutManager(layoutManager2);
+        }
 
-        rV3.setAdapter(myRecyclerViewAdapter3);
-        rV3.setLayoutManager(layoutManager3);
+        // Setup 3rd recycler view
+        ArrayList<SneakerModel> sneakers_newArrival = MainActivity.repositoryManager.getNewArrivalSneakers();
+        if (sneakers_newArrival.size() >= 1) {
+            RecyclerView rV3 = view.findViewById(R.id.rV3);
+
+            // Adapter
+            MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(sneakers_newArrival, "new_arrivals");
+
+            // Layout
+            LinearLayoutManager layoutManager3
+                    = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+
+            // Bind adapter and layout
+            rV3.setAdapter(myRecyclerViewAdapter3);
+            rV3.setLayoutManager(layoutManager3);
+        }
+    }
+
+    private void setupFirstCategoryRecyclerView(View view) {
+        LinearLayout bestSellerCategory = view.findViewById(R.id.bestSellerCategory);
+        ArrayList<SneakerModel> sneakers_best = MainActivity.repositoryManager.getBestSellerSneakers();
+        if (sneakers_best.size() == 0) { // Check if this category is empty
+            bestSellerCategory.setVisibility(View.GONE);
+            return;
+        }
+
+        // Bind data to large card
+        MaterialCardView cardView = view.findViewById(R.id.largeCard);
+        ImageView productImage = cardView.findViewById(R.id.productImageFirst);
+        TextView productBranch = cardView.findViewById(R.id.productBranchFirst);
+        TextView productName = cardView.findViewById(R.id.productNameFirst);
+        ProgressBar progressBar = cardView.findViewById(R.id.progressBarFirst);
+        productBranch.setText(sneakers_best.get(0).getBrand());
+        productName.setText(sneakers_best.get(0).getTitle());
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("pid", sneakers_best.get(0).getId());
+                MainActivity.navController.navigate(R.id.action_global_productDetailFragment, bundle);
+            }
+        });
+        fetchLargeCardImage(sneakers_best.get(0).getImage(), sneakers_best.get(0), productImage, progressBar); // Fetch image
+
+        // Bind data to recycler view (if have)
+        if (sneakers_best.size() >= 2) {
+            ArrayList<SneakerModel> temp = new ArrayList<>();
+            for (int i = 1; i < sneakers_best.size(); i++) {
+                temp.add(sneakers_best.get(i));
+            }
+            RecyclerView rV1 = view.findViewById(R.id.rV1);
+            MyRecyclerViewAdapter myRecyclerViewAdapter1 = new MyRecyclerViewAdapter(temp, "best_seller");
+            LinearLayoutManager layoutManager1
+                    = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+            rV1.setAdapter(myRecyclerViewAdapter1);
+            rV1.setLayoutManager(layoutManager1);
+        }
+
+    }
+
+    private void fetchLargeCardImage(String imageStr, SneakerModel sneaker, ImageView productImage, ProgressBar progressBar) {
+        FirebaseStorage db = FirebaseStorage.getInstance();
+        if (sneaker.getFigureImage() != null) {
+            Picasso.get().load(sneaker.getFigureImage()).into(productImage);
+        } else {
+            productImage.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            if (!imageStr.isEmpty()) {
+                db.getReferenceFromUrl(imageStr).listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        productImage.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        sneaker.setFigureImage(uri);
+                                        Picasso.get().load(uri).into(productImage);
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Uh-oh, an error occurred!
+                            }
+                        });
+            }
+        }
     }
 
     @Override

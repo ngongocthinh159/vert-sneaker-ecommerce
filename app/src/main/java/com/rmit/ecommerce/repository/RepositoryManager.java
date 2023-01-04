@@ -26,6 +26,9 @@ import java.util.Map;
 public class RepositoryManager {
     private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static ArrayList<SneakerModel> sneakers = new ArrayList<>();
+    private static final ArrayList<SneakerModel> sneakers_bestSeller = new ArrayList<>();
+    private static final ArrayList<SneakerModel> sneakers_popular = new ArrayList<>();
+    private static final ArrayList<SneakerModel> sneakers_newarrival = new ArrayList<>();
     private CartModel cartObject;
     private ArrayList<CartItemModel> cartItems = new ArrayList<>();
     private Boolean shouldFetch = true;
@@ -57,6 +60,8 @@ public class RepositoryManager {
                             for (SneakerModel s : sneakers) {
                                 System.out.println(s.getTitle() + " - " + s.getBrand() + " - " + s.getImage());
                             }
+
+                            getSneakersInCategory();
                         } else {
                             Log.d(TAG, "Error", task.getException());
                         }
@@ -112,6 +117,23 @@ public class RepositoryManager {
         });
     }
 
+    private void getSneakersInCategory() {
+        for (SneakerModel sneaker : sneakers) {
+            if (sneaker.getCategory() == null) continue;
+            if (sneaker.getCategory().contains("bestseller")) {
+                sneakers_bestSeller.add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("popular")) {
+                sneakers_popular.add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("newarrival")) {
+                sneakers_newarrival.add(sneaker);
+            }
+        }
+    }
+
     public ArrayList<CartItemModel> getCartItems() {
         return cartItems;
     }
@@ -146,5 +168,17 @@ public class RepositoryManager {
 
     public void setUser(UserModel user) {
         this.user = user;
+    }
+
+    public ArrayList<SneakerModel> getPopularSneakers() {
+        return sneakers_popular;
+    }
+
+    public ArrayList<SneakerModel> getBestSellerSneakers() {
+        return sneakers_bestSeller;
+    }
+
+    public ArrayList<SneakerModel> getNewArrivalSneakers() {
+        return sneakers_newarrival;
     }
 }

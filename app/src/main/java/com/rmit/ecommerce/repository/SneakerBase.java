@@ -9,7 +9,8 @@ public class SneakerBase {
     private String image;
     private String description;
     private double price;
-    private  ArrayList<HashMap<String, Integer>>size;
+    private ArrayList<HashMap<String, Integer>>size;
+    private ArrayList<String> category;
 
     public SneakerBase() {}
 
@@ -75,5 +76,13 @@ public class SneakerBase {
 
     public void setSize(ArrayList<HashMap<String, Integer>> sizes) {
         this.size = sizes;
+    }
+
+    public ArrayList<String> getCategory() {
+        return category;
+    }
+
+    public void setCategory(ArrayList<String> category) {
+        this.category = category;
     }
 }

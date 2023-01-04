@@ -39,30 +39,53 @@
             android:visibility="gone"
             />
 
-        <TextView
-            android:id="@+id/productBranch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="NIKE"
-            android:textStyle="italic"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="12sp"
-            android:layout_marginTop="0dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="18dp"/>
+            android:gravity="center|bottom">
 
-        <TextView
-            android:id="@+id/productName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="AIR FORCE 1"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textSize="12sp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="18dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/productBranch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="NIKE"
+                    android:textStyle="italic"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="18dp"/>
+
+                <TextView
+                    android:id="@+id/productName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="AIR FORCE 1"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="9dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="18dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginBottom="9dp"
+                android:layout_marginEnd="18dp"
+                android:text="$0.00"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="16sp"
+                android:gravity="bottom|end" />
+        </LinearLayout>
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

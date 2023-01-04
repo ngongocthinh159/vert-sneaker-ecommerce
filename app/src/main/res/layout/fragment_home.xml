@@ -59,111 +59,134 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
-            android:layout_marginStart="9dp"
-            android:layout_marginEnd="9dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:id="@+id/bestSellerCategory">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BEST SELLER"
-                android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:layout_marginTop="9dp"
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="9dp"
+                android:gravity="center_vertical">
 
-            <Button
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="BEST SELLER"
+                    android:textStyle="italic|bold"
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all_text"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:textSize="14sp"
+                    android:textColor="?attr/colorPrimary"
+                    android:gravity="center"
+                    android:id="@+id/seeAllBestSeller" />
+            </LinearLayout>
+
+            <include
+                layout="@layout/card_view_shoe_large"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/see_all_text"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:textSize="14sp"
-                android:textColor="?attr/colorPrimary"
-                android:gravity="center"
-                android:id="@+id/seeAllBestSeller" />
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="9dp"
+                android:id="@+id/largeCard"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rV1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4.5dp"
+                android:layout_marginEnd="4.5dp"
+                android:layout_marginTop="9dp"/>
         </LinearLayout>
-
-        <include
-            layout="@layout/card_view_shoe_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="9dp"
-            android:layout_marginEnd="9dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rV1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4.5dp"
-            android:layout_marginEnd="4.5dp"
-            android:layout_marginTop="9dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="9dp"
-            android:layout_marginEnd="9dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:id="@+id/popularSneakerCategory">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="POPULAR SNEAKER"
-                android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="9dp"
+                android:gravity="center_vertical">
 
-            <Button
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="POPULAR SNEAKER"
+                    android:textStyle="italic|bold"
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all_text"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:textSize="14sp"
+                    android:textColor="?attr/colorPrimary"
+                    android:gravity="center"
+                    android:id="@+id/seeAllPopular" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rV2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/see_all_text"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:textSize="14sp"
-                android:textColor="?attr/colorPrimary"
-                android:gravity="center"
-                android:id="@+id/seeAllPopular" />
+                android:layout_marginStart="4.5dp"
+                android:layout_marginEnd="4.5dp" />
         </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rV2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4.5dp"
-            android:layout_marginEnd="4.5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="9dp"
-            android:layout_marginEnd="9dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:id="@+id/newArrivalCategory">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="NEW ARRIVALS"
-                android:textStyle="italic|bold"
-                android:textSize="16sp"/>
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="9dp"
+                android:gravity="center_vertical">
 
-            <Button
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="NEW ARRIVALS"
+                    android:textStyle="italic|bold"
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/see_all_text"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:textSize="14sp"
+                    android:textColor="?attr/colorPrimary"
+                    android:gravity="center"
+                    android:id="@+id/seeAllNewArrival" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rV3"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/see_all_text"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:textSize="14sp"
-                android:textColor="?attr/colorPrimary"
-                android:gravity="center"
-                android:id="@+id/seeAllNewArrival" />
+                android:layout_marginStart="4.5dp"
+                android:layout_marginEnd="4.5dp"
+                android:layout_marginBottom="74.5dp"/>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rV3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4.5dp"
-            android:layout_marginEnd="4.5dp"
-            android:layout_marginBottom="74.5dp"/>
     </LinearLayout>
 
 

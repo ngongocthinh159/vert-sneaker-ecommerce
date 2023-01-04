@@ -61,6 +61,7 @@ public class ProductDetailFragment extends Fragment {
     TextView productName_detail;
     TextView productPrice_detail;
     TextView productDes_detail;
+    TextView tvSize;
     MaterialButtonToggleGroup toggleGroup;
     MaterialButton btnAddToCart;
     String pid;
@@ -121,6 +122,7 @@ public class ProductDetailFragment extends Fragment {
         productName_detail = view.findViewById(R.id.productName_detail);
         productPrice_detail = view.findViewById(R.id.productPrice_detail);
         productDes_detail = view.findViewById(R.id.productDes_detail);
+        tvSize = view.findViewById(R.id.tvSize);
         toggleGroup = view.findViewById(R.id.toggleGroup);
         btnAddToCart = view.findViewById(R.id.btnAddToCart);
 
@@ -224,8 +226,13 @@ public class ProductDetailFragment extends Fragment {
 
         // Get available size
         ArrayList<Integer> sizes = new ArrayList<>();
-        for (String size : sneakerModel.getSize().get(0).keySet()) {
-            if (size != null) sizes.add(Integer.valueOf(size));
+        if (sneakerModel.getSize().size() != 0) {
+            HashMap<String, Integer> cur_size = sneakerModel.getSize().get(0);
+            if (cur_size != null) {
+                for (String size : cur_size.keySet()) {
+                    if (size != null) sizes.add(Integer.valueOf(size));
+                }
+            }
         }
         Collections.sort(sizes);
 
@@ -236,6 +243,7 @@ public class ProductDetailFragment extends Fragment {
         productName_detail.setText(sneakerModel.getTitle());
         productPrice_detail.setText("$" + String.valueOf(sneakerModel.getPrice()));
         productDes_detail.setText(sneakerModel.getDescription());
+        if (sizes.size() == 0) tvSize.setText("Sold out");
         for (int i = 34; i <= 46; i++) {
             if (!sizes.contains(i)) {
                 // Turn off sizes that not available
