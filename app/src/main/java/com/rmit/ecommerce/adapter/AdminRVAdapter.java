@@ -119,6 +119,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         productName.setText(sneakers.get(position).getTitle());
         String imageStr = sneakers.get(position).getImage();
         FirebaseStorage db = FirebaseStorage.getInstance();
+
         if (sneakers.get(position).getFigureImage() != null) {
             Picasso.get().load(sneakers.get(position).getFigureImage()).into(productImage);
         } else {

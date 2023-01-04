@@ -169,9 +169,13 @@
         tools:layout="@layout/fragment_payment" />
     <fragment
         android:id="@+id/updateAdminFragment"
-        android:name="com.rmit.ecommerce.UpdateAdminFragment"
+        android:name="com.rmit.ecommerce.fragment.UpdateAdminFragment"
         android:label="fragment_update_admin"
-        tools:layout="@layout/fragment_update_admin" />
+        tools:layout="@layout/fragment_update_admin" >
+        <action
+            android:id="@+id/action_updateAdminFragment_to_productManageFragment"
+            app:destination="@id/productManageFragment" />
+    </fragment>
 
     <!--Activity destination-->
 
