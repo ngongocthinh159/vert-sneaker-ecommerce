@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
@@ -106,6 +107,7 @@ public class UpdateAdminFragment extends Fragment {
         });
 
         saveBtn.setOnClickListener(v -> {
+            loadingView.setVisibility(View.VISIBLE);
             sneakerModel.setTitle(title.getText().toString());
             sneakerModel.setBrand(brand.getText().toString());
             sneakerModel.setPrice(Double.valueOf(price.getText().toString()));
@@ -116,13 +118,17 @@ public class UpdateAdminFragment extends Fragment {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            loadingView.setVisibility(View.GONE);
                             Log.d("PUT SNEAKER", "DocumentSnapshot successfully written!");
+                            Toast.makeText(MainActivity.context, "Sneaker updated!", Toast.LENGTH_LONG).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            loadingView.setVisibility(View.GONE);
                             Log.w("PUT SNEAKER", "Error writing document", e);
+                            Toast.makeText(MainActivity.context, "Failed to updated!", Toast.LENGTH_LONG).show();
                         }
                     });
         });
@@ -133,6 +139,7 @@ public class UpdateAdminFragment extends Fragment {
     }
 
     private void fetchSneakerData(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
+        loadingView.setVisibility(View.VISIBLE);
         FirebaseFirestore fs = FirebaseFirestore.getInstance();
         fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -148,7 +155,7 @@ public class UpdateAdminFragment extends Fragment {
                                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                                     @Override
                                     public void onSuccess(ListResult listResult) {
-                                        System.out.println("UH OH I HAVE TO FETCH AGAIN");
+                                        loadingView.setVisibility(View.GONE);
                                         if (listResult.getItems().isEmpty()) return;
                                         for (StorageReference storageReference : listResult.getItems()) {
                                             storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -166,6 +173,7 @@ public class UpdateAdminFragment extends Fragment {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         // Uh-oh, an error occurred!
+                                        loadingView.setVisibility(View.GONE);
                                     }
                                 });
                     }
