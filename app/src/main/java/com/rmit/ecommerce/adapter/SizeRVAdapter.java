@@ -20,6 +20,22 @@ public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder
     ArrayList<SizeModel> sizes;
     Context context;
 
+    public ArrayList<SizeModel> getSizes() {
+        return sizes;
+    }
+
+    public void setSizes(ArrayList<SizeModel> sizes) {
+        this.sizes = sizes;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardView;
         TextView sizeLabel;

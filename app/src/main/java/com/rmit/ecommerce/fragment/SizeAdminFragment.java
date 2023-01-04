@@ -14,9 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -86,8 +90,49 @@ public class SizeAdminFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_size_admin, container, false);
         Button previousBtn = view.findViewById(R.id.previousBtn);
+        TextInputLayout sizeInput = view.findViewById(R.id.textInputSize);
+        Button addSizeBtn = view.findViewById(R.id.addSizeBtn);
         previousBtn.setOnClickListener(v -> {
             MainActivity.navController.navigate(R.id.action_sizeAdminFragment_to_productManageFragment);
+        });
+
+        addSizeBtn.setOnClickListener(v -> {
+            String inputContent = sizeInput.getEditText().getText().toString();
+            sizeInput.getEditText().setText("");
+            // TODO: Add form validation is integer?
+            if (!inputContent.isEmpty()) {
+                FirebaseFirestore fs = FirebaseFirestore.getInstance();
+                ArrayList<HashMap<String, Integer>> data = new ArrayList<>();
+                RecyclerView sizesRv = view.findViewById(R.id.sizesRv);
+                SizeRVAdapter sizeRVAdapter = (SizeRVAdapter) sizesRv.getAdapter();
+                sizeRVAdapter.getSizes().add(new SizeModel(inputContent, 0));
+                HashMap<String, Integer> sizes = new HashMap<>();
+
+                for (SizeModel s : ((SizeRVAdapter) sizesRv.getAdapter()).getSizes()) {
+                    sizes.put(s.getSizeLabel(), s.getQuantity());
+                }
+
+                data.add(sizes);
+
+                fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                        .update("size", data)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("UPDATE", "DocumentSnapshot successfully updated!");
+
+                                setupRecyclerView(view);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("UPDATE", "Error updating document", e);
+                            }
+                        });
+            } else {
+                Toast.makeText(MainActivity.context, "Invalid input", Toast.LENGTH_LONG);
+            }
         });
         setupRecyclerView(view);
         return view;
@@ -101,9 +146,7 @@ public class SizeAdminFragment extends Fragment {
         sizeRv.setAdapter(emptyRVAdapter);
         sizeRv.setLayoutManager(emptyLayoutManager);
 
-
-
-
+        // Handle firebase41
         ArrayList<SizeModel> sizes = new ArrayList<>();
         FirebaseFirestore fs = FirebaseFirestore.getInstance();
         String currentSneakerId = MainActivity.adminCrudService.getInstance().getCurrentSneakerId();
@@ -115,7 +158,6 @@ public class SizeAdminFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             Log.d("DATA", "DocumentSnapshot data: " + document.getData());
-//                            Map<String, Object> data = document.getData();
                             ArrayList<SizeModel> sizeModels = new ArrayList<>();
                             SneakerModel sneakerModel = document.toObject(SneakerModel.class);
                             if (sneakerModel.getSize().size() > 0) {
@@ -123,7 +165,6 @@ public class SizeAdminFragment extends Fragment {
                                     sizeModels.add(new SizeModel(set.getKey(), set.getValue()));
                                 }
                             }
-
                             SizeRVAdapter sizeRVAdapter = new SizeRVAdapter(sizeModels);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), RecyclerView.VERTICAL, false);
                             sizeRv.setAdapter(sizeRVAdapter);
