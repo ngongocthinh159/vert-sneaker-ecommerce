@@ -1,4 +1,4 @@
-package com.rmit.ecommerce.fragment;
+package com.rmit.ecommerce;
 
 import android.os.Bundle;
 
@@ -7,19 +7,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
-import com.rmit.ecommerce.R;
-import com.rmit.ecommerce.activity.MainActivity;
-
-import kotlin.text.MatchNamedGroupCollection;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ProductManageFragment#newInstance} factory method to
+ * Use the {@link UpdateAdminFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProductManageFragment extends Fragment {
+public class UpdateAdminFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +24,7 @@ public class ProductManageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ProductManageFragment() {
+    public UpdateAdminFragment() {
         // Required empty public constructor
     }
 
@@ -40,11 +34,11 @@ public class ProductManageFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ProductManageFragment.
+     * @return A new instance of fragment UpdateAdminFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProductManageFragment newInstance(String param1, String param2) {
-        ProductManageFragment fragment = new ProductManageFragment();
+    public static UpdateAdminFragment newInstance(String param1, String param2) {
+        UpdateAdminFragment fragment = new UpdateAdminFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,24 +58,7 @@ public class ProductManageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product_manage, container, false);
-
-        Button updateDetailedButton = view.findViewById(R.id.updateDetailedBtn);
-        Button sizeManagerBtn = view.findViewById(R.id.sizeManagerBtn);
-        Button previousBtn = view.findViewById(R.id.previousBtn);
-
-        previousBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_productManageFragment_to_homeAdminFragment);
-        });
-
-        sizeManagerBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_productManageFragment_to_sizeAdminFragment);
-        });
-
-        updateDetailedButton.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_productManageFragment_to_updateAdminFragment);
-        });
-
-        return view;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_update_admin, container, false);
     }
 }

@@ -139,6 +139,9 @@
         <action
             android:id="@+id/action_productManageFragment_to_sizeAdminFragment"
             app:destination="@id/sizeAdminFragment" />
+        <action
+            android:id="@+id/action_productManageFragment_to_updateAdminFragment"
+            app:destination="@id/updateAdminFragment" />
     </fragment>
     <fragment
         android:id="@+id/sizeAdminFragment"
@@ -164,6 +167,11 @@
         android:name="com.rmit.ecommerce.fragment.PaymentFragment"
         android:label="fragment_payment"
         tools:layout="@layout/fragment_payment" />
+    <fragment
+        android:id="@+id/updateAdminFragment"
+        android:name="com.rmit.ecommerce.UpdateAdminFragment"
+        android:label="fragment_update_admin"
+        tools:layout="@layout/fragment_update_admin" />
 
     <!--Activity destination-->
 
