@@ -110,6 +110,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 // TODO: Navigate to Edit or size manager
+                MainActivity.adminCrudService.getInstance().setCurrentSneakerId(sneakers.get(position).getId());
                 MainActivity.navController.navigate(R.id.action_homeAdminFragment_to_productManageFragment);
             }
         });

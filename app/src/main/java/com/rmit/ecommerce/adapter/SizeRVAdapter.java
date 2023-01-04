@@ -48,6 +48,9 @@ public class SizeRVAdapter extends RecyclerView.Adapter<SizeRVAdapter.ViewHolder
     public SizeRVAdapter(ArrayList<SizeModel> sizes) {
         this.sizes = sizes;
     }
+    public SizeRVAdapter() {
+        this.sizes = new ArrayList<>();
+    }
 
     @NonNull
     @Override

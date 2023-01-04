@@ -2,16 +2,24 @@ package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.AdminRVAdapter;
@@ -22,6 +30,8 @@ import com.rmit.ecommerce.repository.SneakerModel;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,16 +96,48 @@ public class SizeAdminFragment extends Fragment {
     private void setupRecyclerView(View view) {
         // Setup recycler view
         RecyclerView sizeRv = view.findViewById(R.id.sizesRv);
+        SizeRVAdapter emptyRVAdapter = new SizeRVAdapter();
+        LinearLayoutManager emptyLayoutManager = new LinearLayoutManager(view.getContext());
+        sizeRv.setAdapter(emptyRVAdapter);
+        sizeRv.setLayoutManager(emptyLayoutManager);
+
+
+
 
         ArrayList<SizeModel> sizes = new ArrayList<>();
-        // TODO: Replace mock data with real data
-        for (int i = 0; i < 12; i++) {
-            sizes.add(new SizeModel("42", 4));
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        String currentSneakerId = MainActivity.adminCrudService.getInstance().getCurrentSneakerId();
+        if (currentSneakerId != null) {
+            fs.collection("sneakers").document(currentSneakerId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("DATA", "DocumentSnapshot data: " + document.getData());
+//                            Map<String, Object> data = document.getData();
+                            ArrayList<SizeModel> sizeModels = new ArrayList<>();
+                            SneakerModel sneakerModel = document.toObject(SneakerModel.class);
+                            if (sneakerModel.getSize().size() > 0) {
+                                for (Map.Entry<String, Integer> set : sneakerModel.getSize().get(0).entrySet()) {
+                                    sizeModels.add(new SizeModel(set.getKey(), set.getValue()));
+                                }
+                            }
+
+                            SizeRVAdapter sizeRVAdapter = new SizeRVAdapter(sizeModels);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), RecyclerView.VERTICAL, false);
+                            sizeRv.setAdapter(sizeRVAdapter);
+                            sizeRv.setLayoutManager(linearLayoutManager);
+                        } else {
+                            Log.d("DATA", "No such document");
+                        }
+                    } else {
+                        Log.d("DATA", "get failed with ", task.getException());
+                    }
+                }
+            });
         }
-        SizeRVAdapter sizeRVAdapter = new SizeRVAdapter(sizes);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), RecyclerView.VERTICAL, false);
-        sizeRv.setAdapter(sizeRVAdapter);
-        sizeRv.setLayoutManager(linearLayoutManager);
+
 
 
     }

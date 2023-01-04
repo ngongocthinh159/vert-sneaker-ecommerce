@@ -137,12 +137,15 @@ public class HomeAdminFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 ArrayList<SneakerModel> sneakers = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-//                                System.out.println(document.getId() + "=>" + document.getData().get("size"));
                                     Map<String, Object> data = document.getData();
                                     sneakers.add(document.toObject(SneakerModel.class));
                                 }
+
+                                // Cache
                                 MainActivity.repositoryManager.setShouldFetch(false);
                                 MainActivity.repositoryManager.setSneakers(sneakers);
+
+                                // Handle RecyclerView
                                 AdminRVAdapter adminRVAdapter = new AdminRVAdapter(sneakers);
                                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
                                 rVSearch.setAdapter(adminRVAdapter);

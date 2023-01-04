@@ -22,6 +22,15 @@ import javax.annotation.Nullable;
 public class AdminCrudService {
     public static AdminCrudService adminCrudService = new AdminCrudService();
     private List<Uri> imagesEncodedList = new ArrayList<>();
+    private String currentSneakerId;
+
+    public String getCurrentSneakerId() {
+        return currentSneakerId;
+    }
+
+    public void setCurrentSneakerId(String currentSneakerId) {
+        this.currentSneakerId = currentSneakerId;
+    }
 
     public void setImagesEncodedList(List<Uri> imagesEncodedList) {
         this.imagesEncodedList = imagesEncodedList;
@@ -38,7 +47,6 @@ public class AdminCrudService {
     }
 
     public void handlePhotosPick(int requestCode, int resultCode, @Nullable Intent data, ContentResolver contentResolver)  {
-        int PICK_IMAGE_MULTIPLE = 1;
         System.out.println("START ACTIVITY RESULT");
         System.out.println(resultCode);
         System.out.println(requestCode);
@@ -54,9 +62,7 @@ public class AdminCrudService {
                 } else {
                     if (data.getClipData() != null) {
                         ClipData mClipData = data.getClipData();
-                        ArrayList<Uri> mArrayUri = new ArrayList<>();
                         for (int i = 0; i < mClipData.getItemCount(); i++) {
-
                             ClipData.Item item = mClipData.getItemAt(i);
                             Uri uri = item.getUri();
                             imagesEncodedList.add(uri);
