@@ -10,13 +10,19 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
@@ -25,16 +31,25 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.fragment.ArFragment;
 import com.rmit.ecommerce.fragment.GoogleMapFragment;
+import com.rmit.ecommerce.fragment.PersonalSettingFragment;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.AdminCrudService;
 import com.rmit.ecommerce.repository.AssetManager;
 import com.rmit.ecommerce.repository.RepositoryManager;
 import com.rmit.ecommerce.repository.UserManager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public static AssetManager assetManager = new AssetManager();
     public static AdminCrudService adminCrudService = new AdminCrudService();
     public static boolean isARAvailable = false;
+    private ProgressDialog pd;
 
 
     public static float device_height_pxl;
@@ -68,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Set view
         setContentView(R.layout.activity_main);
+
+        // Network checking
+        networkChecking();
 
         // Check AR availability
         Helper.checkARAvailability();
@@ -157,20 +176,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode
-                == GoogleMapFragment.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                MainActivity.navController.popBackStack();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
+
+        // Pick user image
+        if (requestCode == PersonalSettingFragment.OPEN_DOCUMENT_CODE && resultCode == RESULT_OK) {
+            if (data != null) {
+                // this is the image selected by the user
+                Uri imageUri = data.getData();
             }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
-        super.onActivityResult(requestCode, resultCode, data);
+    private void networkChecking() {
+        if (pd == null) {
+            pd = new ProgressDialog(MainActivity.this);
+            pd.setCancelable(false);
+            pd.setTitle("Waiting for internet connection");
+            pd.show();
+        }
+
+        // Create network callback
+        ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+                // network available
+                if (pd != null) pd.dismiss();
+            }
+
+            @Override
+            public void onLost(Network network) {
+                // network unavailable
+                pd = new ProgressDialog(MainActivity.this);
+                pd.setCancelable(false);
+                pd.setTitle("Waiting for internet connection");
+                pd.show();
+            }
+        };
+
+        // Register network callback with connectivity manager
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager.registerDefaultNetworkCallback(networkCallback);
     }
 }

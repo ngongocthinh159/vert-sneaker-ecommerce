@@ -41,10 +41,10 @@ import java.util.Map;
  */
 public class ShoppingCartFragment extends Fragment {
 
-    private MyRecyclerViewAdapter2 adapter2;
-    TextView subtotal;
-    TextView shippingFee;
-    TextView total;
+    private static MyRecyclerViewAdapter2 adapter2;
+    private static TextView subtotal;
+    private static TextView shippingFee;
+    private static TextView total;
     private static final double SHIPPING_FEE = 10.00;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -196,7 +196,7 @@ public class ShoppingCartFragment extends Fragment {
         });
     }
 
-    private void updatePrice() {
+    public static void updatePrice() {
         // Get products (with quantity) inside cart list
         HashMap<SneakerModel, Integer> sneaker_quantity = new HashMap<>();
         for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {

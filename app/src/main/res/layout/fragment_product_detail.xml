@@ -156,7 +156,8 @@
                     android:layout_height="wrap_content"
                     android:text="Size:"
                     android:textSize="24sp"
-                    android:layout_marginTop="18dp"/>
+                    android:layout_marginTop="18dp"
+                    android:id="@+id/tvSize"/>
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"

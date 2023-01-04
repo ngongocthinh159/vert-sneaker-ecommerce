@@ -4,49 +4,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.PersonalSettingFragment"
-    android:background="@color/back_ground_color">
+    tools:context=".fragment.PersonalSettingFragment">
 
-    <ImageView
-        android:id="@+id/ivUserImage"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="160dp"
         android:layout_height="0dp"
         android:layout_marginTop="36dp"
-        android:background="@drawable/border_image"
-        android:src="@drawable/shoes_wellcome"
         app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/cardUserImage"
+        app:cardCornerRadius="50dp"
+        style="?attr/materialCardViewElevatedStyle"
+        app:cardElevation="4dp">
 
-    <TextView
-        android:id="@+id/tvUserName"
+        <ImageView
+            android:id="@+id/ivUserImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/shoes_wellcome" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Bành Thị David"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivUserImage" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardUserImage"
+        android:id="@+id/linearLayoutUserName"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Display name"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:layout_gravity="center"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/editUserName"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_edit_24"
+            app:iconSize="24dp"
+            app:tint="?attr/colorOnSurface"
+            android:visibility="gone"/>
+    </LinearLayout>
+
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
-        style="@style/Widget.Material3.CardView.Elevated"
+        style="?attr/materialCardViewElevatedStyle"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="9dp"
-        android:backgroundTint="#363D54"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutUserName">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,7 +98,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="18dp"
                     android:src="@drawable/ic_baseline_email_24"
-                    app:tint="@color/white" />
+                    app:tint="?attr/colorOnSurface" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -82,7 +112,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Demo@gmail.com"
-                        android:textColor="@color/white" />
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:textColor="?attr/colorOnSurface" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -91,25 +123,14 @@
                         android:textColor="#9A9EA9" />
                 </LinearLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/editEmail"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="@color/white" />
-
-                <!--                <com.google.android.material.button.MaterialButton-->
-                <!--                    android:id="@+id/btnEditEmail"-->
-                <!--                    style="@style/Widget.Material3.Button.TonalButton.Icon"-->
-                <!--                    android:layout_width="60dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:layout_gravity="center"-->
-                <!--                    app:icon="@drawable/ic_baseline_edit_24"-->
-                <!--                    app:iconSize="28dp"-->
-                <!--                    app:iconTint="?attr/colorOnSurface" />-->
-
+                    app:tint="?attr/colorOnSurface" />
             </LinearLayout>
 
             <LinearLayout
@@ -124,7 +145,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="18dp"
                     android:src="@drawable/ic_baseline_phone_enabled_24"
-                    app:tint="@color/white" />
+                    app:tint="?attr/colorOnSurface" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -138,7 +159,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+88-9923457"
-                        android:textColor="@color/white" />
+                        android:textColor="?attr/colorOnSurface" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -147,14 +168,14 @@
                         android:textColor="#9A9EA9" />
                 </LinearLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/editPhone"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="@color/white" />
+                    app:tint="?attr/colorOnSurface" />
             </LinearLayout>
 
             <LinearLayout
@@ -169,7 +190,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="18dp"
                     android:src="@drawable/ic_baseline_home_24"
-                    app:tint="@color/white" />
+                    app:tint="?attr/colorOnSurface" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -183,7 +204,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="892 Coloseum Street"
-                        android:textColor="@color/white" />
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:textColor="?attr/colorOnSurface" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -192,14 +215,14 @@
                         android:textColor="#9A9EA9" />
                 </LinearLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/editAddress"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="@color/white" />
+                    app:tint="?attr/colorOnSurface" />
             </LinearLayout>
 
             <LinearLayout
@@ -214,7 +237,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="18dp"
                     android:src="@drawable/ic_baseline_credit_card_24"
-                    app:tint="@color/white" />
+                    app:tint="?attr/colorOnSurface" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -228,7 +251,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1234 5678 4312 123"
-                        android:textColor="@color/white" />
+                        android:textColor="?attr/colorOnSurface" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -237,14 +260,14 @@
                         android:textColor="#9A9EA9" />
                 </LinearLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/editCard"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="@color/white" />
+                    app:tint="?attr/colorOnSurface" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.fragment.ShoppingCartFragment;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.SneakerModel;
 import com.squareup.picasso.Picasso;
@@ -52,6 +54,8 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         MaterialButton btnDecrease;
         MaterialButton btnDeleteItem;
         ProgressBar progressBar;
+        ProgressBar progressBarAllCartItem;
+        LinearLayout layoutItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,6 +72,8 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
             btnDecrease = itemView.findViewById(R.id.btnDecrease);
             btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
             progressBar = itemView.findViewById(R.id.progressBarItem);
+            progressBarAllCartItem = itemView.findViewById(R.id.progressBarAllCartItem);
+            layoutItem = itemView.findViewById(R.id.layoutItem);
         }
 
         public MaterialCardView getCardView() {
@@ -117,6 +123,14 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         public ProgressBar getProgressBar() {
             return progressBar;
         }
+
+        public ProgressBar getProgressBarAllCartItem() {
+            return progressBarAllCartItem;
+        }
+
+        public LinearLayout getLayoutItem() {
+            return layoutItem;
+        }
     }
 
     public MyRecyclerViewAdapter2(ArrayList<CartItemModel> cartItems) {
@@ -150,6 +164,8 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         TextView btnDecrease = holder.getBtnDecrease();
         MaterialButton btnDeleteItem = holder.getBtnDeleteItem();
         ProgressBar progressBar = holder.getProgressBar();
+        ProgressBar progressBarAllCartItem =  holder.getProgressBarAllCartItem();
+        LinearLayout layoutItem = holder.getLayoutItem();
 
         // Map text data to view
         productQuantity.setText(String.valueOf(cartItems.get(position).getQuantity()));
@@ -166,6 +182,10 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                     productPrice.setText("$" + String.valueOf(sneakerModel.getPrice()));
                     maxQuantity[0] = sneakerModel.getSize().get(0).get(size + "");
                     productMaxQuantity.setText(maxQuantity[0] + " left over");
+
+                    // Hide progressbar
+                    progressBarAllCartItem.setVisibility(View.GONE);
+                    layoutItem.setVisibility(View.VISIBLE);
 
                     // Setup button visibility
                     if (Integer.parseInt(productQuantity.getText().toString()) < maxQuantity[0]) {
@@ -184,6 +204,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
             public void onClick(View v) {
                 productQuantity.setText(String.valueOf(Integer.parseInt(productQuantity.getText().toString()) + 1));
                 cartItems.get(position).setQuantity(cartItems.get(position).getQuantity() + 1);
+                ShoppingCartFragment.updatePrice();
 
                 if (Integer.parseInt(productQuantity.getText().toString()) == maxQuantity[0]) {
                     btnIncrease.setVisibility(View.INVISIBLE);
@@ -198,6 +219,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
             public void onClick(View v) {
                 productQuantity.setText(String.valueOf(Integer.parseInt(productQuantity.getText().toString()) - 1));
                 cartItems.get(position).setQuantity(cartItems.get(position).getQuantity() - 1);
+                ShoppingCartFragment.updatePrice();
 
                 if (Integer.parseInt(productQuantity.getText().toString()) == 1) {
                     btnDecrease.setVisibility(View.INVISIBLE);
@@ -224,7 +246,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                                     if (!id.equals(itemId)) newList.add(id);
                                 }
                                 MainActivity.repositoryManager.getCartObject().setCartItemIds(newList); // Update local
-                                MainActivity.repositoryManager.getFireStore()
+                                MainActivity.repositoryManager.getFireStore() // Update remote
                                         .collection("carts")
                                         .document(MainActivity.repositoryManager.getUser().getCurrentCartId())
                                         .update("cartItemIds", newList).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -237,7 +259,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                                                         document(itemId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
-                                                                MyRecyclerViewAdapter2.this.notifyItemChanged(position);
+                                                                MyRecyclerViewAdapter2.this.notifyDataSetChanged();
                                                                 dialog.dismiss();
                                                             }
                                                         });

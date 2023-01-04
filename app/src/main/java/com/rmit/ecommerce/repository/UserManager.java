@@ -17,8 +17,4 @@ public class UserManager {
     public FirebaseUser getUser() {
         return mAuth.getCurrentUser();
     }
-
-    public String getUserId() {
-        return mAuth.getCurrentUser().getUid();
-    }
 }

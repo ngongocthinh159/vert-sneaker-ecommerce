@@ -182,10 +182,7 @@ public class SignUpFragment extends Fragment {
         }
 
         // Check email valid (form of: abc@mail.com)
-        String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(userName.getText().toString());
-        if (!matcher.matches()) {
+        if (!Helper.isValidEmail(userName.getText().toString())) {
             Toast.makeText(MainActivity.context, "User name must be an email!",
                     Toast.LENGTH_SHORT).show();
             return true;
