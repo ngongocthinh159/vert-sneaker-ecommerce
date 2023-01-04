@@ -1,5 +1,6 @@
 package com.rmit.ecommerce.fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -26,14 +27,20 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.SneakerModel;
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Text;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +52,7 @@ public class UpdateAdminFragment extends Fragment {
     View loadingView;
     SneakerModel sneakerModel;
     ArrayList<SlideModel> slideModels = new ArrayList<>();
+    boolean imageChanged = false;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -94,6 +102,7 @@ public class UpdateAdminFragment extends Fragment {
         Button previousBtn = view.findViewById(R.id.previousBtn3);
         Button saveBtn = view.findViewById(R.id.saveBtn);
         Button deleteBtn = view.findViewById(R.id.deleteBtn);
+        Button selectImagesBtn = view.findViewById(R.id.selectImageBtn);
         TextInputEditText title = view.findViewById(R.id.title);
         TextInputEditText brand = view.findViewById(R.id.brand);
         TextInputEditText price = view.findViewById(R.id.price);
@@ -115,8 +124,21 @@ public class UpdateAdminFragment extends Fragment {
             handleDeleteData();
         });
 
+        selectImagesBtn.setOnClickListener(v -> {
+            handlePhotoUpload();
+        });
+
 
         return view;
+    }
+
+    private void handlePhotoUpload() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+        imageChanged = true;
     }
 
     private void handleDeleteData() {
@@ -163,6 +185,11 @@ public class UpdateAdminFragment extends Fragment {
                         Log.d("PUT SNEAKER", "DocumentSnapshot successfully written!");
                         MainActivity.repositoryManager.setShouldFetch(true);
                         Toast.makeText(MainActivity.context, "Sneaker updated!", Toast.LENGTH_LONG).show();
+                        if (imageChanged) {
+                            String[] splitRes = sneakerModel.getImage().split("/");
+                            cleanUpOldImages(sneakerModel.getImage());
+                            handleUploadFirebaseStorage(splitRes[splitRes.length - 1]);
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -173,6 +200,8 @@ public class UpdateAdminFragment extends Fragment {
                         Toast.makeText(MainActivity.context, "Failed to updated!", Toast.LENGTH_LONG).show();
                     }
                 });
+
+
     }
 
     private void fetchSneakerData(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
@@ -215,5 +244,81 @@ public class UpdateAdminFragment extends Fragment {
                                 });
                     }
                 });
+    }
+
+    private void handleUploadFirebaseStorage(String folderName) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("images");
+        System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
+        for (Uri uri : MainActivity.adminCrudService.getInstance().getImagesEncodedList()) {
+            try {
+                InputStream stream = MainActivity.context.getContentResolver().openInputStream(uri);
+                byte[] targetArray = IOUtils.toByteArray(stream);
+                UploadTask uploadTask = storageRef.child(folderName + "/" + UUID.randomUUID().toString()).putBytes(targetArray);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        System.out.println("FAILED TO UPLOAD");
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        System.out.println("UPLOAD OK???????????????fjsdklfjdsklfdjs");
+
+                    }
+                });
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void cleanUpOldImages(String url) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl(url);
+        storageRef.listAll()
+                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        System.out.println("UH OH I HAVE TO FETCH AGAIN");
+                        for (StorageReference imageRef : listResult.getItems()) {
+                            imageRef.delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // File deleted successfully
+                                    Log.d("DELETE IMG", "Delete img successfully");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Uh-oh, an error occurred!
+                                    Log.d("DELETE IMG", "Failed to delete image");
+                                }
+                            });
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Uh-oh, an error occurred!
+                    }
+                });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("TAG", "Resume");
+        System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
+        ArrayList<SlideModel> slideModels = new ArrayList<>();
+        for (Uri uri: MainActivity.adminCrudService.getInstance().getImagesEncodedList()) {
+            slideModels.add(new SlideModel(uri.toString(), ScaleTypes.CENTER_CROP));
+        }
+        imageSlider.setImageList(slideModels);
     }
 }
