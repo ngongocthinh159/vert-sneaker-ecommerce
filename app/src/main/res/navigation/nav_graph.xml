@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeAdminFragment">
+    app:startDestination="@id/paymentTest">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -172,6 +172,11 @@
         android:name="com.rmit.ecommerce.fragment.PaymentFragment"
         android:label="fragment_payment"
         tools:layout="@layout/fragment_payment" />
+    <fragment
+        android:id="@+id/paymentTest"
+        android:name="com.rmit.ecommerce.fragment.PaymentTest"
+        android:label="fragment_payment_test"
+        tools:layout="@layout/fragment_payment_test" />
 
     <!--Activity destination-->
 
