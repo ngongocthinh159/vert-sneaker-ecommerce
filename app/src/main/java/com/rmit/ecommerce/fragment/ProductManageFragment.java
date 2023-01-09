@@ -12,6 +12,8 @@ import android.widget.Button;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 
+import kotlin.text.MatchNamedGroupCollection;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProductManageFragment#newInstance} factory method to
@@ -74,6 +76,10 @@ public class ProductManageFragment extends Fragment {
 
         sizeManagerBtn.setOnClickListener(v -> {
             MainActivity.navController.navigate(R.id.action_productManageFragment_to_sizeAdminFragment);
+        });
+
+        updateDetailedButton.setOnClickListener(v -> {
+            MainActivity.navController.navigate(R.id.action_productManageFragment_to_updateAdminFragment);
         });
 
         return view;
