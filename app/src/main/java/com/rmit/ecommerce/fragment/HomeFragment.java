@@ -37,6 +37,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
@@ -145,8 +146,8 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-            // Setup image slider
-            setupImageSlider(view);
+            // Setup image slide
+            setupImageSlider();
 
             // Setup see all buttons
             setupSeeAllButton(view);
@@ -200,24 +201,73 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void setupImageSlider(View view) {
+    private void setupImageSlider() {
         ImageSlider imageSlider = view.findViewById(R.id.imageSlider);
 
+        ArrayList<SneakerModel> sneaker_trending = MainActivity.repositoryManager.getTrendingSneakers();
+        if (sneaker_trending.size() == 0) {
+            imageSlider.setVisibility(View.GONE);
+            return;
+        }
+
+        imageSlider.setVisibility(View.VISIBLE);
         ArrayList<SlideModel> slideModels = new ArrayList<>();
+        ArrayList<Uri> list = new ArrayList<>();
+        ArrayList<String> ids = new ArrayList<>();
+        for (SneakerModel sneaker : sneaker_trending) {
+            // If the trending image link has been fetched
+            if (sneaker.getTrendingImage() != null) {
+                list.add(sneaker.getTrendingImage());
+                ids.add(sneaker.getId());
+                slideModels.add(new SlideModel(String.valueOf(sneaker.getTrendingImage()),  ScaleTypes.CENTER_CROP));
 
-        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-        slideModels.add(new SlideModel(demo_image,  ScaleTypes.CENTER_CROP));
-        imageSlider.setImageList(slideModels);
-
-        imageSlider.setItemClickListener(new ItemClickListener() {
-            @Override
-            public void onItemSelected(int i) {
-                MainActivity.navController.navigate(R.id.action_global_productDetailFragment);
+                if (list.size() == sneaker_trending.size()) {
+                    imageSlider.setImageList(slideModels);
+                    imageSlider.setItemClickListener(new ItemClickListener() {
+                        @Override
+                        public void onItemSelected(int i) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("pid", ids.get(i));
+                            MainActivity.navController.navigate(R.id.action_global_productDetailFragment, bundle);
+                        }
+                    });
+                }
+                continue;
             }
-        });
+
+            // Fetch trending image link
+            String imgUrl = sneaker.getImage() + "/trending";
+            StorageReference gsReference = MainActivity.assetManager.getStorage().getReferenceFromUrl(imgUrl);
+            gsReference.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                @Override
+                public void onSuccess(ListResult listResult) {
+                    listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            list.add(uri);
+                            ids.add(sneaker.getId());
+                            sneaker.setTrendingImage(uri);
+                            if (list.size() == sneaker_trending.size()) {
+                                for (Uri uri1 : list) {
+                                    slideModels.add(new SlideModel(String.valueOf(uri1),  ScaleTypes.CENTER_CROP));
+                                }
+                                imageSlider.setImageList(slideModels);
+                                imageSlider.setItemClickListener(new ItemClickListener() {
+                                    @Override
+                                    public void onItemSelected(int i) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("pid", ids.get(i));
+                                        MainActivity.navController.navigate(R.id.action_global_productDetailFragment, bundle);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+
+
+        }
     }
 
     public void setupRecyclerView() {
@@ -390,6 +440,7 @@ public class HomeFragment extends Fragment {
         MainActivity.repositoryManager.getBestSellerSneakers().clear();
         MainActivity.repositoryManager.getPopularSneakers().clear();
         MainActivity.repositoryManager.getNewArrivalSneakers().clear();
+        MainActivity.repositoryManager.getTrendingSneakers().clear();
         for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
             if (sneaker.getCategory() == null) continue;
             if (sneaker.getCategory().contains("bestseller")) {
@@ -403,8 +454,13 @@ public class HomeFragment extends Fragment {
             if (sneaker.getCategory().contains("newarrival")) {
                 MainActivity.repositoryManager.getNewArrivalSneakers().add(sneaker);
             }
+
+            if (sneaker.getCategory().contains("trending")) {
+                MainActivity.repositoryManager.getTrendingSneakers().add(sneaker);
+            }
         }
 
+        setupImageSlider();
         setupRecyclerView();
     }
 

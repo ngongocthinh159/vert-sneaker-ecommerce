@@ -11,6 +11,7 @@ public class SneakerModel extends SneakerBase {
     @DocumentId
     private String id;
     private Uri figureImage;
+    private Uri trendingImage;
 
     public SneakerModel() {
         super();
@@ -48,5 +49,13 @@ public class SneakerModel extends SneakerBase {
 
     public void setFigureImage(Uri figureImage) {
         this.figureImage = figureImage;
+    }
+
+    public Uri getTrendingImage() {
+        return trendingImage;
+    }
+
+    public void setTrendingImage(Uri trendingImage) {
+        this.trendingImage = trendingImage;
     }
 }

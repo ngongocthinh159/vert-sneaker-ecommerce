@@ -319,20 +319,6 @@ public class ProductDetailFragment extends Fragment {
         });
     }
 
-//    private void setupImageSlider(View view) {
-//        imageSlider = view.findViewById(R.id.imageSlider);
-//
-//        ArrayList<SlideModel> slideModels = new ArrayList<>();
-//
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//
-//        imageSlider.setImageList(slideModels);
-//    }
-
     private void requestCameraPermission() {
         if (ContextCompat.checkSelfPermission(MainActivity.context, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED) {

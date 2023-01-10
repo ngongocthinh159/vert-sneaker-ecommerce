@@ -1,5 +1,7 @@
 package com.rmit.ecommerce.fragment;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -8,18 +10,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
@@ -27,6 +37,7 @@ import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.SneakerModel;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,23 +46,29 @@ import java.util.ArrayList;
  */
 public class SearchFragment extends Fragment {
 
-    MaterialCardView sortPicker;
-    TextInputEditText searchBar;
-    MaterialCardView rangePicker;
+    private View view;
+    private RecyclerView rVSearch;
+    private MyRecyclerViewAdapter myRecyclerViewAdapter;
 
-    private static final int SORT_TYPE_LTH = 0;
-    private static final int SORT_TYPE_HTL = 1;
-    private static final int SORT_TYPE_ATZ = 2;
-    private static final int SORT_TYPE_ZTA = 3;
-    int sortType = SORT_TYPE_LTH;
+    private MaterialCardView sortPicker;
+    private TextInputEditText etSearch;
+    private MaterialCardView rangePicker;
+
+    public static final int SORT_TYPE_LTH = 0;
+    public static final int SORT_TYPE_HTL = 1;
+    public static final int SORT_TYPE_ATZ = 2;
+    public static final int SORT_TYPE_ZTA = 3;
+    int sortType = SORT_TYPE_ATZ;
 
     private static final double RANGE_MIN_VALUE = 0.0;
-    private static final double RANGE_MAX_VALUE = 1000.0;
+    private static final double RANGE_MAX_VALUE = 10000.0;
     private static final double RANGE_STEP = 50.0;
     private static final String[] LOCAL_COUNTRY = {"US", "$"};
     private double range_lower_bound = RANGE_MIN_VALUE;
     private double range_upper_bound = RANGE_MAX_VALUE;
-    double[] range = {range_lower_bound, range_upper_bound};
+    private ArrayList<SneakerModel> originalList = new ArrayList<>();
+    private ArrayList<SneakerModel> currentList = new ArrayList<>();
+    private String searchString = "";
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -97,13 +114,13 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        view = inflater.inflate(R.layout.fragment_search, container, false);
 
         // Setup recycler  view
-        setupRecyclerView(view);
+        setupRecyclerView();
 
         // Setup search bar
-        setupSearchBar(view);
+        setupSearchBar();
 
         // Setup back button
         Button btnBack = view.findViewById(R.id.btnBack);
@@ -115,34 +132,31 @@ public class SearchFragment extends Fragment {
         });
 
         // Setup sort button
-        setupSortPicker(view);
+        setupSortPicker();
 
         // Setup filter button
-        setupRangePicker(view);
+        setupRangePicker();
 
         // Inflate the layout for this fragment
         return view;
     }
 
-    private void sort() {
-        switch (sortType) {
-            case SORT_TYPE_LTH:
-                break;
-            case SORT_TYPE_HTL:
-                break;
-            case SORT_TYPE_ATZ:
-                break;
-            case SORT_TYPE_ZTA:
-                break;
-            default:
-                break;
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!ProductDetailFragment.product_is_available) {
+            MainActivity.repositoryManager.fetchAllSneakers();
+            ProductDetailFragment.product_is_available = true;
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private void setupRangePicker(View view) {
+    private void setupRangePicker() {
         // Price range text
         TextView tvPriceRange = view.findViewById(R.id.tvPriceRange);
+        tvPriceRange.setText("Price: " + (int) range_lower_bound + "$ - " +
+                (int) range_upper_bound + "$");
 
         // Setup range slider
         RangeSlider rangeSlider = view.findViewById(R.id.rangeSlider);
@@ -202,10 +216,13 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 rangeSlider.setValues((float) RANGE_MIN_VALUE, (float) RANGE_MAX_VALUE);
                 rangePicker.setVisibility(View.GONE);
-                sort();
 
-                tvPriceRange.setText("Price range: " + RANGE_MIN_VALUE + "$ - " +
-                        RANGE_MAX_VALUE + "$");
+                range_lower_bound = rangeSlider.getValues().get(0);
+                range_upper_bound = rangeSlider.getValues().get(1);
+                tvPriceRange.setText("Price: " + (int) range_lower_bound + "$ - " +
+                        (int) range_upper_bound + "$");
+
+                filterNow();
             }
         });
 
@@ -215,17 +232,23 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 rangePicker.setVisibility(View.GONE);
-                sort();
 
-                float lower_bound = rangeSlider.getValues().get(0);
-                float upper_bound = rangeSlider.getValues().get(1);
-                tvPriceRange.setText("Price range: " + (int) lower_bound + "$ - " +
-                        (int) upper_bound + "$");
+                range_lower_bound = rangeSlider.getValues().get(0);
+                range_upper_bound = rangeSlider.getValues().get(1);
+                tvPriceRange.setText("Price: " + (int) range_lower_bound + "$ - " +
+                        (int) range_upper_bound + "$");
+
+                filterNow();
             }
         });
     }
 
-    private void setupSortPicker(View view) {
+    private void filterNow() {
+        currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
+        rVSearch.setAdapter(new MyRecyclerViewAdapter(currentList, "search"));
+    }
+
+    private void setupSortPicker() {
         // Setup sort button (hide/show sort dialog)
         Button btnSort = view.findViewById(R.id.btnSort);
         TextView tvSortType = view.findViewById(R.id.tvSortType);
@@ -250,9 +273,10 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 sortPicker.setVisibility(View.GONE);
                 sortType = SORT_TYPE_LTH;
-                sort();
 
                 tvSortType.setText("Sort: low to high");
+
+                filterNow();
             }
         });
 
@@ -261,9 +285,10 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 sortPicker.setVisibility(View.GONE);
                 sortType = SORT_TYPE_HTL;
-                sort();
 
                 tvSortType.setText("Sort: high to low");
+
+                filterNow();
             }
         });
 
@@ -272,9 +297,10 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 sortPicker.setVisibility(View.GONE);
                 sortType = SORT_TYPE_ATZ;
-                sort();
 
                 tvSortType.setText("Sort: A to Z");
+
+                filterNow();
             }
         });
 
@@ -283,54 +309,66 @@ public class SearchFragment extends Fragment {
             public void onClick(View view) {
                 sortPicker.setVisibility(View.GONE);
                 sortType = SORT_TYPE_ZTA;
-                sort();
 
                 tvSortType.setText("Sort: Z to A");
+
+                filterNow();
             }
         });
     }
 
-    private void setupSearchBar(View view) {
+    private void setupSearchBar() {
         // Request focus
-        searchBar = view.findViewById(R.id.searchBar);
-        searchBar.requestFocus();
-
-        // Setup end icon on click
-        TextInputLayout textInputLayoutSearchBar = view.findViewById(R.id.textInputLayoutSearchBar);
-        textInputLayoutSearchBar.setEndIconOnClickListener(new View.OnClickListener() {
+        etSearch = view.findViewById(R.id.searchBar);
+        etSearch.requestFocus();
+        etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "abc", Toast.LENGTH_SHORT).show();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchString = etSearch.getText().toString();
+                filterNow();
             }
         });
     }
 
-    private void setupRecyclerView(View view) {
+    private void setupRecyclerView() {
         if (getArguments() == null) return;
 
         // Setup recycler view
-        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
+        rVSearch = view.findViewById(R.id.rVSearch);
 
         // Get search list
-        ArrayList<SneakerModel> sneakers = new ArrayList<>();
         String category = getArguments().getString("category");
         switch (category) {
             case "all":
-                sneakers = MainActivity.repositoryManager.getSneakers();
+                originalList = MainActivity.repositoryManager.getSneakers();
+                currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
                 break;
             case "bestseller":
-                sneakers = MainActivity.repositoryManager.getBestSellerSneakers();
+                originalList = MainActivity.repositoryManager.getBestSellerSneakers();
+                currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
                 break;
             case "popular":
-                sneakers = MainActivity.repositoryManager.getPopularSneakers();
+                originalList = MainActivity.repositoryManager.getPopularSneakers();
+                currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
                 break;
             case "newarrival":
-                sneakers = MainActivity.repositoryManager.getNewArrivalSneakers();
+                originalList = MainActivity.repositoryManager.getNewArrivalSneakers();
+                currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
                 break;
         }
 
         // Adapter
-        MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter(sneakers, "search");
+        myRecyclerViewAdapter = new MyRecyclerViewAdapter(currentList, "search");
 
         // Layout
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -340,19 +378,68 @@ public class SearchFragment extends Fragment {
         rVSearch.setLayoutManager(gridLayoutManager);
 
         // Setup visibility behaviour of sort picker and filter picker
-        rVSearch.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        rVSearch.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 int curState = recyclerView.getScrollState();
                 if (curState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     sortPicker.setVisibility(View.GONE);
                     rangePicker.setVisibility(View.GONE);
-                    searchBar.clearFocus();
+                    etSearch.clearFocus();
                     Helper.hideKeyBoard(rVSearch);
                 }
 
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+    }
+
+    public void fetchAllSneakers() {
+        MainActivity.repositoryManager.getFireStore().collection("sneakers")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            MainActivity.repositoryManager.getSneakers().clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                Map<String, Object> data = document.getData();
+                                MainActivity.repositoryManager.getSneakers().add(document.toObject(SneakerModel.class));
+                            }
+
+                            getSneakersInCategory();
+                        } else {
+                            Log.d(TAG, "Error", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void getSneakersInCategory() {
+        MainActivity.repositoryManager.getBestSellerSneakers().clear();
+        MainActivity.repositoryManager.getPopularSneakers().clear();
+        MainActivity.repositoryManager.getNewArrivalSneakers().clear();
+        MainActivity.repositoryManager.getTrendingSneakers().clear();
+        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
+            if (sneaker.getCategory() == null) continue;
+            if (sneaker.getCategory().contains("bestseller")) {
+                MainActivity.repositoryManager.getBestSellerSneakers().add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("popular")) {
+                MainActivity.repositoryManager.getPopularSneakers().add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("newarrival")) {
+                MainActivity.repositoryManager.getNewArrivalSneakers().add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("trending")) {
+                MainActivity.repositoryManager.getTrendingSneakers().add(sneaker);
+            }
+        }
+
+        setupRecyclerView();
     }
 }

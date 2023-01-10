@@ -25,6 +25,8 @@ import com.rmit.ecommerce.fragment.HomeFragment;
 import com.rmit.ecommerce.fragment.ShoppingCartFragment;
 import com.rmit.ecommerce.helper.Helper;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public class RepositoryManager {
     private static final ArrayList<SneakerModel> sneakers_bestSeller = new ArrayList<>();
     private static final ArrayList<SneakerModel> sneakers_popular = new ArrayList<>();
     private static final ArrayList<SneakerModel> sneakers_newarrival = new ArrayList<>();
+    private static final ArrayList<SneakerModel> sneakers_trending = new ArrayList<>();
     private CartModel cartObject;
     private ArrayList<CartItemModel> cartItems = new ArrayList<>();
     private Boolean shouldFetch = true;
@@ -133,6 +136,7 @@ public class RepositoryManager {
         sneakers_bestSeller.clear();
         sneakers_popular.clear();
         sneakers_newarrival.clear();
+        sneakers_trending.clear();
         for (SneakerModel sneaker : sneakers) {
             if (sneaker.getCategory() == null) continue;
             if (sneaker.getCategory().contains("bestseller")) {
@@ -145,6 +149,10 @@ public class RepositoryManager {
 
             if (sneaker.getCategory().contains("newarrival")) {
                 sneakers_newarrival.add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("trending")) {
+                sneakers_trending.add(sneaker);
             }
         }
     }
@@ -195,5 +203,9 @@ public class RepositoryManager {
 
     public ArrayList<SneakerModel> getNewArrivalSneakers() {
         return sneakers_newarrival;
+    }
+
+    public ArrayList<SneakerModel> getTrendingSneakers() {
+        return sneakers_trending;
     }
 }

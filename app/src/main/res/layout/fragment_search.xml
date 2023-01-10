@@ -51,6 +51,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
+                        android:lines="1"
+                        android:singleLine="true"
+                        android:inputType="text"
+                        android:imeOptions="actionGo"
+                        android:imeActionId="123"
+                        android:imeActionLabel="Some label"
                         android:hint="@string/search_bar_text"
                         android:textSize="14sp"
                         android:id="@+id/searchBar" />
@@ -111,12 +117,12 @@
                             android:id="@+id/tvSortType"/>
 
                         <TextView
+                            android:id="@+id/tvPriceRange"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Price range: 0$ - 1000$"
-                            android:maxLines="1"
                             android:ellipsize="end"
-                            android:id="@+id/tvPriceRange"/>
+                            android:maxLines="1"
+                            android:text="Price: 0$ - 1000$" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
