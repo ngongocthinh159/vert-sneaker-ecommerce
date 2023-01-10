@@ -27,13 +27,24 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class RepositoryManager {
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static ArrayList<SneakerModel> sneakers = new ArrayList<>();
     private static final ArrayList<SneakerModel> sneakers_bestSeller = new ArrayList<>();
     private static final ArrayList<SneakerModel> sneakers_popular = new ArrayList<>();
     private static final ArrayList<SneakerModel> sneakers_newarrival = new ArrayList<>();
     private CartModel cartObject;
-    private final ArrayList<CartItemModel> cartItems = new ArrayList<>();
+    private ArrayList<CartItemModel> cartItems = new ArrayList<>();
+    private Boolean shouldFetch = true;
+
+    public Boolean getShouldFetch() {
+        return shouldFetch;
+    }
+
+    public void setShouldFetch(Boolean shouldFetch) {
+        this.shouldFetch = shouldFetch;
+    }
+
+
     private UserModel user;
 
     public RepositoryManager() {}

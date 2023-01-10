@@ -1,5 +1,6 @@
 package com.rmit.ecommerce.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -89,8 +90,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdminRVAdapter.ViewHolder holder, int position) {
-        System.out.println("ON BIND VIEW HOLDER CALLED");
+    public void onBindViewHolder(@NonNull AdminRVAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Get references to View
 
         MaterialCardView cardView =  holder.getCardView();
@@ -110,6 +110,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 // TODO: Navigate to Edit or size manager
+                MainActivity.adminCrudService.getInstance().setCurrentSneakerId(sneakers.get(position).getId());
                 MainActivity.navController.navigate(R.id.action_homeAdminFragment_to_productManageFragment);
             }
         });
@@ -118,6 +119,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         productName.setText(sneakers.get(position).getTitle());
         String imageStr = sneakers.get(position).getImage();
         FirebaseStorage db = FirebaseStorage.getInstance();
+
         if (sneakers.get(position).getFigureImage() != null) {
             Picasso.get().load(sneakers.get(position).getFigureImage()).into(productImage);
         } else {
@@ -129,6 +131,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
                             @Override
                             public void onSuccess(ListResult listResult) {
                                 System.out.println("UH OH I HAVE TO FETCH AGAIN");
+                                if (listResult.getItems().isEmpty()) return;
                                 listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {

@@ -2,16 +2,28 @@ package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.AdminRVAdapter;
@@ -22,6 +34,8 @@ import com.rmit.ecommerce.repository.SneakerModel;
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,26 +90,129 @@ public class SizeAdminFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_size_admin, container, false);
         Button previousBtn = view.findViewById(R.id.previousBtn);
+        TextInputLayout sizeInput = view.findViewById(R.id.textInputSize);
+        Button addSizeBtn = view.findViewById(R.id.addSizeBtn);
         previousBtn.setOnClickListener(v -> {
+            handleSaveData(view);
             MainActivity.navController.navigate(R.id.action_sizeAdminFragment_to_productManageFragment);
         });
+
+        addSizeBtn.setOnClickListener(v -> {
+            String inputContent = sizeInput.getEditText().getText().toString();
+            sizeInput.getEditText().setText("");
+            // TODO: Add form validation is integer?
+            handleAddSize(view, inputContent);
+        });
+
         setupRecyclerView(view);
         return view;
+    }
+
+    private void handleSaveData(View view) {
+        ArrayList<HashMap<String, Integer>> data = new ArrayList<>();
+        RecyclerView sizesRv = view.findViewById(R.id.sizesRv);
+        SizeRVAdapter sizeRVAdapter = (SizeRVAdapter) sizesRv.getAdapter();
+        HashMap<String, Integer> sizes = new HashMap<>();
+
+        for (SizeModel s : ((SizeRVAdapter) sizesRv.getAdapter()).getSizes()) {
+            sizes.put(s.getSizeLabel(), s.getQuantity());
+        }
+
+        data.add(sizes);
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                .update("size", data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("ADD SIZE", "DocumentSnapshot successfully updated!");
+                        setupRecyclerView(view);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("ADD SIZE", "Error updating document", e);
+                    }
+                });
+
+    }
+
+    private void handleAddSize(View view, String inputContent) {
+        if (!inputContent.isEmpty()) {
+            FirebaseFirestore fs = FirebaseFirestore.getInstance();
+            ArrayList<HashMap<String, Integer>> data = new ArrayList<>();
+            RecyclerView sizesRv = view.findViewById(R.id.sizesRv);
+            SizeRVAdapter sizeRVAdapter = (SizeRVAdapter) sizesRv.getAdapter();
+            sizeRVAdapter.getSizes().add(new SizeModel(inputContent, 0));
+            HashMap<String, Integer> sizes = new HashMap<>();
+
+            for (SizeModel s : ((SizeRVAdapter) sizesRv.getAdapter()).getSizes()) {
+                sizes.put(s.getSizeLabel(), s.getQuantity());
+            }
+
+            data.add(sizes);
+
+            fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
+                    .update("size", data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("ADD SIZE", "DocumentSnapshot successfully updated!");
+                            setupRecyclerView(view);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("ADD SIZE", "Error updating document", e);
+                        }
+                    });
+        } else {
+            Toast.makeText(MainActivity.context, "Invalid input", Toast.LENGTH_LONG);
+        }
     }
 
     private void setupRecyclerView(View view) {
         // Setup recycler view
         RecyclerView sizeRv = view.findViewById(R.id.sizesRv);
+        SizeRVAdapter emptyRVAdapter = new SizeRVAdapter();
+        LinearLayoutManager emptyLayoutManager = new LinearLayoutManager(view.getContext());
+        sizeRv.setAdapter(emptyRVAdapter);
+        sizeRv.setLayoutManager(emptyLayoutManager);
 
-        ArrayList<SizeModel> sizes = new ArrayList<>();
-        // TODO: Replace mock data with real data
-        for (int i = 0; i < 12; i++) {
-            sizes.add(new SizeModel("42", 4));
+        // Handle firebase41
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        String currentSneakerId = MainActivity.adminCrudService.getInstance().getCurrentSneakerId();
+        if (currentSneakerId != null) {
+            fs.collection("sneakers").document(currentSneakerId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d("DATA", "DocumentSnapshot data: " + document.getData());
+                            ArrayList<SizeModel> sizeModels = new ArrayList<>();
+                            SneakerModel sneakerModel = document.toObject(SneakerModel.class);
+                            if (sneakerModel.getSize().size() > 0) {
+                                for (Map.Entry<String, Integer> set : sneakerModel.getSize().get(0).entrySet()) {
+                                    sizeModels.add(new SizeModel(set.getKey(), set.getValue()));
+                                }
+                            }
+                            SizeRVAdapter sizeRVAdapter = new SizeRVAdapter(sizeModels);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), RecyclerView.VERTICAL, false);
+                            sizeRv.setAdapter(sizeRVAdapter);
+                            sizeRv.setLayoutManager(linearLayoutManager);
+                        } else {
+                            Log.d("DATA", "No such document");
+                        }
+                    } else {
+                        Log.d("DATA", "get failed with ", task.getException());
+                    }
+                }
+            });
         }
-        SizeRVAdapter sizeRVAdapter = new SizeRVAdapter(sizes);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), RecyclerView.VERTICAL, false);
-        sizeRv.setAdapter(sizeRVAdapter);
-        sizeRv.setLayoutManager(linearLayoutManager);
+
 
 
     }

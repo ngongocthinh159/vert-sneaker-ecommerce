@@ -4,17 +4,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.denzcoskun.imageslider.ImageSlider;
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -26,10 +28,8 @@ import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.SneakerBase;
-import com.rmit.ecommerce.repository.SneakerModel;
 
 import org.apache.commons.io.IOUtils;
-import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,6 +44,8 @@ import java.util.UUID;
  */
 public class AddProductFragment extends Fragment {
 
+    ImageSlider imageSlider;
+    View loadingView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -91,7 +93,10 @@ public class AddProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_product, container, false);
         Button prevBtn = view.findViewById(R.id.previousBtn3);
         Button selectImageBtn = view.findViewById(R.id.selectImageBtn);
-        Button submitBtn = view.findViewById(R.id.addProductBtn);
+        Button submitBtn = view.findViewById(R.id.saveBtn);
+        loadingView = view.findViewById(R.id.loadingOverlay);
+        loadingView.setVisibility(View.GONE);
+        imageSlider = view.findViewById(R.id.imageSlider);
         TextInputEditText title = view.findViewById(R.id.title);
         TextInputEditText brand = view.findViewById(R.id.brand);
         TextInputEditText price = view.findViewById(R.id.price);
@@ -107,6 +112,7 @@ public class AddProductFragment extends Fragment {
             MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment);
         });
         submitBtn.setOnClickListener(v -> {
+            loadingView.setVisibility(View.VISIBLE);
             System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
 
 
@@ -126,7 +132,7 @@ public class AddProductFragment extends Fragment {
         });
         return view;
     }
-
+    
     private void handleUploadFirebaseStorage(String folderName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference().child("images");
@@ -163,14 +169,25 @@ public class AddProductFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("FIRESTORE", "DocumentSnapshot written with ID: " + documentReference.getId());
+                        cleanUpAfterUpload();
+                        Toast.makeText(MainActivity.context, "New sneaker created", Toast.LENGTH_SHORT);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("FIRESTORE", "Error adding document", e);
+                        Toast.makeText(MainActivity.context, "There's an error occured", Toast.LENGTH_SHORT);
                     }
                 });
+    }
+
+    private void cleanUpAfterUpload() {
+        loadingView.setVisibility(View.GONE); // Hide loading
+        MainActivity.repositoryManager.setShouldFetch(true); // Fetch new data
+        imageSlider.setImageList(new ArrayList<>());  // Clear carousel
+        MainActivity.adminCrudService.getInstance().setImagesEncodedList(new ArrayList<>()); // Clear current selected images
+        MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment); // Return to home screen
     }
 
     @Override
@@ -178,6 +195,11 @@ public class AddProductFragment extends Fragment {
         super.onResume();
         Log.d("TAG", "Resume");
         System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
-
+        ArrayList<SlideModel> slideModels = new ArrayList<>();
+        for (Uri uri: MainActivity.adminCrudService.getInstance().getImagesEncodedList()) {
+            slideModels.add(new SlideModel(uri.toString(), ScaleTypes.CENTER_CROP));
+        }
+        imageSlider.setImageList(slideModels);
     }
+
 }
