@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.activity.MainActivity;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.paymentsheet.PaymentSheet;
 
@@ -95,9 +97,10 @@ public class PaymentTest extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        view = inflater.inflate(R.layout.fragment_payment_test, container, false);
+
        Button activePaymentBtn = view.findViewById(R.id.activeBtn);
 
-        PaymentConfiguration.init(view.getContext(), PUBLISH_KEY);
+        PaymentConfiguration.init(MainActivity.context, PUBLISH_KEY);
 
         paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
 
@@ -118,11 +121,11 @@ public class PaymentTest extends Fragment {
                     e.printStackTrace();
                 }
             }} ,new Response.ErrorListener(){
-         @Override
-         public void onErrorResponse(VolleyError error ){
-
-            }
-        }){
+             @Override
+             public void onErrorResponse(VolleyError error ){
+                 Log.w("error in response", "Error: " + error.getMessage());
+                }
+            }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String,String> header = new HashMap<>();
@@ -134,7 +137,6 @@ public class PaymentTest extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
         requestQueue.add(stringRequest);
 
-
        activePaymentBtn.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -142,22 +144,22 @@ public class PaymentTest extends Fragment {
            }
        });
 
-
-       return view;
+        return view;
     }
+
 
     private void getEphericalKey(String customerID) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                "https://api.stripe.com/v1/ephemeral_keys",
+                "https://api.stripe.com/v1/ephemeral_key",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject object = new JSONObject(response);
                             EphericalKey = object.getString("id");
+                            System.out.println("check");
                             Toast.makeText(view.getContext(), ClientSecret, Toast.LENGTH_SHORT).show();
                             getClientSecret(customerID,EphericalKey);
-
                         }
                         catch (JSONException e){
                             e.printStackTrace();
@@ -165,7 +167,7 @@ public class PaymentTest extends Fragment {
                     }} ,new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error ){
-
+                Log.w("error in response", "Error: " + error.getMessage());
             }
         }){
             @Override
@@ -179,17 +181,15 @@ public class PaymentTest extends Fragment {
             @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> param = new HashMap<>();
-                param.put("Authorization","Bearer " + SECRET_KEY);
-                return super.getParams();
+                Map<String,String> params = new HashMap<>();
+                params.put("customer", customerID);
+                return params;
             }
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
         requestQueue.add(stringRequest);
     }
-
-
 
     private void getClientSecret(String customerID, String ephericalKey) {
 
@@ -209,7 +209,7 @@ public class PaymentTest extends Fragment {
                     }} ,new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error ){
-
+                Log.w("error in response", "Error: " + error.getMessage());
             }
         }){
             @Override
@@ -219,7 +219,6 @@ public class PaymentTest extends Fragment {
                 return header;
             }
 
-            @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
@@ -227,8 +226,7 @@ public class PaymentTest extends Fragment {
                 params.put("amount", "1000" + "00");
                 params.put("currency", "usd");
                 params.put("automatic_payment_methods[enabled]", "true");
-
-                return super.getParams();
+                return params;
             }
         };
 
