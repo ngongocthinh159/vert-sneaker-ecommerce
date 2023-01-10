@@ -46,6 +46,7 @@ public class PaymentFragment extends Fragment {
 
     View view;
     double total_payment = -1.0;
+    ProgressDialog pd;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -123,98 +124,13 @@ public class PaymentFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // Show loading dialog
-                                ProgressDialog pd = new ProgressDialog(MainActivity.context);
+                                pd = new ProgressDialog(MainActivity.context);
                                 pd.setMessage("loading");
                                 pd.setCancelable(false);
                                 pd.show();
 
-                                // Update database
-                                // Create new cart
-                                UserModel user = MainActivity.repositoryManager.getUser();
-                                Map<String, Object> data = new HashMap<>();
-                                data.put("cartItemIds", new ArrayList<>());
-                                data.put("status", false);
-                                data.put("timestamp", Timestamp.now());
-                                data.put("total", "");
-                                MainActivity.repositoryManager.getFireStore().
-                                        collection("carts").
-                                        add(data).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                            @Override
-                                            public void onSuccess(DocumentReference documentReference) {
-                                                String newCartId = documentReference.getId();
-                                                final int[] count = {0};
-                                                int pdDismissSize = MainActivity.repositoryManager.getCartItems().size() + 2;
-
-                                                // Update local and remote: cart total attribute
-                                                if (total_payment > 0) {
-                                                    // Update local
-                                                    MainActivity.repositoryManager.getCartObject().setTotal(String.valueOf(total_payment));
-                                                    // Update remote
-                                                    MainActivity.repositoryManager.getFireStore()
-                                                            .collection("carts")
-                                                            .document(user.getCurrentCartId())
-                                                            .update("total", String.valueOf(total_payment), "status", true)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    count[0]++;
-                                                                    if (count[0] == pdDismissSize) {
-                                                                        pd.dismiss();
-                                                                        MainActivity.repositoryManager.getCartItems().clear();
-                                                                        popBackStackUntilHome();
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-
-                                                // Update local and remote: user new cart id and cart history
-                                                // Update local
-                                                user.getHistoryCartIds().add(user.getCurrentCartId()); // Move current cart to cart history
-                                                user.setCurrentCartId(newCartId); // User new cart = newly created cart
-                                                // Update remote
-                                                MainActivity.repositoryManager.getFireStore() // Update user new cart and cart history
-                                                        .collection("users")
-                                                        .document(user.getId())
-                                                        .update("historyCartIds", user.getHistoryCartIds(),
-                                                                "currentCartId", user.getCurrentCartId())
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                count[0]++;
-                                                                if (count[0] == pdDismissSize) {
-                                                                    pd.dismiss();
-                                                                    MainActivity.repositoryManager.getCartItems().clear();
-                                                                    popBackStackUntilHome();
-                                                                }
-                                                            }
-                                                        });
-
-                                                // Update local and remote: decrease quantity
-                                                for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
-                                                    for (CartItemModel item : MainActivity.repositoryManager.getCartItems()) {
-                                                        if (sneaker.getId().equals(item.getPid().getId())) {
-                                                            // Update local
-                                                            int cur_quantity = sneaker.getSize().get(0).get(item.getSize() + "");
-                                                            sneaker.getSize().get(0).put(String.valueOf(item.getSize()), cur_quantity - item.getQuantity());
-
-                                                            // Update remote
-                                                            item.getPid().update("size", sneaker.getSize())
-                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            count[0]++;
-                                                                            if (count[0] == pdDismissSize) {
-                                                                                pd.dismiss();
-                                                                                MainActivity.repositoryManager.getCartItems().clear();
-                                                                                popBackStackUntilHome();
-                                                                            }
-                                                                        }
-                                                                    });
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        });
+                                // Check valid transaction
+                                proceedTransaction();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -230,8 +146,127 @@ public class PaymentFragment extends Fragment {
         return view;
     }
 
+    private void proceedTransaction() {
+        // Update database
+        // Create new cart
+        UserModel user = MainActivity.repositoryManager.getUser();
+        Map<String, Object> data = new HashMap<>();
+        data.put("cartItemIds", new ArrayList<>());
+        data.put("status", false);
+        data.put("timestamp", Timestamp.now());
+        data.put("purchaseDate", Timestamp.now());
+        data.put("total", "");
+        MainActivity.repositoryManager.getFireStore().
+                collection("carts").
+                add(data).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        String newCartId = documentReference.getId();
+                        final int[] count = {0};
+                        int pdDismissSize = MainActivity.repositoryManager.getCartItems().size() + 3;
+
+                        // Update local and remote: current cart attributes
+                        if (total_payment > 0) {
+                            // Update local
+                            MainActivity.repositoryManager.getCartObject().setTotal(String.valueOf(total_payment));
+                            MainActivity.repositoryManager.getCartObject().setStatus(true);
+                            MainActivity.repositoryManager.getCartObject().setPurchaseDate(Timestamp.now());
+                            // Update remote
+                            MainActivity.repositoryManager.getFireStore()
+                                    .collection("carts")
+                                    .document(user.getCurrentCartId())
+                                    .update("total", String.valueOf(total_payment), "status", true, "purchaseDate", Timestamp.now())
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            count[0]++;
+                                            if (count[0] == pdDismissSize) {
+                                                pd.dismiss();
+                                                MainActivity.repositoryManager.getCartItems().clear();
+                                                popBackStackUntilHome();
+                                            }
+                                        }
+                                    });
+                        }
+
+                        // Update local and remote: user new cart id and cart history
+                        // Update local
+                        user.getHistoryCartIds().add(user.getCurrentCartId()); // Move current cart to cart history
+                        user.setCurrentCartId(newCartId); // User new cart = newly created cart
+                        // Update remote
+                        MainActivity.repositoryManager.getFireStore() // Update user new cart and cart history
+                                .collection("users")
+                                .document(user.getId())
+                                .update("historyCartIds", user.getHistoryCartIds(),
+                                        "currentCartId", user.getCurrentCartId())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        count[0]++;
+                                        if (count[0] == pdDismissSize) {
+                                            pd.dismiss();
+                                            MainActivity.repositoryManager.getCartItems().clear();
+                                            popBackStackUntilHome();
+                                        }
+                                    }
+                                });
+
+                        // Update local and remote: decrease quantity
+                        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
+                            for (CartItemModel item : MainActivity.repositoryManager.getCartItems()) {
+                                if (sneaker.getId().equals(item.getPid().getId())) {
+                                    // Update local
+                                    int cur_quantity = sneaker.getSize().get(0).get(item.getSize() + "");
+                                    sneaker.getSize().get(0).put(String.valueOf(item.getSize()), cur_quantity - item.getQuantity());
+
+                                    // Update remote
+                                    item.getPid().update("size", sneaker.getSize())
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    count[0]++;
+                                                    if (count[0] == pdDismissSize) {
+                                                        pd.dismiss();
+                                                        MainActivity.repositoryManager.getCartItems().clear();
+                                                        popBackStackUntilHome();
+                                                    }
+                                                }
+                                            });
+                                }
+                            }
+                        }
+
+                        // Update local cart
+                        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    CartModel newCart = task.getResult().toObject(CartModel.class);
+                                    MainActivity.repositoryManager.setCartObject(newCart);
+                                }
+
+                                count[0]++;
+                                if (count[0] == pdDismissSize) {
+                                    pd.dismiss();
+                                    MainActivity.repositoryManager.getCartItems().clear();
+                                    popBackStackUntilHome();
+                                }
+                            }
+                        });
+                    }
+                });
+    }
+
     private void popBackStackUntilHome() {
         while (MainActivity.navController.getCurrentDestination().getId() != R.id.homeFragment) MainActivity.navController.popBackStack();
         Toast.makeText(MainActivity.context, "Payment done!", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isNotValidTransaction() {
+
+
+
+        MainActivity.navController.navigateUp();
+        return true;
     }
 }

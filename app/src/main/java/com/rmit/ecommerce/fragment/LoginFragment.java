@@ -50,6 +50,7 @@ public class LoginFragment extends Fragment {
     private MaterialButton loginBtn;
     private TextInputEditText userName;
     private TextInputEditText passWord;
+    private MaterialButton btnBack;
 
     private static final String LOGIN_ERROR_TEXT = "Your user name or password is not correct!";
 
@@ -102,6 +103,16 @@ public class LoginFragment extends Fragment {
         loginBtn = view.findViewById(R.id.loginBtn);
         userName = view.findViewById(R.id.userName);
         passWord = view.findViewById(R.id.passWord);
+        btnBack = view.findViewById(R.id.previousBtn);
+
+        // Setup back button
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.navController.navigateUp();
+            }
+        });
+
 
         // Setup login button
         setupLoginBtn();

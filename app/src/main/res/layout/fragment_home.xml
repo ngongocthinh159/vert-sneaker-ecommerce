@@ -56,11 +56,19 @@
                 app:iss_period="2000" />
         </com.google.android.material.card.MaterialCardView>
 
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:id="@+id/progressBarHome"
+            android:visibility="visible"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/bestSellerCategory">
+            android:id="@+id/bestSellerCategory"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -110,7 +118,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/popularSneakerCategory">
+            android:id="@+id/popularSneakerCategory"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -150,7 +159,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/newArrivalCategory">
+            android:id="@+id/newArrivalCategory"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"

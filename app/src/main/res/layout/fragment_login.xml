@@ -12,9 +12,9 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         android:text="LOG IN"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="30sp"
         android:textStyle="italic|bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,11 +25,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/previousBtn"
-        android:layout_width="52dp"
-        android:layout_height="48dp"
+        android:layout_width="66dp"
+        android:layout_height="46dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/primary_color"
+        android:backgroundTint="?attr/colorPrimary"
         android:drawableTop="@drawable/back_icon"
         android:paddingLeft="30dp"
         android:paddingTop="8dp"
@@ -69,8 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="1"
-            android:textColor="@color/white" />
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,8 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:maxLines="1"
-            android:textColor="@color/white" />
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -114,9 +112,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/primary_color"
+        android:backgroundTint="?attr/colorPrimary"
         android:padding="10dp"
         android:text="@string/login_text"
+        android:textColor="@color/black"
         app:iconGravity="textEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -132,7 +131,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/primary_color"
+        android:backgroundTint="?attr/colorPrimary"
         android:text="Reset Password"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"

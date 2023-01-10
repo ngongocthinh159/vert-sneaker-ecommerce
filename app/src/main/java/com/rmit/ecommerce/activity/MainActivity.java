@@ -20,6 +20,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Build;
@@ -31,9 +32,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
@@ -51,14 +55,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
 
     public static NavController navController;
+    public static MainActivity mainActivity;
     public static Toolbar toolbar;
     public static BottomNavigationView bottomNav;
     public static Context context;
@@ -77,13 +84,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-
-        // Fetch database
-        repositoryManager.fetchAllSneakers();
-        if (userManager.isLoggedIn()) repositoryManager.fetchUserInformation();
+        mainActivity = this;
 
         // Set view
         setContentView(R.layout.activity_main);
+
+        // Fetch database
+        if (userManager.isLoggedIn()) {
+//            repositoryManager.fetchAllSneakers();
+            repositoryManager.fetchUserInformation();
+        }
 
         // Network checking
         networkChecking();
@@ -92,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         Helper.checkARAvailability();
 
         // Get references
-        toolbar = findViewById(R.id.toolbar);
         bottomNav = findViewById(R.id.bottom_nav);
 
         // Retrieve navController
@@ -100,39 +109,19 @@ public class MainActivity extends AppCompatActivity {
                 (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         navController = navHostFragment.getNavController();
 
-        // Setup toolbar
-        setupToolbar();
-
-        // Set bottom nav with navcontroller
+        // Set bottom nav
         NavigationUI.setupWithNavController(bottomNav, navController);
+        setupBottomNavBehaviour();
 
         getRuntimeDisplayWidthAndHeight();
     }
 
-    private void setupToolbar() {
-        // Set toolbar with navcontroller
-        toolbar.setVisibility(View.GONE);
-        Set<Integer> topLevelDestinations = new HashSet<>();
-        topLevelDestinations.add(R.id.homeFragment);
-        topLevelDestinations.add(R.id.shoppingCartFragment);
-        topLevelDestinations.add(R.id.notificationFragment);
-        topLevelDestinations.add(R.id.personalSettingFragment);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration
-                .Builder(topLevelDestinations)
-                .build();
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
-
+    private void setupBottomNavBehaviour() {
         // Hide and show toolbar/bottomNavBar
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
                 int currentNavId = navDestination.getId();
-                if (currentNavId == R.id.loginFragment ||
-                        currentNavId == R.id.signUpFragment) {
-                    toolbar.setVisibility(View.VISIBLE);
-                } else {
-                    toolbar.setVisibility(View.GONE);
-                }
 
                 if (currentNavId == R.id.homeFragment ||
                         currentNavId == R.id.shoppingCartFragment ||
@@ -142,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                     bottomNav.setVisibility(View.VISIBLE);
                 } else {
                     bottomNav.animate().translationY(bottomNav.getHeight() + 200).setDuration(300);
-//                    bottomNav.setVisibility(View.GONE);
                 }
             }
         });
@@ -153,17 +141,6 @@ public class MainActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         device_height_pxl = displayMetrics.heightPixels;
         device_width_pxl = displayMetrics.widthPixels;
-    }
-
-    private void animateBackGround() {
-        // android:background="@drawable/gradient_list"
-
-        // Animate background
-        LinearLayout linearLayout = findViewById(R.id.mainLayout);
-        AnimationDrawable animationDrawable = (AnimationDrawable) linearLayout.getBackground();
-        animationDrawable.setEnterFadeDuration(2500);
-        animationDrawable.setExitFadeDuration(5000);
-        animationDrawable.start();
     }
 
     @Override
@@ -177,20 +154,35 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
+        adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
 
         // Pick user image
-        if (requestCode == PersonalSettingFragment.OPEN_DOCUMENT_CODE && resultCode == RESULT_OK) {
-            if (data != null) {
-                // this is the image selected by the user
-                Uri imageUri = data.getData();
-            }
-        }
+//        if (requestCode == PersonalSettingFragment.PICK_IMAGE_CODE && resultCode == RESULT_OK) {
+//            if (data != null) {
+//                // this is the image selected by the user
+//                Uri imageUri = data.getData();
+//            }
+//        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case GoogleMapFragment.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
+                if (grantResults != null && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    MainActivity.navController.navigate(R.id.action_personalSettingFragment_to_googleMapFragment);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     private void networkChecking() {
-        if (pd == null) {
+        if (!haveNetworkConnection()) {
             pd = new ProgressDialog(MainActivity.this);
             pd.setCancelable(false);
             pd.setTitle("Waiting for internet connection");
@@ -219,5 +211,44 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         connectivityManager.registerDefaultNetworkCallback(networkCallback);
+    }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
+    public void newSneaker(View view) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("title", "test12");
+        data.put("brand", "test12");
+        data.put("image", "");
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("42", 3);
+        ArrayList<HashMap<String, Integer>> size = new ArrayList<>();
+        size.add(map);
+        data.put("size", size);
+        data.put("price", 200);
+        ArrayList<String> category = new ArrayList<>();
+        category.add("popular");
+        data.put("category", category);
+        MainActivity.repositoryManager.getFireStore().collection("sneakers").add(data).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -158,7 +158,7 @@
                         android:id="@+id/tvUserPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+88-9923457"
+                        android:text="Add your phone number"
                         android:textColor="?attr/colorOnSurface" />
 
                     <TextView
@@ -203,7 +203,7 @@
                         android:id="@+id/tvUserAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="892 Coloseum Street"
+                        android:text="Add your address"
                         android:maxLines="2"
                         android:ellipsize="end"
                         android:textColor="?attr/colorOnSurface" />
@@ -250,7 +250,7 @@
                         android:id="@+id/tvUserCardNum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1234 5678 4312 123"
+                        android:text="Add your card number"
                         android:textColor="?attr/colorOnSurface" />
 
                     <TextView
@@ -284,7 +284,8 @@
         app:layout_constraintBottom_toTopOf="@+id/btnLogout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/btnOrderHistory"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogout"

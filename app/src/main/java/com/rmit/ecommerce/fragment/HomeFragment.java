@@ -1,5 +1,8 @@
 package com.rmit.ecommerce.fragment;
 
+import static android.content.ContentValues.TAG;
+
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -9,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +27,14 @@ import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.rmit.ecommerce.SaveSharedPreference;
@@ -42,6 +50,7 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,9 +58,11 @@ import java.util.Arrays;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    int count = 0;
-    View view;
 
+    private View view;
+    private ProgressDialog pd;
+    private boolean isFirstFetch = true;
+    private ProgressBar progressBarHome;
     String demo_image = "https://cdn.media.amplience.net/i/hibbett/DSC07514-1-scaled-e1614293221200";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -92,6 +103,20 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        if (isFirstFetch && MainActivity.userManager.isLoggedIn()) {
+            fetchAllSneakers();
+            isFirstFetch = false;
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!ProductDetailFragment.product_is_available) {
+            fetchAllSneakers();
+            ProductDetailFragment.product_is_available = true;
+        }
     }
 
     @Override
@@ -100,27 +125,32 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Setup recycle view
-        setupRecyclerView(view);
+        if (MainActivity.userManager.isLoggedIn()) {
+            // Get refs
+            progressBarHome = view.findViewById(R.id.progressBarHome);
 
-        // Setup search bar
-        TextInputEditText searchBar = view.findViewById(R.id.searchBar);
-        searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("category", "all");
-                    MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
+            // Setup recycler view
+            setupRecyclerView();
+
+            // Setup search bar
+            TextInputEditText searchBar = view.findViewById(R.id.searchBar);
+            searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if (hasFocus) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("category", "all");
+                        MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
+                    }
                 }
-            }
-        });
+            });
 
-        // Setup image slider
-        setupImageSlider(view);
+            // Setup image slider
+            setupImageSlider(view);
 
-        // Setup see all buttons
-        setupSeeAllButton(view);
+            // Setup see all buttons
+            setupSeeAllButton(view);
+        }
 
         return view;
     }
@@ -190,62 +220,91 @@ public class HomeFragment extends Fragment {
         });
     }
 
-
-    private void setupRecyclerView(View view) {
+    public void setupRecyclerView() {
         // Setup first category recycler view
         setupFirstCategoryRecyclerView(view);
 
         // Setup 2nd recycler view
-        ArrayList<SneakerModel> sneakers_popular = MainActivity.repositoryManager.getPopularSneakers();
-        if (sneakers_popular.size() >= 1) {
-            RecyclerView rV2 = view.findViewById(R.id.rV2);
-
-            // Adapter
-            MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(sneakers_popular, "popular_sneakers");
-
-            // Layout
-            LinearLayoutManager layoutManager2
-                    = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-
-            // Bind adapter and layout
-            rV2.setAdapter(myRecyclerViewAdapter2);
-            rV2.setLayoutManager(layoutManager2);
-        }
+        setupSecondCategoryRecyclerView(view);
 
         // Setup 3rd recycler view
+        setupThirdCategoryRecyclerView(view);
+    }
+
+    private void setupThirdCategoryRecyclerView(View view) {
+        LinearLayout linearLayout = view.findViewById(R.id.newArrivalCategory);
         ArrayList<SneakerModel> sneakers_newArrival = MainActivity.repositoryManager.getNewArrivalSneakers();
-        if (sneakers_newArrival.size() >= 1) {
-            RecyclerView rV3 = view.findViewById(R.id.rV3);
-
-            // Adapter
-            MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(sneakers_newArrival, "new_arrivals");
-
-            // Layout
-            LinearLayoutManager layoutManager3
-                    = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-
-            // Bind adapter and layout
-            rV3.setAdapter(myRecyclerViewAdapter3);
-            rV3.setLayoutManager(layoutManager3);
+        if (sneakers_newArrival.size() == 0) {
+            return;
         }
+
+        linearLayout.setVisibility(View.VISIBLE);
+        if (progressBarHome.getVisibility() == View.VISIBLE) progressBarHome.setVisibility(View.GONE);
+        // Bind data
+        RecyclerView rV3 = view.findViewById(R.id.rV3);
+
+        // Adapter
+        MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(sneakers_newArrival, "new_arrivals");
+
+        // Layout
+        LinearLayoutManager layoutManager3
+                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        // Bind adapter and layout
+        rV3.setAdapter(myRecyclerViewAdapter3);
+        rV3.setLayoutManager(layoutManager3);
+    }
+
+    private void setupSecondCategoryRecyclerView(View view) {
+        LinearLayout linearLayout = view.findViewById(R.id.popularSneakerCategory);
+        ArrayList<SneakerModel> sneakers_popular = MainActivity.repositoryManager.getPopularSneakers();
+        if (sneakers_popular.size() == 0) {
+            return;
+        }
+
+        linearLayout.setVisibility(View.VISIBLE);
+        if (progressBarHome.getVisibility() == View.VISIBLE) progressBarHome.setVisibility(View.GONE);
+
+        // Bind data
+        RecyclerView rV2 = view.findViewById(R.id.rV2);
+
+        // Adapter
+        MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(sneakers_popular, "popular_sneakers");
+
+        // Layout
+        LinearLayoutManager layoutManager2
+                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        // Bind adapter and layout
+        rV2.setAdapter(myRecyclerViewAdapter2);
+        rV2.setLayoutManager(layoutManager2);
     }
 
     private void setupFirstCategoryRecyclerView(View view) {
-        LinearLayout bestSellerCategory = view.findViewById(R.id.bestSellerCategory);
+        LinearLayout linearLayout = view.findViewById(R.id.bestSellerCategory);
         ArrayList<SneakerModel> sneakers_best = MainActivity.repositoryManager.getBestSellerSneakers();
         if (sneakers_best.size() == 0) { // Check if this category is empty
-            bestSellerCategory.setVisibility(View.GONE);
             return;
         }
+
+        linearLayout.setVisibility(View.VISIBLE);
+        if (progressBarHome.getVisibility() == View.VISIBLE) progressBarHome.setVisibility(View.GONE);
 
         // Bind data to large card
         MaterialCardView cardView = view.findViewById(R.id.largeCard);
         ImageView productImage = cardView.findViewById(R.id.productImageFirst);
         TextView productBranch = cardView.findViewById(R.id.productBranchFirst);
         TextView productName = cardView.findViewById(R.id.productNameFirst);
+        TextView productPrice = cardView.findViewById(R.id.productPrice);
         ProgressBar progressBar = cardView.findViewById(R.id.progressBarFirst);
+
+        // Map text data to large card
         productBranch.setText(sneakers_best.get(0).getBrand());
         productName.setText(sneakers_best.get(0).getTitle());
+        double temp_price = sneakers_best.get(0).getPrice();
+        String text_price = "";
+        if (Math.floor(temp_price) == Math.ceil(temp_price)) text_price = String.valueOf((int) temp_price);
+        productPrice.setText("$" + text_price);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,6 +364,50 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public void fetchAllSneakers() {
+        MainActivity.repositoryManager.getFireStore().collection("sneakers")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            MainActivity.repositoryManager.getSneakers().clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                Map<String, Object> data = document.getData();
+                                MainActivity.repositoryManager.getSneakers().add(document.toObject(SneakerModel.class));
+                            }
+
+                            getSneakersInCategory();
+                        } else {
+                            Log.d(TAG, "Error", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void getSneakersInCategory() {
+        MainActivity.repositoryManager.getBestSellerSneakers().clear();
+        MainActivity.repositoryManager.getPopularSneakers().clear();
+        MainActivity.repositoryManager.getNewArrivalSneakers().clear();
+        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
+            if (sneaker.getCategory() == null) continue;
+            if (sneaker.getCategory().contains("bestseller")) {
+                MainActivity.repositoryManager.getBestSellerSneakers().add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("popular")) {
+                MainActivity.repositoryManager.getPopularSneakers().add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("newarrival")) {
+                MainActivity.repositoryManager.getNewArrivalSneakers().add(sneaker);
+            }
+        }
+
+        setupRecyclerView();
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -318,6 +421,7 @@ public class HomeFragment extends Fragment {
         if (savedInstanceState != null) {
             ScrollView scrollView = view.findViewById(R.id.scrollViewHomeFrag);
             scrollView.setScrollY(savedInstanceState.getInt("scrollYPosition"));
+            isFirstFetch = false;
         }
     }
 }

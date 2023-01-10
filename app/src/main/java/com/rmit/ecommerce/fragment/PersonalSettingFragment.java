@@ -47,7 +47,7 @@ public class PersonalSettingFragment extends Fragment {
     TextView tvPhone;
     TextView tvAddress;
     TextView tvCardNum;
-    public static final int OPEN_DOCUMENT_CODE = 200;
+    public static final int PICK_IMAGE_CODE = 200;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -117,6 +117,15 @@ public class PersonalSettingFragment extends Fragment {
         // Setup edit button
         setupEditButton(view);
 
+        // Setup order history button
+        MaterialButton btnOrderHistory = view.findViewById(R.id.btnOrderHistory);
+        btnOrderHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.navController.navigate(R.id.action_personalSettingFragment_to_orderHistoryFragment);
+            }
+        });
+
         // Setup
         TextView userName = view.findViewById(R.id.tvUserName);
         MaterialButton btnEditUserName = view.findViewById(R.id.editUserName);
@@ -139,15 +148,34 @@ public class PersonalSettingFragment extends Fragment {
 
     private void mapTextData(View view) {
         // Set text data
+        // Display name
         if (MainActivity.repositoryManager.getUser().getDisplayName() != null
-                && !MainActivity.repositoryManager.getUser().getDisplayName().isEmpty())
+                && !MainActivity.repositoryManager.getUser().getDisplayName().isEmpty()) {
             tvUserName.setText(MainActivity.repositoryManager.getUser().getDisplayName());
+        }
+
+        // Phone
+        if (MainActivity.repositoryManager.getUser().getPhone() != null
+                && !MainActivity.repositoryManager.getUser().getPhone().isEmpty()) {
+            tvPhone.setText(MainActivity.repositoryManager.getUser().getPhone().substring(0, 3) + "-" + MainActivity.repositoryManager.getUser().getPhone().substring(3));
+        }
+
+        // Email
         tvEmail.setText(MainActivity.userManager.getUser().getEmail());
-        tvPhone.setText(MainActivity.repositoryManager.getUser().getPhone().substring(0, 3) + "-" + MainActivity.repositoryManager.getUser().getPhone().substring(3));
-        tvAddress.setText(MainActivity.repositoryManager.getUser().getAddress());
-        String temp = MainActivity.repositoryManager.getUser().getCardNumber();
-        String cardNum_formatted = temp.substring(0, 4) + " " + temp.substring(4, 8) + " " + temp.substring(8, 12) + " " + temp.substring(12, 16);
-        tvCardNum.setText(cardNum_formatted);
+
+        // Address
+        if (MainActivity.repositoryManager.getUser().getAddress() != null
+        && !MainActivity.repositoryManager.getUser().getAddress().isEmpty()) {
+            tvAddress.setText(MainActivity.repositoryManager.getUser().getAddress());
+        }
+
+        // Card number
+        if (MainActivity.repositoryManager.getUser().getCardNumber() != null
+                && !MainActivity.repositoryManager.getUser().getCardNumber().isEmpty()) {
+            String temp = MainActivity.repositoryManager.getUser().getCardNumber();
+            String cardNum_formatted = temp.substring(0, 4) + " " + temp.substring(4, 8) + " " + temp.substring(8, 12) + " " + temp.substring(12, 16);
+            tvCardNum.setText(cardNum_formatted);
+        }
     }
 
     private void setupEditButton(View view) {
@@ -173,7 +201,7 @@ public class PersonalSettingFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
-                getActivity().startActivityForResult(intent, OPEN_DOCUMENT_CODE);
+                getActivity().startActivityForResult(intent, PICK_IMAGE_CODE);
             }
         });
 
@@ -350,6 +378,11 @@ public class PersonalSettingFragment extends Fragment {
     private void updatePhone(String phone, DialogInterface dialog) {
         if (phone.isEmpty()) {
             Toast.makeText(MainActivity.context, "Phone cannot be empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (phone.length() < 9) {
+            Toast.makeText(MainActivity.context, "Not a valid phone number!", Toast.LENGTH_SHORT).show();
             return;
         }
 
