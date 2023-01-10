@@ -126,10 +126,12 @@ public class SignUpFragment extends Fragment {
                 CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(getContext(), null, 0, com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator);
                 Drawable progress = IndeterminateDrawable.createCircularDrawable(getContext(), spec);
                 submitBtn.setIcon(progress);
+                disableAllButtons();
 
                 // Check valid username and password
                 if (isNotValid()) {
                     submitBtn.setIcon(null);
+                    enableAllButtons();
                     return;
                 }
 
@@ -177,6 +179,7 @@ public class SignUpFragment extends Fragment {
                             Toast.makeText(MainActivity.context, "Failed to create your account!",
                                     Toast.LENGTH_SHORT).show();
                             submitBtn.setIcon(null);
+                            enableAllButtons();
                         }
                     }
                 });
@@ -272,5 +275,23 @@ public class SignUpFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void enableAllButtons() {
+        userEmail.setEnabled(true);
+        userName.setEnabled(true);
+        password.setEnabled(true);
+        rePassword.setEnabled(true);
+        submitBtn.setEnabled(true);
+        previousBtn.setEnabled(true);
+    }
+
+    private void disableAllButtons() {
+        userEmail.setEnabled(false);
+        userName.setEnabled(false);
+        password.setEnabled(false);
+        rePassword.setEnabled(false);
+        submitBtn.setEnabled(false);
+        previousBtn.setEnabled(false);
     }
 }

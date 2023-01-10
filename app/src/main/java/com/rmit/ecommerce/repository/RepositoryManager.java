@@ -3,6 +3,7 @@ package com.rmit.ecommerce.repository;
 import static android.content.ContentValues.TAG;
 
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.fragment.HomeFragment;
 import com.rmit.ecommerce.fragment.ShoppingCartFragment;
+import com.rmit.ecommerce.helper.Helper;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -80,7 +82,13 @@ public class RepositoryManager {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             user = documentSnapshot.toObject(UserModel.class);
-                            fetchCartObject();
+                            if (user.getIsAdmin()) {
+                                Helper.popBackStackAll();
+                                MainActivity.bottomNav.setVisibility(View.GONE);
+                                MainActivity.navController.navigate(R.id.homeAdminFragment);
+                            } else {
+                                fetchCartObject();
+                            }
                         }
                     }
                 });

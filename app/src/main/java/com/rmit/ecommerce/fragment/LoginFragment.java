@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class LoginFragment extends Fragment {
 
     private View view;
     private MaterialButton loginBtn;
+    private MaterialButton resetBtn;
     private TextInputEditText userName;
     private TextInputEditText passWord;
     private MaterialButton btnBack;
@@ -101,6 +103,7 @@ public class LoginFragment extends Fragment {
 
         // Get refs
         loginBtn = view.findViewById(R.id.loginBtn);
+        resetBtn = view.findViewById(R.id.resetBtn);
         userName = view.findViewById(R.id.userName);
         passWord = view.findViewById(R.id.passWord);
         btnBack = view.findViewById(R.id.previousBtn);
@@ -129,18 +132,13 @@ public class LoginFragment extends Fragment {
                 CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(getContext(), null, 0, com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator);
                 Drawable progress = IndeterminateDrawable.createCircularDrawable(getContext(), spec);
                 loginBtn.setIcon(progress);
+                disableAllButtons();
 
                 // Check valid username and password
                 if (userName.getText().toString().isEmpty() || passWord.getText().toString().isEmpty()) {
                     Toast.makeText(MainActivity.context, "Your user name or password is incorrect!", Toast.LENGTH_SHORT).show();
                     loginBtn.setIcon(null);
-                    return;
-                }
-
-                if (userName.getText().toString().equals("admin")) {
-                    Helper.popBackStackAll();
-                    MainActivity.navController.navigate(R.id.homeAdminFragment);
-                    loginBtn.setIcon(null);
+                    enableAllButtons();
                     return;
                 }
 
@@ -154,11 +152,29 @@ public class LoginFragment extends Fragment {
                         } else {
                             Toast.makeText(MainActivity.context, "Your user name or password is incorrect!", Toast.LENGTH_SHORT).show();
                             loginBtn.setIcon(null);
+                            enableAllButtons();
                         }
                     }
                 });
             }
         });
+    }
+
+    private void enableAllButtons() {
+        loginBtn.setEnabled(true);
+        btnBack.setEnabled(true);
+        userName.setEnabled(true);
+        passWord.setEnabled(true);
+        resetBtn.setEnabled(true);
+    }
+
+
+    private void disableAllButtons() {
+        loginBtn.setEnabled(false);
+        btnBack.setEnabled(false);
+        userName.setEnabled(false);
+        passWord.setEnabled(false);
+        resetBtn.setEnabled(false);
     }
 
     private void fetchUserInformation() {
@@ -167,8 +183,15 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            MainActivity.repositoryManager.setUser(documentSnapshot.toObject(UserModel.class));
-                            fetchCartObject();
+                            UserModel user = documentSnapshot.toObject(UserModel.class);
+                            MainActivity.repositoryManager.setUser(user);
+                            if (user.getIsAdmin()) {
+                                Helper.popBackStackAll();
+                                MainActivity.bottomNav.setVisibility(View.GONE);
+                                MainActivity.navController.navigate(R.id.homeAdminFragment);
+                            } else {
+                                fetchCartObject();
+                            }
                         }
                     }
                 });

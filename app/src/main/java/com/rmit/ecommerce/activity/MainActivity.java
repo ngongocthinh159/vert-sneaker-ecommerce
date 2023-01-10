@@ -86,14 +86,13 @@ public class MainActivity extends AppCompatActivity {
         context = this;
         mainActivity = this;
 
-        // Set view
-        setContentView(R.layout.activity_main);
-
-        // Fetch database
+        // Fetch user information
         if (userManager.isLoggedIn()) {
-//            repositoryManager.fetchAllSneakers();
             repositoryManager.fetchUserInformation();
         }
+
+        // Set view
+        setContentView(R.layout.activity_main);
 
         // Network checking
         networkChecking();
