@@ -1,8 +1,11 @@
 package com.rmit.ecommerce.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -21,8 +24,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.stripe.android.EphemeralKey;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.paymentsheet.PaymentSheet;
+import com.stripe.android.paymentsheet.PaymentSheetResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,14 +101,17 @@ public class PaymentTest extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       view = inflater.inflate(R.layout.fragment_payment_test, container, false);
+        view = inflater.inflate(R.layout.fragment_payment_test, container, false);
 
-       Button activePaymentBtn = view.findViewById(R.id.activeBtn);
+        Button activePaymentBtn = view.findViewById(R.id.activeBtn);
 
         PaymentConfiguration.init(MainActivity.context, PUBLISH_KEY);
 
-        paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
 
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+        paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
+            onPaymentResult(paymentSheetResult);
         });
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
@@ -115,6 +123,7 @@ public class PaymentTest extends Fragment {
                     JSONObject object = new JSONObject(response);
                     customerID = object.getString("id");
                     System.out.println(customerID);
+                    Toast.makeText(MainActivity.context, customerID,Toast.LENGTH_SHORT).show();
                     getEphericalKey(customerID);
                 }
                 catch (JSONException e){
@@ -134,31 +143,38 @@ public class PaymentTest extends Fragment {
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.context);
         requestQueue.add(stringRequest);
 
        activePaymentBtn.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               System.out.println("test");
+               PaymentFlow();
            }
        });
 
         return view;
     }
 
+    private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
+        if (paymentSheetResult instanceof PaymentSheetResult.Completed){
+            Toast.makeText(MainActivity.context, "Payment success", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void getEphericalKey(String customerID) {
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                "https://api.stripe.com/v1/ephemeral_key",
+                "https://api.stripe.com/v1/ephemeral_keys",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject object = new JSONObject(response);
                             EphericalKey = object.getString("id");
-                            System.out.println("check");
-                            Toast.makeText(view.getContext(), ClientSecret, Toast.LENGTH_SHORT).show();
+                            System.out.println(EphericalKey);
+                            Toast.makeText(MainActivity.context, EphericalKey, Toast.LENGTH_SHORT).show();
                             getClientSecret(customerID,EphericalKey);
                         }
                         catch (JSONException e){
@@ -173,12 +189,13 @@ public class PaymentTest extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String,String> header = new HashMap<>();
-                header.put("Authorization","Bearer " + SECRET_KEY);
                 header.put("Stripe-Version","2022-11-15");
+                header.put("Authorization","Bearer " + SECRET_KEY);
+
                 return header;
             }
 
-            @Nullable
+
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
@@ -187,7 +204,7 @@ public class PaymentTest extends Fragment {
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.context);
         requestQueue.add(stringRequest);
     }
 
@@ -201,7 +218,6 @@ public class PaymentTest extends Fragment {
                         try {
                             JSONObject object = new JSONObject(response);
                             ClientSecret = object.getString("client_secret");
-                            Toast.makeText(view.getContext(), ClientSecret, Toast.LENGTH_SHORT).show();
                         }
                         catch (JSONException e){
                             e.printStackTrace();
@@ -223,15 +239,25 @@ public class PaymentTest extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
                 params.put("customer", customerID);
-                params.put("amount", "1000" + "00");
+                params.put("amount", "9" + "00");
                 params.put("currency", "usd");
                 params.put("automatic_payment_methods[enabled]", "true");
                 return params;
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.context);
         requestQueue.add(stringRequest);
 
+    }
+
+    private void PaymentFlow() {
+        paymentSheet.presentWithPaymentIntent(
+                ClientSecret,new PaymentSheet.Configuration("EET Limited Company",
+                        new PaymentSheet.CustomerConfiguration(
+                                customerID,
+                                EphericalKey
+                        ))
+        );
     }
 }
