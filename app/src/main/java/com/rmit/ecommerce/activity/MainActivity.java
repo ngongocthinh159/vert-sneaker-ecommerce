@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public static UserManager userManager = new UserManager();
     public static AssetManager assetManager = new AssetManager();
     public static AdminCrudService adminCrudService = new AdminCrudService();
+    public static UserImageManager userImageManager = new UserImageManager();
     public static boolean isARAvailable = false;
     private ProgressDialog pd;
 
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         System.out.println("Request code: " + requestCode);
         if (requestCode == UserImageManager.RQ_USER_CODE) {
-
+            userImageManager.getInstance().handlePhotoPick(requestCode, resultCode, data);
         } else {
             adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
         }

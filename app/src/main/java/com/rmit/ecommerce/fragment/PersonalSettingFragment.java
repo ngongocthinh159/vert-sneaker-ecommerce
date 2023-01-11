@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.UserImageManager;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,6 +106,9 @@ public class PersonalSettingFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvUserAddress);
         tvCardNum = view.findViewById(R.id.tvUserCardNum);
 
+        // Fetch user's image
+        handleUserImage();
+
         // Setup logout button
         Button btnLogout = view.findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +152,20 @@ public class PersonalSettingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    private void handleUserImage() {
+        System.out.println("Handle user image");
+        if (MainActivity.userImageManager.getInstance().isShouldFetch()) {
+            ImageView avatar = view.findViewById(R.id.ivUserImage);
+            Uri uri = MainActivity.userImageManager.getInstance().getSelectedImage();
+            System.out.println("truoc khi set uri " + uri);
+            if (uri != null) {
+                System.out.println("Chuan bi set uri ne" + uri);
+                Picasso.get().load(uri).into(avatar);
+                MainActivity.userImageManager.getInstance().setShouldFetch(false);
+            }
+        }
     }
 
     private void mapTextData(View view) {
