@@ -35,11 +35,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PaymentTest#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class PaymentTest extends Fragment {
 
     View view;
@@ -54,46 +50,8 @@ public class PaymentTest extends Fragment {
     String EphericalKey;
     String ClientSecret;
 
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public PaymentTest() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PaymentTest.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PaymentTest newInstance(String param1, String param2) {
-        PaymentTest fragment = new PaymentTest();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
 
@@ -104,11 +62,14 @@ public class PaymentTest extends Fragment {
         view = inflater.inflate(R.layout.fragment_payment_test, container, false);
 
         Button activePaymentBtn = view.findViewById(R.id.activeBtn);
+        activePaymentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PaymentFlow();
+            }
+        });
 
         PaymentConfiguration.init(MainActivity.context, PUBLISH_KEY);
-
-
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
             onPaymentResult(paymentSheetResult);
@@ -122,7 +83,6 @@ public class PaymentTest extends Fragment {
                 try {
                     JSONObject object = new JSONObject(response);
                     customerID = object.getString("id");
-                    System.out.println(customerID);
                     Toast.makeText(MainActivity.context, customerID,Toast.LENGTH_SHORT).show();
                     getEphericalKey(customerID);
                 }
@@ -146,23 +106,13 @@ public class PaymentTest extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.context);
         requestQueue.add(stringRequest);
 
-       activePaymentBtn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               PaymentFlow();
-           }
-       });
 
         return view;
     }
 
-    private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
-        if (paymentSheetResult instanceof PaymentSheetResult.Completed){
-            Toast.makeText(MainActivity.context, "Payment success", Toast.LENGTH_SHORT).show();
-        }
-    }
 
 
+    // ----  ----
     private void getEphericalKey(String customerID) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
@@ -172,8 +122,7 @@ public class PaymentTest extends Fragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject object = new JSONObject(response);
-                            EphericalKey = object.getString("id");
-                            System.out.println(EphericalKey);
+                            EphericalKey = object.getString("secret");
                             Toast.makeText(MainActivity.context, EphericalKey, Toast.LENGTH_SHORT).show();
                             getClientSecret(customerID,EphericalKey);
                         }
@@ -235,11 +184,12 @@ public class PaymentTest extends Fragment {
                 return header;
             }
 
+            // assigned payment detail
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
                 params.put("customer", customerID);
-                params.put("amount", "9" + "00");
+                params.put("amount", "11" + "00");
                 params.put("currency", "usd");
                 params.put("automatic_payment_methods[enabled]", "true");
                 return params;
@@ -251,13 +201,19 @@ public class PaymentTest extends Fragment {
 
     }
 
+    // ---- payment sheet ----
+    private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
+        if (paymentSheetResult instanceof PaymentSheetResult.Completed){
+            Toast.makeText(MainActivity.context, "Payment success", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void PaymentFlow() {
         paymentSheet.presentWithPaymentIntent(
                 ClientSecret,new PaymentSheet.Configuration("EET Limited Company",
-                        new PaymentSheet.CustomerConfiguration(
-                                customerID,
-                                EphericalKey
-                        ))
+                        new PaymentSheet.CustomerConfiguration(customerID,EphericalKey))
         );
     }
+
+
 }
