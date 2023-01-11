@@ -113,7 +113,7 @@ public class UpdateAdminFragment extends Fragment {
         fetchSneakerData(title, brand, price, description);
 
         previousBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_updateAdminFragment_to_productManageFragment);
+            MainActivity.navController.navigateUp();
         });
 
         saveBtn.setOnClickListener(v -> {
@@ -152,7 +152,7 @@ public class UpdateAdminFragment extends Fragment {
                         Log.d("DELETE SNEAKER", "DocumentSnapshot successfully deleted!");
                         MainActivity.repositoryManager.setShouldFetch(true);
                         loadingView.setVisibility(View.GONE);
-                        MainActivity.navController.navigate(R.id.action_updateAdminFragment_to_homeAdminFragment);
+                        while (MainActivity.navController.getCurrentDestination().getId() != R.id.homeAdminFragment) MainActivity.navController.popBackStack();
                         Toast.makeText(MainActivity.context, "Deleted!", Toast.LENGTH_LONG).show();
 
                     }

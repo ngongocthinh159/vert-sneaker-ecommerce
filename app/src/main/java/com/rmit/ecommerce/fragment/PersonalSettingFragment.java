@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.UserImageManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -198,10 +199,9 @@ public class PersonalSettingFragment extends Fragment {
         card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
-                getActivity().startActivityForResult(intent, PICK_IMAGE_CODE);
+                getActivity().startActivityForResult(intent, UserImageManager.RQ_USER_CODE);
             }
         });
 

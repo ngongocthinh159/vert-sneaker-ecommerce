@@ -48,6 +48,7 @@ import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.AdminCrudService;
 import com.rmit.ecommerce.repository.AssetManager;
 import com.rmit.ecommerce.repository.RepositoryManager;
+import com.rmit.ecommerce.repository.UserImageManager;
 import com.rmit.ecommerce.repository.UserManager;
 
 import java.io.File;
@@ -153,8 +154,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
+        System.out.println("Request code: " + requestCode);
+        if (requestCode == UserImageManager.RQ_USER_CODE) {
 
+        } else {
+            adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
+        }
         // Pick user image
 //        if (requestCode == PersonalSettingFragment.PICK_IMAGE_CODE && resultCode == RESULT_OK) {
 //            if (data != null) {

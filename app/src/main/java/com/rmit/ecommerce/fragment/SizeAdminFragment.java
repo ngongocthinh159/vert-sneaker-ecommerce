@@ -94,7 +94,7 @@ public class SizeAdminFragment extends Fragment {
         Button addSizeBtn = view.findViewById(R.id.addSizeBtn);
         previousBtn.setOnClickListener(v -> {
             handleSaveData(view);
-            MainActivity.navController.navigate(R.id.action_sizeAdminFragment_to_productManageFragment);
+            MainActivity.navController.navigateUp();
         });
 
         addSizeBtn.setOnClickListener(v -> {

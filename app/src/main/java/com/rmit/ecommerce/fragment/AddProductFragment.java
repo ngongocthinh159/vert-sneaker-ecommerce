@@ -27,6 +27,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.repository.AdminCrudService;
 import com.rmit.ecommerce.repository.SneakerBase;
 
 import org.apache.commons.io.IOUtils;
@@ -106,10 +107,10 @@ public class AddProductFragment extends Fragment {
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"), AdminCrudService.ADMIN_RQ_CODE);
         });
         prevBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment);
+            MainActivity.navController.navigateUp();
         });
         submitBtn.setOnClickListener(v -> {
             loadingView.setVisibility(View.VISIBLE);
@@ -187,7 +188,7 @@ public class AddProductFragment extends Fragment {
         MainActivity.repositoryManager.setShouldFetch(true); // Fetch new data
         imageSlider.setImageList(new ArrayList<>());  // Clear carousel
         MainActivity.adminCrudService.getInstance().setImagesEncodedList(new ArrayList<>()); // Clear current selected images
-        MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment); // Return to home screen
+        MainActivity.navController.navigateUp(); // Return to home screen
     }
 
     @Override
