@@ -3,6 +3,7 @@ package com.rmit.ecommerce.repository;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -45,6 +46,7 @@ public class UserImageManager {
 
     public void handlePhotoPick(int requestCode, int resultCode, Intent data) {
         System.out.println("Handle photo pick");
+        setShouldFetch(true);
         try {
             if (resultCode == Activity.RESULT_OK) {
                 selectedImage = (data.getData());
@@ -67,7 +69,7 @@ public class UserImageManager {
                     }
                 });
 
-                setShouldFetch(true);
+
 
             }
         } catch (Exception e) {

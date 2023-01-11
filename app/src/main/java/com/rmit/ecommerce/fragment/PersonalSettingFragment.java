@@ -24,7 +24,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -33,6 +37,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
@@ -106,9 +113,6 @@ public class PersonalSettingFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvUserAddress);
         tvCardNum = view.findViewById(R.id.tvUserCardNum);
 
-        // Fetch user's image
-        handleUserImage();
-
         // Setup logout button
         Button btnLogout = view.findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +122,9 @@ public class PersonalSettingFragment extends Fragment {
                 dialog.show();
             }
         });
+
+        // Fetch init image
+        handleUserImageInit();
 
         // Map text data (user information)
         mapTextData(view);
@@ -152,17 +159,48 @@ public class PersonalSettingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        handleUserImageAfterChanged();
     }
 
-    private void handleUserImage() {
-        System.out.println("Handle user image");
+    private void handleUserImageInit() {
+        ImageView avatar = view.findViewById(R.id.ivUserImage);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid != null) {
+            StorageReference storageRef = storage.getReference().child("userimages" + "/" + uid);
+            storageRef.listAll()
+                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            if (listResult.getItems().isEmpty()) return;
+                            listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Picasso.get().load(uri).into(avatar);
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Uh-oh, an error occurred!
+                            System.out.println("fail, ko co hinh trong day!!!!!");
+                        }
+                    });
+
+        }
+
+    }
+
+    private void handleUserImageAfterChanged() {
         if (MainActivity.userImageManager.getInstance().isShouldFetch()) {
             ImageView avatar = view.findViewById(R.id.ivUserImage);
             Uri uri = MainActivity.userImageManager.getInstance().getSelectedImage();
-            System.out.println("truoc khi set uri " + uri);
             if (uri != null) {
-                System.out.println("Chuan bi set uri ne" + uri);
+                MainActivity.userImageManager.getInstance().setSelectedImage(null);
                 Picasso.get().load(uri).into(avatar);
+                avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 MainActivity.userImageManager.getInstance().setShouldFetch(false);
             }
         }

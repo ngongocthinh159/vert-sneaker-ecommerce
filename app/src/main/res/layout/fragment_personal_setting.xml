@@ -24,8 +24,8 @@
             android:id="@+id/ivUserImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/shoes_wellcome" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatardefault" />
 
     </com.google.android.material.card.MaterialCardView>
 
