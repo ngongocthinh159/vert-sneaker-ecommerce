@@ -41,6 +41,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firestore.v1.DocumentTransform;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.SneakerModel;
 
@@ -70,14 +71,12 @@ public class ProductDetailFragment extends Fragment {
     TextView tvSize;
     MaterialButtonToggleGroup toggleGroup;
     MaterialButton btnAddToCart;
+    MaterialButton btnCart;
     String pid;
     SneakerModel sneakerModel;
     ImageSlider imageSlider;
 
     public static boolean product_is_available = true;
-
-    String product_image_demo = "https://w7.pngwing.com/pngs/869/483/png-transparent-nike-" +
-            "free-air-force-1-sneakers-nike-air-max-nike-white-football-boot-outdoor-shoe.png";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -134,6 +133,7 @@ public class ProductDetailFragment extends Fragment {
         tvSize = view.findViewById(R.id.tvSize);
         toggleGroup = view.findViewById(R.id.toggleGroup);
         btnAddToCart = view.findViewById(R.id.btnAddToCart);
+        btnCart = view.findViewById(R.id.btnCart);
 
         // Setup data
         bindDataToView();
@@ -157,6 +157,17 @@ public class ProductDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MainActivity.navController.popBackStack();
+            }
+        });
+
+        // Setup shopping cart button
+        btnCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                while (MainActivity.navController.getCurrentDestination().getId() != R.id.homeFragment) {
+                    MainActivity.navController.navigateUp();
+                }
+                MainActivity.navController.navigate(R.id.shoppingCartFragment);
             }
         });
 

@@ -278,7 +278,7 @@
         android:layout_marginStart="9dp"
         android:layout_marginEnd="9dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/primary_color"
+        android:backgroundTint="?attr/colorPrimary"
         android:text="ORDER HISTORY"
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/btnLogout"
