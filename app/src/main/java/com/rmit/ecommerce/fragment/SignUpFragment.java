@@ -48,10 +48,12 @@ import java.util.regex.Pattern;
 public class SignUpFragment extends Fragment {
 
     View view;
+    TextInputEditText userEmail;
     TextInputEditText userName;
     TextInputEditText password;
     TextInputEditText rePassword;
     MaterialButton submitBtn;
+    MaterialButton previousBtn;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -100,12 +102,17 @@ public class SignUpFragment extends Fragment {
 
         // Get refs
         userName = view.findViewById(R.id.userName);
+        userEmail = view.findViewById(R.id.userEmail);
         password = view.findViewById(R.id.password);
         rePassword = view.findViewById(R.id.rePassword);
         submitBtn = view.findViewById(R.id.submitBtn);
+        previousBtn = view.findViewById(R.id.previousBtn);
 
-        // Setup submit button
+        // Setup buttons
         setupSubmitBtn();
+        previousBtn.setOnClickListener(v -> {
+            MainActivity.navController.popBackStack();
+        });
 
         // Inflate the layout for this fragment
         return view;
@@ -119,14 +126,17 @@ public class SignUpFragment extends Fragment {
                 CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(getContext(), null, 0, com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator);
                 Drawable progress = IndeterminateDrawable.createCircularDrawable(getContext(), spec);
                 submitBtn.setIcon(progress);
+                disableAllButtons();
 
                 // Check valid username and password
                 if (isNotValid()) {
                     submitBtn.setIcon(null);
+                    enableAllButtons();
                     return;
                 }
 
-                MainActivity.userManager.getAuth().createUserWithEmailAndPassword(userName.getText().toString(),
+                // Create new user
+                MainActivity.userManager.getAuth().createUserWithEmailAndPassword(userEmail.getText().toString(),
                         password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -136,6 +146,7 @@ public class SignUpFragment extends Fragment {
                             data.put("cartItemIds", new ArrayList<>());
                             data.put("status", false);
                             data.put("timestamp", Timestamp.now());
+                            data.put("purchaseDate", Timestamp.now());
                             data.put("total", "");
                             MainActivity.repositoryManager.getFireStore().
                                     collection("carts").
@@ -150,14 +161,16 @@ public class SignUpFragment extends Fragment {
                                             data2.put("address", "");
                                             data2.put("cardNumber", "");
                                             data2.put("currentCartId", newCartId);
-                                            data2.put("historyCardIds", new ArrayList<>());
+                                            data2.put("displayName", userName.getText().toString());
+                                            data2.put("historyCartIds", new ArrayList<>());
+                                            data2.put("image", "");
                                             data2.put("isAdmin", false);
                                             data2.put("phone", "");
                                             MainActivity.repositoryManager.getFireStore()
                                                     .collection("users")
                                                     .document(newUserId).set(data2);
 
-                                            // Fetch user infor
+                                            // Fetch user information
                                             fetchUserInformation();
                                         }
                                     });
@@ -166,6 +179,7 @@ public class SignUpFragment extends Fragment {
                             Toast.makeText(MainActivity.context, "Failed to create your account!",
                                     Toast.LENGTH_SHORT).show();
                             submitBtn.setIcon(null);
+                            enableAllButtons();
                         }
                     }
                 });
@@ -175,15 +189,15 @@ public class SignUpFragment extends Fragment {
 
     private boolean isNotValid() {
         // Check empty
-        if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
-            Toast.makeText(MainActivity.context, "User name or password cannot be empty!",
+        if (userName.getText().toString().isEmpty() || userEmail.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
+            Toast.makeText(MainActivity.context, "User name/email/password cannot be empty!",
                     Toast.LENGTH_SHORT).show();
             return true;
         }
 
         // Check email valid (form of: abc@mail.com)
-        if (!Helper.isValidEmail(userName.getText().toString())) {
-            Toast.makeText(MainActivity.context, "User name must be an email!",
+        if (!Helper.isValidEmail(userEmail.getText().toString())) {
+            Toast.makeText(MainActivity.context, "Email is not valid!",
                     Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -248,6 +262,7 @@ public class SignUpFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        // Get all the cart items, which has those ids inside cartItemIds list
                         if (cartItemIds.contains(document.getId())) {
                             MainActivity.repositoryManager
                                     .getCartItems().add(document.toObject(CartItemModel.class));
@@ -260,5 +275,23 @@ public class SignUpFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void enableAllButtons() {
+        userEmail.setEnabled(true);
+        userName.setEnabled(true);
+        password.setEnabled(true);
+        rePassword.setEnabled(true);
+        submitBtn.setEnabled(true);
+        previousBtn.setEnabled(true);
+    }
+
+    private void disableAllButtons() {
+        userEmail.setEnabled(false);
+        userName.setEnabled(false);
+        password.setEnabled(false);
+        rePassword.setEnabled(false);
+        submitBtn.setEnabled(false);
+        previousBtn.setEnabled(false);
     }
 }

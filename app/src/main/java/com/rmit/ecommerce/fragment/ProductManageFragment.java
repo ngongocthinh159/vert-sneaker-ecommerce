@@ -71,7 +71,7 @@ public class ProductManageFragment extends Fragment {
         Button previousBtn = view.findViewById(R.id.previousBtn);
 
         previousBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_productManageFragment_to_homeAdminFragment);
+            MainActivity.navController.navigateUp();
         });
 
         sizeManagerBtn.setOnClickListener(v -> {

@@ -2,9 +2,12 @@ package com.rmit.ecommerce.fragment;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +20,7 @@ import android.widget.Button;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -24,6 +28,7 @@ import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.AdminRVAdapter;
 import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
+import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.SneakerModel;
 
 import org.checkerframework.checker.units.qual.A;
@@ -88,9 +93,15 @@ public class HomeAdminFragment extends Fragment {
 
         Button addBtn = view.findViewById(R.id.addBtn);
         Button sortBtn = view.findViewById(R.id.btnSort);
+        Button logoutBtn = view.findViewById(R.id.logOutBtn);
         Button filterBtn = view.findViewById(R.id.btnFilter);
         View sortPicker = view.findViewById(R.id.sortPicker);
         View rangePicker = view.findViewById(R.id.rangePicker);
+
+        logoutBtn.setOnClickListener(v -> {
+            Dialog dialog = createDialog();
+            dialog.show();
+        });
 
         addBtn.setOnClickListener(v -> {
             MainActivity.navController.navigate(R.id.action_homeAdminFragment_to_addProductFragment);
@@ -116,6 +127,28 @@ public class HomeAdminFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private Dialog createDialog() {
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("You are about logging out")
+                .setPositiveButton("Log out", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        MainActivity.userManager.getAuth().signOut();
+
+                        // Redirect to getting started page
+                        Helper.popBackStackAll();
+                        MainActivity.navController.navigate(R.id.gettingStartedFragment);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        // Create the AlertDialog object and return it
+        return builder.create();
     }
 
     private void setupRecyclerView(View view) {

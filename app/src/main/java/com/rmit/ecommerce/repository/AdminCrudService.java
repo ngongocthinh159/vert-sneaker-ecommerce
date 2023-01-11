@@ -23,6 +23,7 @@ public class AdminCrudService {
     public static AdminCrudService adminCrudService = new AdminCrudService();
     private List<Uri> imagesEncodedList = new ArrayList<>();
     private String currentSneakerId;
+    public static int ADMIN_RQ_CODE = 96780;
 
     public String getCurrentSneakerId() {
         return currentSneakerId;
@@ -48,7 +49,7 @@ public class AdminCrudService {
 
     public void handlePhotosPick(int requestCode, int resultCode, @Nullable Intent data, ContentResolver contentResolver)  {
         System.out.println("START ACTIVITY RESULT");
-        System.out.println(resultCode);
+        System.out.println(resultCode); // -1 = success
         System.out.println(requestCode);
         System.out.println(data.getData());
         try {

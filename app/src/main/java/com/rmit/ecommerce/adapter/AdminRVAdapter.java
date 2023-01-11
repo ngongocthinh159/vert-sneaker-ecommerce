@@ -37,6 +37,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         ImageView productImage;
         TextView productBranch;
         TextView productName;
+        TextView productPrice;
         ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
@@ -46,11 +47,16 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
             productImage = itemView.findViewById(R.id.productImage);
             productBranch = itemView.findViewById(R.id.productBranch);
             productName = itemView.findViewById(R.id.productName);
+            productPrice = itemView.findViewById(R.id.productPrice);
             progressBar = itemView.findViewById(R.id.progressBar);
         }
 
         public MaterialCardView getCardView() {
             return cardView;
+        }
+
+        public TextView getProductPrice() {
+            return productPrice;
         }
 
         public ImageView getProductImage() {
@@ -97,6 +103,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();
         TextView productName = holder.getProductName();
+        TextView productPrice = holder.getProductPrice();
         ProgressBar progressBar = holder.getProgressBar();
 
         // Resize width for card view (responsive)
@@ -117,6 +124,8 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
 
         productBranch.setText(sneakers.get(position).getBrand());
         productName.setText(sneakers.get(position).getTitle());
+        productPrice.setText(Double.toString(sneakers.get(position).getPrice()));
+
         String imageStr = sneakers.get(position).getImage();
         FirebaseStorage db = FirebaseStorage.getInstance();
 

@@ -8,13 +8,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -41,11 +44,14 @@ import java.util.Map;
  */
 public class ShoppingCartFragment extends Fragment {
 
+    private View view;
     private static MyRecyclerViewAdapter2 adapter2;
     private static TextView subtotal;
     private static TextView shippingFee;
     private static TextView total;
+    private static MaterialButton btnCheckout;
     private static final double SHIPPING_FEE = 10.00;
+    private static ProgressBar progressBarShoppingCart;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -90,29 +96,21 @@ public class ShoppingCartFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
+        view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
 
         // Get refs
         subtotal = view.findViewById(R.id.subtotal);
         shippingFee = view.findViewById(R.id.shippingFee);
         total = view.findViewById(R.id.total);
-
-        // Setup recycler view
-        RecyclerView rv = view.findViewById(R.id.rv);
-        ArrayList<CartItemModel> cartItems = MainActivity.repositoryManager.getCartItems();
-        adapter2 = new MyRecyclerViewAdapter2(cartItems);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-
-        rv.setAdapter(adapter2);
-        rv.setLayoutManager(linearLayoutManager);
+        progressBarShoppingCart = view.findViewById(R.id.progressBarShoppingCart);
 
         // Setup button
-        MaterialButton btnCheckout = view.findViewById(R.id.btnCheckout);
+        btnCheckout = view.findViewById(R.id.btnCheckout);
+        btnCheckout.setEnabled(false);
         btnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cartItems.size() == 0) {
+                if (MainActivity.repositoryManager.getCartItems().size() == 0) {
                     Toast.makeText(MainActivity.context, "Please add somethings to the shopping cart!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -126,18 +124,30 @@ public class ShoppingCartFragment extends Fragment {
         return view;
     }
 
+    private void setupRecyclerView() {
+        // Setup recycler view
+        RecyclerView rv = view.findViewById(R.id.rv);
+        adapter2 = new MyRecyclerViewAdapter2(MainActivity.repositoryManager.getCartItems());
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+        rv.setAdapter(adapter2);
+        rv.setLayoutManager(linearLayoutManager);
+    }
+
+
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         // Fetch cart object (all cart item ids)
         // Then fetch all cart items
-        fetchCartObject();
+        fetchCartItems();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
 
         // Save cart item information (quantity change)
         for (CartItemModel cartItem : MainActivity.repositoryManager.getCartItems()) {
@@ -173,10 +183,7 @@ public class ShoppingCartFragment extends Fragment {
     }
 
     public void fetchCartItems() {
-        MainActivity.repositoryManager.getCartItems().clear();
-        ArrayList<String> cartItemIds = MainActivity.repositoryManager.
-                getCartObject().
-                getCartItemIds();
+        Log.d("mytag", "fetch");
         CollectionReference collection = MainActivity.repositoryManager.
                 getFireStore().
                 collection("cartItems");
@@ -184,13 +191,83 @@ public class ShoppingCartFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    progressBarShoppingCart.setVisibility(View.GONE);
+                    btnCheckout.setEnabled(false);
+
+                    final int[] count = {MainActivity.repositoryManager.getCartObject().getCartItemIds().size()};
+                    MainActivity.repositoryManager.getCartItems().clear();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (cartItemIds.contains(document.getId())) {
-                            MainActivity.repositoryManager.getCartItems().add(document.toObject(CartItemModel.class));
-                            if (adapter2 != null) adapter2.notifyDataSetChanged();
-                            updatePrice();
-                        }
+                        CartItemModel item = document.toObject(CartItemModel.class);
+                        if (!MainActivity.repositoryManager.getCartObject().getCartItemIds().contains(item.getId())) continue;
+
+                        item.getPid().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+
+                                    // if product has been deleted || product's quantity of that item's size == 0
+                                    if (!document.exists() ||
+                                            (document.exists() && document.toObject(SneakerModel.class).getSize().get(0).get(String.valueOf(item.getSize())) == 0)) {
+                                        String itemId = item.getId();
+
+                                        // Delete item from remote
+                                        MainActivity.repositoryManager.getFireStore().collection("cartItems").document(itemId).delete();
+
+                                        // Update cart object item's id list
+                                        ArrayList<String> newIdList = new ArrayList<>(); // Update local
+                                        for (String id : MainActivity.repositoryManager.getCartObject().getCartItemIds()) {
+                                            if (!id.equals(itemId)) newIdList.add(id);
+                                        }
+                                        MainActivity.repositoryManager.getCartObject().setCartItemIds(newIdList);
+
+                                        MainActivity.repositoryManager
+                                                .getFireStore()
+                                                .collection("carts")
+                                                .document(MainActivity.repositoryManager.getCartObject().getId())
+                                                .update("cartItemIds", newIdList);
+
+                                        count[0]--;
+                                        if (count[0] == 0) {
+                                            setupRecyclerView();
+                                            updatePrice();
+                                            btnCheckout.setEnabled(true);
+                                            progressBarShoppingCart.setVisibility(View.GONE);
+                                        }
+
+                                        return;
+                                    }
+
+                                    // If product is exist
+                                    if (document.exists()) {
+                                        Log.d("mytag", "1234");
+                                        Log.d("mytag", "count: " + count[0]);
+                                        MainActivity.repositoryManager.getCartItems().add(item);
+
+                                        // Check if the current quantity > max quantity
+                                        int maxQuantity = document.toObject(SneakerModel.class).getSize().get(0).get(String.valueOf(item.getSize()));
+                                        if (maxQuantity != 0 && item.getQuantity() > maxQuantity) {
+                                            item.setQuantity(maxQuantity); // Update local
+                                            MainActivity.repositoryManager.getFireStore() // Update remote
+                                                    .collection("cartItems")
+                                                    .document(item.getId())
+                                                    .update("quantity", maxQuantity);
+                                        }
+
+                                        count[0]--;
+                                        if (count[0] == 0) {
+                                            setupRecyclerView();
+                                            updatePrice();
+                                            btnCheckout.setEnabled(true);
+                                            progressBarShoppingCart.setVisibility(View.GONE);
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     }
+                } else {
+
                 }
             }
         });

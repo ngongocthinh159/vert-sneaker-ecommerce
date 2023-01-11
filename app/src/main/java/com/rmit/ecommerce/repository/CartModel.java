@@ -2,6 +2,7 @@ package com.rmit.ecommerce.repository;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 
+import java.sql.Time;
 import java.util.ArrayList;
 
 public class CartModel {
@@ -9,6 +10,7 @@ public class CartModel {
     String id;
 
     private ArrayList<String> cartItemIds;
+    private Timestamp purchaseDate;
     private boolean status;
     private Timestamp timestamp;
     private String total;
@@ -28,6 +30,14 @@ public class CartModel {
 
     public void setCartItemIds(ArrayList<String> cartItemIds) {
         this.cartItemIds = cartItemIds;
+    }
+
+    public Timestamp getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(Timestamp purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 
     public boolean getStatus() {

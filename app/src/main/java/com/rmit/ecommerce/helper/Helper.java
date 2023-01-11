@@ -18,8 +18,13 @@ import androidx.annotation.Nullable;
 import com.google.ar.core.ArCoreApk;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.fragment.SearchFragment;
+import com.rmit.ecommerce.repository.SneakerModel;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,5 +84,69 @@ public class Helper {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    public static ArrayList<SneakerModel> getFilterList(int sortType, double minValue, double maxValue, String keyword, ArrayList<SneakerModel> sneakers) {
+        ArrayList<SneakerModel> filterList= new ArrayList<>();
+        keyword = keyword.toLowerCase();
+
+        // Match keyword
+        if (!keyword.isEmpty()) {
+            for (SneakerModel sneaker : sneakers) {
+                if ((sneaker.getTitle() != null && sneaker.getTitle().toLowerCase().contains(keyword))
+                        || (sneaker.getBrand() != null && sneaker.getBrand().toLowerCase().contains(keyword))) {
+                    filterList.add(sneaker);
+                }
+            }
+        } else {
+            filterList = new ArrayList<>(sneakers);
+        }
+
+        // Match range
+        Iterator<SneakerModel> itr = filterList.iterator();
+        while (itr.hasNext()) {
+            SneakerModel sneaker = (SneakerModel) itr.next();
+            if (!(minValue <= sneaker.getPrice() && sneaker.getPrice() <= maxValue)) {
+                itr.remove();
+            }
+        }
+
+        // Match type
+        switch (sortType) {
+            case SearchFragment.SORT_TYPE_LTH:
+                filterList.sort(new Comparator<SneakerModel>() {
+                    @Override
+                    public int compare(SneakerModel o1, SneakerModel o2) {
+                        return Double.compare(o1.getPrice(), o2.getPrice());
+                    }
+                });
+                break;
+            case SearchFragment.SORT_TYPE_HTL:
+                filterList.sort(new Comparator<SneakerModel>() {
+                    @Override
+                    public int compare(SneakerModel o1, SneakerModel o2) {
+                        return Double.compare(o2.getPrice(), o1.getPrice());
+                    }
+                });
+                break;
+            case SearchFragment.SORT_TYPE_ATZ:
+                filterList.sort(new Comparator<SneakerModel>() {
+                    @Override
+                    public int compare(SneakerModel o1, SneakerModel o2) {
+                        return o1.getTitle().compareToIgnoreCase(o2.getTitle());
+                    }
+                });
+                break;
+            case SearchFragment.SORT_TYPE_ZTA:
+                filterList.sort(new Comparator<SneakerModel>() {
+                    @Override
+                    public int compare(SneakerModel o1, SneakerModel o2) {
+                        return o2.getTitle().compareToIgnoreCase(o1.getTitle());
+                    }
+                });
+                break;
+        }
+
+        return filterList;
     }
 }

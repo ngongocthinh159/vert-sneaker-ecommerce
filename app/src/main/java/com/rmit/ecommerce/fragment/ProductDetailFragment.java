@@ -1,6 +1,9 @@
 package com.rmit.ecommerce.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,11 +26,14 @@ import android.widget.Toast;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ServerTimestamp;
@@ -67,6 +73,8 @@ public class ProductDetailFragment extends Fragment {
     String pid;
     SneakerModel sneakerModel;
     ImageSlider imageSlider;
+
+    public static boolean product_is_available = true;
 
     String product_image_demo = "https://w7.pngwing.com/pngs/869/483/png-transparent-nike-" +
             "free-air-force-1-sneakers-nike-air-max-nike-white-football-boot-outdoor-shoe.png";
@@ -115,6 +123,7 @@ public class ProductDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_product_detail, container, false);
+        product_is_available = true;
 
         // Get refs
         largeTitle = view.findViewById(R.id.largeTitle);
@@ -217,47 +226,67 @@ public class ProductDetailFragment extends Fragment {
         // Get sneaker model
         if (getArguments() == null) return;
         pid = getArguments().getString("pid");
-        for (SneakerModel sneaker : MainActivity.repositoryManager.getSneakers()) {
-            if (sneaker.getId().equals(pid)) {
-                sneakerModel = sneaker;
-                break;
-            }
-        }
+        MainActivity.repositoryManager.getFireStore()
+                .collection("sneakers")
+                .document(pid).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            SneakerModel sneakerModel = task.getResult().toObject(SneakerModel.class);
 
-        // Get available size
-        ArrayList<Integer> sizes = new ArrayList<>();
-        if (sneakerModel.getSize().size() != 0) {
-            HashMap<String, Integer> cur_size = sneakerModel.getSize().get(0);
-            if (cur_size != null) {
-                for (String size : cur_size.keySet()) {
-                    if (size != null) sizes.add(Integer.valueOf(size));
-                }
-            }
-        }
-        Collections.sort(sizes);
+                            if (sneakerModel != null) {
+                                // Get available size
+                                ArrayList<Integer> sizes = new ArrayList<>();
+                                if (sneakerModel.getSize() != null && sneakerModel.getSize().size() != 0) {
+                                    HashMap<String, Integer> cur_size = sneakerModel.getSize().get(0);
+                                    if (cur_size != null) {
+                                        for (Map.Entry<String, Integer> entry : cur_size.entrySet()) {
+                                            String size = entry.getKey();
+                                            int quantity = entry.getValue();
+                                            if (quantity > 0) sizes.add(Integer.valueOf(size));
+                                        }
+                                    }
+                                }
+                                Collections.sort(sizes);
 
-        // Setup text data
-        if (sneakerModel == null) return;
-        largeTitle.setText(sneakerModel.getTitle());
-        productBrand_detail.setText(sneakerModel.getBrand());
-        productName_detail.setText(sneakerModel.getTitle());
-        productPrice_detail.setText("$" + String.valueOf(sneakerModel.getPrice()));
-        productDes_detail.setText(sneakerModel.getDescription());
-        if (sizes.size() == 0) tvSize.setText("Sold out");
-        for (int i = 34; i <= 46; i++) {
-            if (!sizes.contains(i)) {
-                // Turn off sizes that not available
-                ((MaterialButton) toggleGroup.getChildAt(i - 34)).setVisibility(View.GONE);
-            }
-        }
+                                // Setup text data
+                                largeTitle.setText(sneakerModel.getTitle());
+                                productBrand_detail.setText(sneakerModel.getBrand());
+                                productName_detail.setText(sneakerModel.getTitle());
+                                productPrice_detail.setText("$" + String.valueOf(sneakerModel.getPrice()));
+                                productDes_detail.setText(sneakerModel.getDescription());
+                                if (sizes.size() == 0) tvSize.setText("Sold out");
+                                for (int i = 34; i <= 46; i++) {
+                                    if (!sizes.contains(i)) {
+                                        // Turn off sizes that not available
+                                        ((MaterialButton) toggleGroup.getChildAt(i - 34)).setVisibility(View.GONE);
+                                    }
+                                }
 
-        // Setup image
-        imageSlider = view.findViewById(R.id.imageSlider);
-        ArrayList<SlideModel> slideModels = new ArrayList<>();
-        imageSlider.setImageList(slideModels);
-        if (!sneakerModel.getImage().isEmpty() && sneakerModel.getImage() != null) {
-            MainActivity.assetManager.fetchAllImages(sneakerModel.getImage(), imageSlider, slideModels);
-        }
+                                // Setup image
+                                imageSlider = view.findViewById(R.id.imageSlider);
+                                ArrayList<SlideModel> slideModels = new ArrayList<>();
+                                imageSlider.setImageList(slideModels);
+                                if (!sneakerModel.getImage().isEmpty() && sneakerModel.getImage() != null) {
+                                    MainActivity.assetManager.fetchAllImages(sneakerModel.getImage(), imageSlider, slideModels);
+                                }
+                            } else {
+                                product_is_available = false;
+                                MainActivity.navController.navigateUp();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.context);
+                                builder.setMessage("This product is currently unavailable!");
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.create().show();
+                            }
+                        }
+                    }
+                });
     }
 
     private void setupARButton() {
@@ -289,20 +318,6 @@ public class ProductDetailFragment extends Fragment {
             }
         });
     }
-
-//    private void setupImageSlider(View view) {
-//        imageSlider = view.findViewById(R.id.imageSlider);
-//
-//        ArrayList<SlideModel> slideModels = new ArrayList<>();
-//
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//        slideModels.add(new SlideModel(R.drawable.af1_demo,  ScaleTypes.CENTER_CROP));
-//
-//        imageSlider.setImageList(slideModels);
-//    }
 
     private void requestCameraPermission() {
         if (ContextCompat.checkSelfPermission(MainActivity.context, Manifest.permission.CAMERA)

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,6 +176,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         cartItems.get(position).getPid().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                // If the product is still exist
                 if (documentSnapshot.exists()) {
                     SneakerModel sneakerModel = documentSnapshot.toObject(SneakerModel.class);
                     productBranch.setText(sneakerModel.getBrand());
@@ -254,7 +256,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 // Delete cart item
                                                 cartItems.remove(position); // Update local
-                                                MainActivity.repositoryManager.getFireStore().
+                                                MainActivity.repositoryManager.getFireStore(). // Update remote
                                                         collection("cartItems").
                                                         document(itemId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override

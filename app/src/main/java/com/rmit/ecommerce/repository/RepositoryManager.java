@@ -3,9 +3,11 @@ package com.rmit.ecommerce.repository;
 import static android.content.ContentValues.TAG;
 
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,8 +19,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.fragment.HomeFragment;
 import com.rmit.ecommerce.fragment.ShoppingCartFragment;
+import com.rmit.ecommerce.helper.Helper;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -29,6 +36,7 @@ public class RepositoryManager {
     private static final ArrayList<SneakerModel> sneakers_bestSeller = new ArrayList<>();
     private static final ArrayList<SneakerModel> sneakers_popular = new ArrayList<>();
     private static final ArrayList<SneakerModel> sneakers_newarrival = new ArrayList<>();
+    private static final ArrayList<SneakerModel> sneakers_trending = new ArrayList<>();
     private CartModel cartObject;
     private ArrayList<CartItemModel> cartItems = new ArrayList<>();
     private Boolean shouldFetch = true;
@@ -47,6 +55,7 @@ public class RepositoryManager {
     public RepositoryManager() {}
 
     public void fetchAllSneakers() {
+        sneakers.clear();
         db.collection("sneakers")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -76,7 +85,13 @@ public class RepositoryManager {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             user = documentSnapshot.toObject(UserModel.class);
-                            fetchCartObject();
+                            if (user.getIsAdmin()) {
+                                Helper.popBackStackAll();
+                                MainActivity.bottomNav.setVisibility(View.GONE);
+                                MainActivity.navController.navigate(R.id.homeAdminFragment);
+                            } else {
+                                fetchCartObject();
+                            }
                         }
                     }
                 });
@@ -108,7 +123,7 @@ public class RepositoryManager {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (cartItemIds.contains(document.getId())) {
+                        if (cartObject.getCartItemIds().contains(document.getId())) {
                             cartItems.add(document.toObject(CartItemModel.class));
                         }
                     }
@@ -118,6 +133,10 @@ public class RepositoryManager {
     }
 
     private void getSneakersInCategory() {
+        sneakers_bestSeller.clear();
+        sneakers_popular.clear();
+        sneakers_newarrival.clear();
+        sneakers_trending.clear();
         for (SneakerModel sneaker : sneakers) {
             if (sneaker.getCategory() == null) continue;
             if (sneaker.getCategory().contains("bestseller")) {
@@ -130,6 +149,10 @@ public class RepositoryManager {
 
             if (sneaker.getCategory().contains("newarrival")) {
                 sneakers_newarrival.add(sneaker);
+            }
+
+            if (sneaker.getCategory().contains("trending")) {
+                sneakers_trending.add(sneaker);
             }
         }
     }
@@ -180,5 +203,9 @@ public class RepositoryManager {
 
     public ArrayList<SneakerModel> getNewArrivalSneakers() {
         return sneakers_newarrival;
+    }
+
+    public ArrayList<SneakerModel> getTrendingSneakers() {
+        return sneakers_trending;
     }
 }

@@ -14,15 +14,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
+import com.rmit.ecommerce.fragment.HomeFragment;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
@@ -43,6 +48,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         ImageView productImage;
         TextView productBranch;
         TextView productName;
+        TextView productPrice;
         ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
@@ -53,6 +59,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             productBranch = itemView.findViewById(R.id.productBranch);
             productName = itemView.findViewById(R.id.productName);
             progressBar = itemView.findViewById(R.id.progressBar);
+            productPrice = itemView.findViewById(R.id.productPrice);
         }
 
         public MaterialCardView getCardView() {
@@ -73,6 +80,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
         public ProgressBar getProgressBar() {
             return progressBar;
+        }
+
+        public TextView getProductPrice() {
+            return productPrice;
         }
     }
 
@@ -102,6 +113,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();
         TextView productName = holder.getProductName();
+        TextView productPrice = holder.getProductPrice();
         ProgressBar progressBar = holder.getProgressBar();
 
         // Resize width for card view (responsive)
@@ -130,6 +142,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         // Fetch text data to app
         productBranch.setText(sneakers.get(position).getBrand());
         productName.setText(sneakers.get(position).getTitle());
+        double temp_price = sneakers.get(position).getPrice();
+        String text_price = "";
+        if (Math.floor(temp_price) == Math.ceil(temp_price)) text_price = String.valueOf((int) temp_price);
+        productPrice.setText("$" + text_price);
 
         // Fetch image data
         String imageStr = sneakers.get(position).getImage();
@@ -139,7 +155,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         } else {
             productImage.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-            if (!imageStr.isEmpty() && productImage.getDrawable() == null) {
+            if (imageStr != null && !imageStr.isEmpty() && productImage.getDrawable() == null) {
                 db.getReferenceFromUrl(imageStr).listAll()
                         .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                             @Override
@@ -163,9 +179,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                         });
             }
         }
-//        Drawable image = null;
-//        if (!sneakers.get(position).getImage().isEmpty()) image = MainActivity.assetManager.fetchImage(sneakers.get(position).getImage());
-//        if (image != null) productImage.setImageDrawable(image);
     }
 
     @Override
