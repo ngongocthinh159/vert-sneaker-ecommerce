@@ -3,6 +3,7 @@ package com.rmit.ecommerce.fragment;
 import static android.content.ContentValues.TAG;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -45,6 +46,7 @@ import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.RepositoryManager;
 import com.rmit.ecommerce.repository.SneakerModel;
+import com.rmit.ecommerce.repository.UserImageManager;
 import com.squareup.picasso.Picasso;
 
 import org.checkerframework.checker.units.qual.A;
@@ -125,6 +127,14 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        Button searchByImage = view.findViewById(R.id.btnSearchByImage);
+
+        searchByImage.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            getActivity().startActivityForResult(intent, MainActivity.mlManager.RQ_ML_CODE);
+        });
 
         if (MainActivity.userManager.isLoggedIn()) {
             // Get refs
