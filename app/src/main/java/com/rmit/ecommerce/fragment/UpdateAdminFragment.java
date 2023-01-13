@@ -1,5 +1,6 @@
 package com.rmit.ecommerce.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -117,7 +118,14 @@ public class UpdateAdminFragment extends Fragment {
         });
 
         saveBtn.setOnClickListener(v -> {
-            handleSaveData(title, brand, price, description);
+            if (formValidation(
+                    title,
+                    brand,
+                    price,
+                    description
+            )) {
+                handleSaveData(title, brand, price, description);
+            }
         });
 
         deleteBtn.setOnClickListener(v -> {
@@ -169,6 +177,36 @@ public class UpdateAdminFragment extends Fragment {
 
     }
 
+    private boolean formValidation(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
+        if (title.getText().toString().equals("") ||
+                brand.getText().toString().equals("") ||
+                description.getText().toString().equals("")
+        ) {
+            fireValidationToast("You must fill all fields");
+            return false;
+        }
+
+        try {
+            Double.parseDouble(price.getText().toString());
+        } catch (Exception e) {
+            price.setError("Should be a decimal or integer");
+            fireValidationToast("Price is not valid");
+            return false;
+        }
+
+        if (MainActivity.adminCrudService.getInstance().getImagesEncodedList().size() == 0) {
+            fireValidationToast("No image is selected");
+            return false;
+        }
+        return true;
+    }
+
+
+
+    private void fireValidationToast(String message) {
+        Toast.makeText(MainActivity.context, message, Toast.LENGTH_SHORT).show();
+    }
+
     private void handleSaveData(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
         loadingView.setVisibility(View.VISIBLE);
         sneakerModel.setTitle(title.getText().toString());
@@ -209,6 +247,7 @@ public class UpdateAdminFragment extends Fragment {
         FirebaseFirestore fs = FirebaseFirestore.getInstance();
         fs.collection("sneakers").document(MainActivity.adminCrudService.getInstance().getCurrentSneakerId())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         sneakerModel = documentSnapshot.toObject(SneakerModel.class);
@@ -242,6 +281,11 @@ public class UpdateAdminFragment extends Fragment {
                                         loadingView.setVisibility(View.GONE);
                                     }
                                 });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.context, "Failed to fetch sneaker data", Toast.LENGTH_LONG).show();
                     }
                 });
     }
