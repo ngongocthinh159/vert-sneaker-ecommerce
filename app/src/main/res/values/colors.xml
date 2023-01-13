@@ -17,11 +17,11 @@
 
     <!--    Colors for material design 3 -->
     <color name="seed">#4976c7</color>
-    <color name="md_theme_light_primary">#2C5DAC</color>
+    <color name="md_theme_light_primary">#1C304D</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#D8E2FF</color>
     <color name="md_theme_light_onPrimaryContainer">#001A41</color>
-    <color name="md_theme_light_secondary">#565E71</color>
+    <color name="md_theme_light_secondary">#CDCFD3</color>
     <color name="md_theme_light_onSecondary">#FFFFFF</color>
     <color name="md_theme_light_secondaryContainer">#DBE2F9</color>
     <color name="md_theme_light_onSecondaryContainer">#141B2C</color>
