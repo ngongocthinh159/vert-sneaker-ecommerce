@@ -100,8 +100,23 @@ public class SizeAdminFragment extends Fragment {
         addSizeBtn.setOnClickListener(v -> {
             String inputContent = sizeInput.getEditText().getText().toString();
             sizeInput.getEditText().setText("");
+            boolean canAdd = true;
             // TODO: Add form validation is integer?
-            handleAddSize(view, inputContent);
+            try {
+                int convertedValue = Integer.parseInt(inputContent);
+                if(convertedValue < 34 || convertedValue > 46 ) {
+                    sizeInput.setError("Size must be >= 34 and <= 46");
+                    canAdd = false;
+                }
+
+            } catch (Exception e) {
+                sizeInput.setError("Invalid input");
+                canAdd = false;
+            }
+
+            if (canAdd) {
+                handleAddSize(view, inputContent);
+            }
         });
 
         setupRecyclerView(view);

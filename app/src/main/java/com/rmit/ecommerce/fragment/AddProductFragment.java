@@ -113,25 +113,50 @@ public class AddProductFragment extends Fragment {
             MainActivity.navController.navigateUp();
         });
         submitBtn.setOnClickListener(v -> {
-            loadingView.setVisibility(View.VISIBLE);
-            System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
-
-
-            // TODO: ADD FORM VALIDATION
-
-            // TODO: Add progress bar, after upload, notify success or fail, navigate to home admin, refetch db
-            String folderName = title.getText().toString().replace(' ', '-');
-            // Handle upload firebase storage
-            handleUploadFirebaseStorage(folderName);
-            // Handle upload firestore
-            handleUploadFireStore(title.getText().toString(),
-                    brand.getText().toString(),
-                    "gs://vert-ecommerce.appspot.com/images/" + folderName,
-                    description.getText().toString(),
-                    Double.valueOf(price.getText().toString()));
-
+            if (formValidation(title, brand, price, description)) {
+                loadingView.setVisibility(View.VISIBLE);
+                String folderName = title.getText().toString().replace(' ', '-');
+                // Handle upload firebase storage
+                handleUploadFirebaseStorage(folderName);
+                // Handle upload firestore
+                handleUploadFireStore(title.getText().toString(),
+                        brand.getText().toString(),
+                        "gs://vert-ecommerce.appspot.com/images/" + folderName,
+                        description.getText().toString(),
+                        Double.parseDouble(price.getText().toString()));
+            }
         });
         return view;
+    }
+
+    private boolean formValidation(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
+        if (title.getText().toString().equals("") ||
+                brand.getText().toString().equals("") ||
+                description.getText().toString().equals("")
+        ) {
+            fireValidationToast("You must fill all fields");
+            return false;
+        }
+
+        try {
+            Double.parseDouble(price.getText().toString());
+        } catch (Exception e) {
+            price.setError("Should be a decimal or integer");
+            fireValidationToast("Price is not valid");
+            return false;
+        }
+
+        if (MainActivity.adminCrudService.getInstance().getImagesEncodedList().size() == 0) {
+            fireValidationToast("No image is selected");
+            return false;
+        }
+        return true;
+    }
+
+
+
+    private void fireValidationToast(String message) {
+        Toast.makeText(MainActivity.context, message, Toast.LENGTH_SHORT).show();
     }
     
     private void handleUploadFirebaseStorage(String folderName) {
@@ -195,7 +220,6 @@ public class AddProductFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d("TAG", "Resume");
-        System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
         ArrayList<SlideModel> slideModels = new ArrayList<>();
         for (Uri uri: MainActivity.adminCrudService.getInstance().getImagesEncodedList()) {
             slideModels.add(new SlideModel(uri.toString(), ScaleTypes.CENTER_CROP));
