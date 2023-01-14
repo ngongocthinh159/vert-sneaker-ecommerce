@@ -79,12 +79,7 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
         listenNotification(view);
-        Button clearNotiBtn = view.findViewById(R.id.clearNotiBtn);
         setupRecyclerView(view);
-        clearNotiBtn.setOnClickListener(v -> {
-            // TODO: Clear local notification
-            System.out.println("CLEARED");
-        });
         // Inflate the layout for this fragment
 
         return view;

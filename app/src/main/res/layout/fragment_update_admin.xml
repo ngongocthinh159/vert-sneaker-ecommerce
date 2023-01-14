@@ -149,7 +149,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDescription" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveBtn"
+            android:id="@+id/publishBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -176,7 +176,7 @@
             android:text="DELETE"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/saveBtn"
+            app:layout_constraintEnd_toStartOf="@+id/publishBtn"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.denzcoskun.imageslider.ImageSlider

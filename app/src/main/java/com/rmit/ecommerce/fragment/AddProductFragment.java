@@ -94,7 +94,7 @@ public class AddProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_product, container, false);
         Button prevBtn = view.findViewById(R.id.previousBtn3);
         Button selectImageBtn = view.findViewById(R.id.selectImageBtn);
-        Button submitBtn = view.findViewById(R.id.saveBtn);
+        Button submitBtn = view.findViewById(R.id.publishBtn);
         loadingView = view.findViewById(R.id.loadingOverlay);
         loadingView.setVisibility(View.GONE);
         imageSlider = view.findViewById(R.id.imageSlider);

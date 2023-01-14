@@ -133,6 +133,9 @@
         <action
             android:id="@+id/action_homeAdminFragment_to_productManageFragment"
             app:destination="@id/productManageFragment" />
+        <action
+            android:id="@+id/action_homeAdminFragment_to_notificationManager"
+            app:destination="@id/notificationManager" />
     </fragment>
     <fragment
         android:id="@+id/addProductFragment"
@@ -188,6 +191,11 @@
         android:name="com.rmit.ecommerce.fragment.ProductCategoryManager"
         android:label="fragment_product_category_manager"
         tools:layout="@layout/fragment_product_category_manager" />
+    <fragment
+        android:id="@+id/notificationManager"
+        android:name="com.rmit.ecommerce.NotificationManager"
+        android:label="fragment_notification_manager"
+        tools:layout="@layout/fragment_notification_manager" />
 
     <!--Activity destination-->
 

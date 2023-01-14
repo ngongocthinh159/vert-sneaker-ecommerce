@@ -20,16 +20,13 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.repository.AdminCrudService;
 import com.rmit.ecommerce.repository.SneakerModel;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.io.IOUtils;
 
@@ -37,7 +34,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -112,7 +108,7 @@ public class ProductCategoryManager extends Fragment {
             MainActivity.navController.navigateUp();
         });
 
-        Button saveBtn = view.findViewById(R.id.saveBtn);
+        Button saveBtn = view.findViewById(R.id.publishBtn);
 
         saveBtn.setOnClickListener(v -> {
             handleSaveChanges(view);
