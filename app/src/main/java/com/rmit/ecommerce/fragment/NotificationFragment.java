@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +21,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
 import com.rmit.ecommerce.adapter.NotificationRVAdapter;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.NotificationModel;
 
 /**
  * A simple {@link Fragment} subclass.

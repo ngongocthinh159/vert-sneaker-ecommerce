@@ -1,12 +1,28 @@
 package com.rmit.ecommerce.repository;
 
-public class NotificationModel {
-    private String title;
-    private String description;
+import com.google.firebase.Timestamp;
 
-    public NotificationModel(String title, String description) {
+public class NotificationModel implements Comparable<NotificationModel> {
+    private String id;
+    private String title;
+    private String content;
+    private Timestamp createdAt;
+
+    public NotificationModel(String title, String content, Timestamp createdAt) {
         this.title = title;
-        this.description = description;
+        this.content = content;
+        this.createdAt = createdAt;
+    }
+
+    public NotificationModel() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -17,11 +33,25 @@ public class NotificationModel {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
+    @Override
+    public int compareTo(NotificationModel o) {
+        return -this.getCreatedAt().compareTo(o.getCreatedAt());
     }
 }

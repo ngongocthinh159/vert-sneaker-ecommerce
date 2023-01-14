@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.NotificationRVAdapter;
-import com.rmit.ecommerce.fragment.NotificationModel;
+import com.rmit.ecommerce.repository.NotificationModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +106,9 @@ public class NotificationManager extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot snapshot) {
                 for (DocumentSnapshot document: snapshot.getDocuments()) {
-                    notifications.add(document.toObject(NotificationModel.class));
+                    NotificationModel notificationModel = document.toObject(NotificationModel.class);
+                    notificationModel.setId(document.getId());
+                    notifications.add(notificationModel);
                 }
                 Collections.sort(notifications);
                 NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);

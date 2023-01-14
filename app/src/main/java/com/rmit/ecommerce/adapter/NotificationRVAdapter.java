@@ -5,17 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.fragment.NotificationModel;
-import com.rmit.ecommerce.helper.Helper;
+import com.rmit.ecommerce.repository.NotificationModel;
 
 import java.util.ArrayList;
 
@@ -87,6 +89,23 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
             holder.getDeleteBtn().setVisibility(View.VISIBLE);
             holder.getDeleteBtn().setOnClickListener(v -> {
                 // Handle delete
+                FirebaseFirestore fs = FirebaseFirestore.getInstance();
+                fs.collection("notifications")
+                        .document(mDataSet.get(position).getId())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                mDataSet.remove(position);
+                                NotificationRVAdapter.this.notifyDataSetChanged();
+                                Toast.makeText(MainActivity.context, "Notification deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
             });
         }
     }
