@@ -162,7 +162,10 @@ public class MainActivity extends AppCompatActivity {
             userImageManager.getInstance().handlePhotoPick(requestCode, resultCode, data);
         } else if (requestCode == MLManager.RQ_ML_CODE) {
             mlManager.getInstance().init(this, resultCode, data);
-        } else {
+        } else if (requestCode == AdminCrudService.ADMIN_RQ_SINGLE) {
+            adminCrudService.getInstance().handleTrendingPhotoPick(requestCode, resultCode, data);
+        }
+        else {
             adminCrudService.getInstance().handlePhotosPick(requestCode, resultCode, data, getContentResolver());
         }
         // Pick user image

@@ -327,7 +327,6 @@ public class UpdateAdminFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
                     public void onSuccess(ListResult listResult) {
-                        System.out.println("UH OH I HAVE TO FETCH AGAIN");
                         for (StorageReference imageRef : listResult.getItems()) {
                             imageRef.delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {

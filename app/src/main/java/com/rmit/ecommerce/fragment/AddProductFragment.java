@@ -190,6 +190,7 @@ public class AddProductFragment extends Fragment {
     private void handleUploadFireStore(String title, String brand, String image, String description, double price) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         SneakerBase sneakerModel = new SneakerBase(title, brand, image, description, price, new ArrayList<>());
+        sneakerModel.setCategory(new ArrayList<>());
         firestore.collection("sneakers").add(sneakerModel)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
