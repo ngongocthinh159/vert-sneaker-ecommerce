@@ -9,7 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.fragment.NotificationModel;
@@ -20,11 +22,21 @@ import java.util.ArrayList;
 public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAdapter.ViewHolder> {
     private ArrayList<NotificationModel> mDataSet;
     Context context;
+    private boolean shouldRenderDelete = false;
+
+    public boolean isShouldRenderDelete() {
+        return shouldRenderDelete;
+    }
+
+    public void setShouldRenderDelete(boolean shouldRenderDelete) {
+        this.shouldRenderDelete = shouldRenderDelete;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardView;
         TextView notiTitle;
         TextView notiDescription;
+        MaterialButton deleteBtn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -32,6 +44,7 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
             cardView = itemView.findViewById(R.id.notiCardView);
             notiTitle = itemView.findViewById(R.id.notiTitle);
             notiDescription = itemView.findViewById(R.id.notiDescription);
+            deleteBtn = itemView.findViewById(R.id.btnDelete);
         }
 
         public TextView getNotiTitle() {
@@ -45,6 +58,8 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
         public MaterialCardView getCardView() {
             return cardView;
         }
+
+        public MaterialButton getDeleteBtn() { return deleteBtn; }
     }
 
     public NotificationRVAdapter( ArrayList<NotificationModel> dataSet) {
@@ -68,6 +83,12 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
     public void onBindViewHolder(@NonNull NotificationRVAdapter.ViewHolder holder, int position) {
         holder.getNotiTitle().setText(mDataSet.get(position).getTitle());
         holder.getNotiDescription().setText(mDataSet.get(position).getContent());
+        if (shouldRenderDelete) {
+            holder.getDeleteBtn().setVisibility(View.VISIBLE);
+            holder.getDeleteBtn().setOnClickListener(v -> {
+                // Handle delete
+            });
+        }
     }
 
     @Override

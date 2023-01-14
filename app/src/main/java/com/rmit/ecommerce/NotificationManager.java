@@ -110,6 +110,7 @@ public class NotificationManager extends Fragment {
                 }
                 Collections.sort(notifications);
                 NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);
+                notificationRVAdapter.setShouldRenderDelete(true);
                 recyclerView.setAdapter(notificationRVAdapter);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
                 recyclerView.setLayoutManager(layoutManager);

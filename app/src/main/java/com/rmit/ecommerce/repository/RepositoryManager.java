@@ -51,6 +51,19 @@ public class RepositoryManager {
 
 
     private UserModel user;
+    private boolean isAdmin = false;
+
+    public void setCartItems(ArrayList<CartItemModel> cartItems) {
+        this.cartItems = cartItems;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
 
     public RepositoryManager() {}
 
@@ -86,10 +99,12 @@ public class RepositoryManager {
                         if (documentSnapshot.exists()) {
                             user = documentSnapshot.toObject(UserModel.class);
                             if (user.getIsAdmin()) {
+                                isAdmin = true;
                                 Helper.popBackStackAll();
                                 MainActivity.bottomNav.setVisibility(View.GONE);
                                 MainActivity.navController.navigate(R.id.homeAdminFragment);
                             } else {
+                                isAdmin = false;
                                 fetchCartObject();
                             }
                         }
