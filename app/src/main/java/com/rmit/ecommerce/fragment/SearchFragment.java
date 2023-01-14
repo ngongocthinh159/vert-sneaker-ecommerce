@@ -349,6 +349,9 @@ public class SearchFragment extends Fragment {
         }
 
         String keyword = getArguments().getString("keyword");
+        if (etSearch != null) {
+            etSearch.setText(keyword);
+        }
         searchString = keyword;
         filterNow();
 
