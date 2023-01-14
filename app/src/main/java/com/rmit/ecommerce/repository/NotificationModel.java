@@ -1,4 +1,4 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.repository;
 
 public class NotificationModel {
     private String title;

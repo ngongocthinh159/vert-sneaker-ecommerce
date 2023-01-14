@@ -1,23 +1,24 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.fragment.NotificationModel;
 import com.rmit.ecommerce.helper.Helper;
 
 import java.util.ArrayList;
 
 public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAdapter.ViewHolder> {
-    private ArrayList<String> mDataSet;
+    private ArrayList<NotificationModel> mDataSet;
     Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -46,7 +47,7 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
         }
     }
 
-    public NotificationRVAdapter( ArrayList<String> dataSet) {
+    public NotificationRVAdapter( ArrayList<NotificationModel> dataSet) {
         this.mDataSet = dataSet;
     }
 
@@ -65,11 +66,8 @@ public class NotificationRVAdapter extends RecyclerView.Adapter<NotificationRVAd
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull NotificationRVAdapter.ViewHolder holder, int position) {
-        // Resize width for card view (responsive)
-        float cardWidthPixel = (MainActivity.device_width_pxl - Helper.convertDpToPixel(9*3, context)) / 2;
-        ViewGroup.LayoutParams params = holder.cardView.getLayoutParams();
-//        params.width = (int) cardWidthPixel;
-        holder.getCardView().setLayoutParams(params);
+        holder.getNotiTitle().setText(mDataSet.get(position).getTitle());
+        holder.getNotiDescription().setText(mDataSet.get(position).getContent());
     }
 
     @Override
