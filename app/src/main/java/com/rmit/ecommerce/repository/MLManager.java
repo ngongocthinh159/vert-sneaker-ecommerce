@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -15,6 +17,8 @@ import com.google.mlkit.vision.label.ImageLabel;
 import com.google.mlkit.vision.label.ImageLabeler;
 import com.google.mlkit.vision.label.ImageLabeling;
 import com.google.mlkit.vision.label.custom.CustomImageLabelerOptions;
+import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.activity.MainActivity;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -67,9 +71,6 @@ public class MLManager {
                 e.printStackTrace();
             }
         }
-
-
-
     }
 
     public void analyze() {
@@ -78,22 +79,29 @@ public class MLManager {
                     .addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
                         @Override
                         public void onSuccess(List<ImageLabel> labels) {
-                            // Task completed successfully
-                            // ...
+                            float maxConfidence = 0;
+                            int maxIndex = 0;
+
                             for (ImageLabel label : labels) {
-                                String text = label.getText();
                                 float confidence = label.getConfidence();
                                 int index = label.getIndex();
+                                if (confidence > maxConfidence) {
+                                    maxConfidence = confidence;
+                                    maxIndex = index;
+                                }
                                 System.out.println(label);
                                 System.out.println("[MLRES]: " + labelMap.get(index) + ": " + confidence);
                             }
+                            Bundle bundle = new Bundle();
+                            bundle.putString("category", "all");
+                            bundle.putString("keyword", labelMap.get(maxIndex));
+                            MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            // Task failed with an exception
-                            // ...
+                            Toast.makeText(MainActivity.context, "Cannot use machine learning feature", Toast.LENGTH_SHORT);
                         }
                     });
         }

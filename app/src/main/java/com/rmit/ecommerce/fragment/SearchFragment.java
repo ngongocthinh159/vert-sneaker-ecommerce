@@ -137,6 +137,9 @@ public class SearchFragment extends Fragment {
         // Setup filter button
         setupRangePicker();
 
+        // Trigger image search if machine learning is used
+        handleImageSearch();
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -340,6 +343,17 @@ public class SearchFragment extends Fragment {
         });
     }
 
+    private void handleImageSearch() {
+        if (getArguments().getString("keyword") == null) {
+            return;
+        }
+
+        String keyword = getArguments().getString("keyword");
+        searchString = keyword;
+        filterNow();
+
+    }
+
     private void setupRecyclerView() {
         if (getArguments() == null) return;
 
@@ -363,6 +377,10 @@ public class SearchFragment extends Fragment {
                 break;
             case "newarrival":
                 originalList = MainActivity.repositoryManager.getNewArrivalSneakers();
+                currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
+                break;
+            default:
+                originalList = MainActivity.repositoryManager.getSneakers();
                 currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
                 break;
         }
