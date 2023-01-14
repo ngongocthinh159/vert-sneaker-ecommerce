@@ -111,8 +111,6 @@ public class PaymentTest extends Fragment {
     }
 
 
-
-    // ----  ----
     private void getEphericalKey(String customerID) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
@@ -189,7 +187,7 @@ public class PaymentTest extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
                 params.put("customer", customerID);
-                params.put("amount", "11" + "00");
+                params.put("amount", "11" + "000");
                 params.put("currency", "usd");
                 params.put("automatic_payment_methods[enabled]", "true");
                 return params;
@@ -201,16 +199,19 @@ public class PaymentTest extends Fragment {
 
     }
 
-    // ---- payment sheet ----
+
     private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
         if (paymentSheetResult instanceof PaymentSheetResult.Completed){
             Toast.makeText(MainActivity.context, "Payment success", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(MainActivity.context, "Not Success", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void PaymentFlow() {
         paymentSheet.presentWithPaymentIntent(
-                ClientSecret,new PaymentSheet.Configuration("EET Limited Company",
+                ClientSecret,new PaymentSheet.Configuration("EET Online Market",
                         new PaymentSheet.CustomerConfiguration(customerID,EphericalKey))
         );
     }
