@@ -69,9 +69,10 @@ public class ProductManageFragment extends Fragment {
         Button updateDetailedButton = view.findViewById(R.id.updateDetailedBtn);
         Button sizeManagerBtn = view.findViewById(R.id.sizeManagerBtn);
         Button previousBtn = view.findViewById(R.id.previousBtn);
+        Button categoryBtn = view.findViewById(R.id.categoryBtn);
 
         previousBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_productManageFragment_to_homeAdminFragment);
+            MainActivity.navController.navigateUp();
         });
 
         sizeManagerBtn.setOnClickListener(v -> {
@@ -80,6 +81,10 @@ public class ProductManageFragment extends Fragment {
 
         updateDetailedButton.setOnClickListener(v -> {
             MainActivity.navController.navigate(R.id.action_productManageFragment_to_updateAdminFragment);
+        });
+
+        categoryBtn.setOnClickListener(v -> {
+            MainActivity.navController.navigate(R.id.action_productManageFragment_to_productCategoryManager);
         });
 
         return view;

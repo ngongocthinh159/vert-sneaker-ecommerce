@@ -133,40 +133,34 @@
         <action
             android:id="@+id/action_homeAdminFragment_to_productManageFragment"
             app:destination="@id/productManageFragment" />
+        <action
+            android:id="@+id/action_homeAdminFragment_to_notificationManager"
+            app:destination="@id/notificationManager" />
     </fragment>
     <fragment
         android:id="@+id/addProductFragment"
         android:name="com.rmit.ecommerce.fragment.AddProductFragment"
-        android:label="AddProductFragment" >
-        <action
-            android:id="@+id/action_addProductFragment_to_homeAdminFragment"
-            app:destination="@id/homeAdminFragment"
-            app:enterAnim="@anim/fade_in" />
-    </fragment>
+        android:label="AddProductFragment" />
     <fragment
         android:id="@+id/productManageFragment"
         android:name="com.rmit.ecommerce.fragment.ProductManageFragment"
         android:label="fragment_product_manage"
         tools:layout="@layout/fragment_product_manage" >
         <action
-            android:id="@+id/action_productManageFragment_to_homeAdminFragment"
-            app:destination="@id/homeAdminFragment" />
-        <action
             android:id="@+id/action_productManageFragment_to_sizeAdminFragment"
             app:destination="@id/sizeAdminFragment" />
         <action
             android:id="@+id/action_productManageFragment_to_updateAdminFragment"
             app:destination="@id/updateAdminFragment" />
+        <action
+            android:id="@+id/action_productManageFragment_to_productCategoryManager"
+            app:destination="@id/productCategoryManager" />
     </fragment>
     <fragment
         android:id="@+id/sizeAdminFragment"
         android:name="com.rmit.ecommerce.fragment.SizeAdminFragment"
         android:label="fragment_size_admin"
-        tools:layout="@layout/fragment_size_admin" >
-        <action
-            android:id="@+id/action_sizeAdminFragment_to_productManageFragment"
-            app:destination="@id/productManageFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_size_admin" />
     <fragment
         android:id="@+id/arFragment"
         android:name="com.rmit.ecommerce.fragment.ArFragment"
@@ -191,14 +185,17 @@
         android:id="@+id/updateAdminFragment"
         android:name="com.rmit.ecommerce.fragment.UpdateAdminFragment"
         android:label="fragment_update_admin"
-        tools:layout="@layout/fragment_update_admin" >
-        <action
-            android:id="@+id/action_updateAdminFragment_to_productManageFragment"
-            app:destination="@id/productManageFragment" />
-        <action
-            android:id="@+id/action_updateAdminFragment_to_homeAdminFragment"
-            app:destination="@id/homeAdminFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_update_admin" />
+    <fragment
+        android:id="@+id/productCategoryManager"
+        android:name="com.rmit.ecommerce.fragment.ProductCategoryManager"
+        android:label="fragment_product_category_manager"
+        tools:layout="@layout/fragment_product_category_manager" />
+    <fragment
+        android:id="@+id/notificationManager"
+        android:name="com.rmit.ecommerce.NotificationManager"
+        android:label="fragment_notification_manager"
+        tools:layout="@layout/fragment_notification_manager" />
 
     <!--Activity destination-->
 

@@ -37,6 +37,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         ImageView productImage;
         TextView productBranch;
         TextView productName;
+        TextView productPrice;
         ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
@@ -46,11 +47,16 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
             productImage = itemView.findViewById(R.id.productImage);
             productBranch = itemView.findViewById(R.id.productBranch);
             productName = itemView.findViewById(R.id.productName);
+            productPrice = itemView.findViewById(R.id.productPrice);
             progressBar = itemView.findViewById(R.id.progressBar);
         }
 
         public MaterialCardView getCardView() {
             return cardView;
+        }
+
+        public TextView getProductPrice() {
+            return productPrice;
         }
 
         public ImageView getProductImage() {
@@ -97,6 +103,7 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         ImageView productImage = holder.getProductImage();
         TextView productBranch = holder.getProductBranch();
         TextView productName = holder.getProductName();
+        TextView productPrice = holder.getProductPrice();
         ProgressBar progressBar = holder.getProgressBar();
 
         // Resize width for card view (responsive)
@@ -109,7 +116,6 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Navigate to Edit or size manager
                 MainActivity.adminCrudService.getInstance().setCurrentSneakerId(sneakers.get(position).getId());
                 MainActivity.navController.navigate(R.id.action_homeAdminFragment_to_productManageFragment);
             }
@@ -117,6 +123,8 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
 
         productBranch.setText(sneakers.get(position).getBrand());
         productName.setText(sneakers.get(position).getTitle());
+        productPrice.setText(Double.toString(sneakers.get(position).getPrice()));
+
         String imageStr = sneakers.get(position).getImage();
         FirebaseStorage db = FirebaseStorage.getInstance();
 
@@ -125,19 +133,17 @@ public class AdminRVAdapter extends RecyclerView.Adapter<AdminRVAdapter.ViewHold
         } else {
             productImage.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
-            if (!imageStr.isEmpty() && productImage.getDrawable() == null) {
+            if (!imageStr.isEmpty() && imageStr != "" && productImage.getDrawable() == null) {
                 db.getReferenceFromUrl(imageStr).listAll()
                         .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                             @Override
                             public void onSuccess(ListResult listResult) {
-                                System.out.println("UH OH I HAVE TO FETCH AGAIN");
                                 if (listResult.getItems().isEmpty()) return;
                                 listResult.getItems().get(0).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         productImage.setVisibility(View.VISIBLE);
                                         progressBar.setVisibility(View.GONE);
-                                        System.out.println("RECEIVED URI: " + uri.toString());
                                         sneakers.get(position).setFigureImage(uri);
                                         Picasso.get().load(uri).into(productImage);
                                     }

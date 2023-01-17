@@ -27,6 +27,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
+import com.rmit.ecommerce.repository.AdminCrudService;
 import com.rmit.ecommerce.repository.SneakerBase;
 
 import org.apache.commons.io.IOUtils;
@@ -93,7 +94,7 @@ public class AddProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_product, container, false);
         Button prevBtn = view.findViewById(R.id.previousBtn3);
         Button selectImageBtn = view.findViewById(R.id.selectImageBtn);
-        Button submitBtn = view.findViewById(R.id.saveBtn);
+        Button submitBtn = view.findViewById(R.id.publishBtn);
         loadingView = view.findViewById(R.id.loadingOverlay);
         loadingView.setVisibility(View.GONE);
         imageSlider = view.findViewById(R.id.imageSlider);
@@ -106,31 +107,56 @@ public class AddProductFragment extends Fragment {
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"), AdminCrudService.ADMIN_RQ_CODE);
         });
         prevBtn.setOnClickListener(v -> {
-            MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment);
+            MainActivity.navController.navigateUp();
         });
         submitBtn.setOnClickListener(v -> {
-            loadingView.setVisibility(View.VISIBLE);
-            System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
-
-
-            // TODO: ADD FORM VALIDATION
-
-            // TODO: Add progress bar, after upload, notify success or fail, navigate to home admin, refetch db
-            String folderName = title.getText().toString().replace(' ', '-');
-            // Handle upload firebase storage
-            handleUploadFirebaseStorage(folderName);
-            // Handle upload firestore
-            handleUploadFireStore(title.getText().toString(),
-                    brand.getText().toString(),
-                    "gs://vert-ecommerce.appspot.com/images/" + folderName,
-                    description.getText().toString(),
-                    Double.valueOf(price.getText().toString()));
-
+            if (formValidation(title, brand, price, description)) {
+                loadingView.setVisibility(View.VISIBLE);
+                String folderName = title.getText().toString().replace(' ', '-');
+                // Handle upload firebase storage
+                handleUploadFirebaseStorage(folderName);
+                // Handle upload firestore
+                handleUploadFireStore(title.getText().toString(),
+                        brand.getText().toString(),
+                        "gs://vert-ecommerce.appspot.com/images/" + folderName,
+                        description.getText().toString(),
+                        Double.parseDouble(price.getText().toString()));
+            }
         });
         return view;
+    }
+
+    private boolean formValidation(TextInputEditText title, TextInputEditText brand, TextInputEditText price, TextInputEditText description) {
+        if (title.getText().toString().equals("") ||
+                brand.getText().toString().equals("") ||
+                description.getText().toString().equals("")
+        ) {
+            fireValidationToast("You must fill all fields");
+            return false;
+        }
+
+        try {
+            Double.parseDouble(price.getText().toString());
+        } catch (Exception e) {
+            price.setError("Should be a decimal or integer");
+            fireValidationToast("Price is not valid");
+            return false;
+        }
+
+        if (MainActivity.adminCrudService.getInstance().getImagesEncodedList().size() == 0) {
+            fireValidationToast("No image is selected");
+            return false;
+        }
+        return true;
+    }
+
+
+
+    private void fireValidationToast(String message) {
+        Toast.makeText(MainActivity.context, message, Toast.LENGTH_SHORT).show();
     }
     
     private void handleUploadFirebaseStorage(String folderName) {
@@ -164,6 +190,7 @@ public class AddProductFragment extends Fragment {
     private void handleUploadFireStore(String title, String brand, String image, String description, double price) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         SneakerBase sneakerModel = new SneakerBase(title, brand, image, description, price, new ArrayList<>());
+        sneakerModel.setCategory(new ArrayList<>());
         firestore.collection("sneakers").add(sneakerModel)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -187,14 +214,13 @@ public class AddProductFragment extends Fragment {
         MainActivity.repositoryManager.setShouldFetch(true); // Fetch new data
         imageSlider.setImageList(new ArrayList<>());  // Clear carousel
         MainActivity.adminCrudService.getInstance().setImagesEncodedList(new ArrayList<>()); // Clear current selected images
-        MainActivity.navController.navigate(R.id.action_addProductFragment_to_homeAdminFragment); // Return to home screen
+        MainActivity.navController.navigateUp(); // Return to home screen
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d("TAG", "Resume");
-        System.out.println(MainActivity.adminCrudService.getInstance().getImagesEncodedList());
         ArrayList<SlideModel> slideModels = new ArrayList<>();
         for (Uri uri: MainActivity.adminCrudService.getInstance().getImagesEncodedList()) {
             slideModels.add(new SlideModel(uri.toString(), ScaleTypes.CENTER_CROP));
