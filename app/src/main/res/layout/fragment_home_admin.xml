@@ -96,7 +96,8 @@
         android:layout_marginTop="4dp"
         app:icon="@drawable/ic_baseline_notifications_24"
         app:layout_constraintStart_toEndOf="@+id/btnFilter"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rVSearch"
