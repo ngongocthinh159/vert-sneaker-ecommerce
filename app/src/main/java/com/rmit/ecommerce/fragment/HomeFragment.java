@@ -35,8 +35,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -70,6 +72,7 @@ public class HomeFragment extends Fragment {
     private ProgressDialog pd;
     private boolean isFirstFetch = true;
     private ProgressBar progressBarHome;
+    private TextInputLayout tiLayout;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -131,14 +134,6 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        Button searchByImage = view.findViewById(R.id.btnSearchByImage);
-
-        searchByImage.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            getActivity().startActivityForResult(intent, MainActivity.mlManager.RQ_ML_CODE);
-        });
-
         if (MainActivity.userManager.isLoggedIn()) {
             // Get refs
             progressBarHome = view.findViewById(R.id.progressBarHome);
@@ -146,16 +141,18 @@ public class HomeFragment extends Fragment {
             // Setup recycler view
             setupRecyclerView();
 
+            tiLayout = view.findViewById(R.id.tiLayout);
+            tiLayout.setClickable(false);
+            tiLayout.setActivated(false);
+
             // Setup search bar
             TextInputEditText searchBar = view.findViewById(R.id.searchBar);
             searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
-                public void onFocusChange(View view, boolean hasFocus) {
-                    if (hasFocus) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("category", "all");
-                        MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
-                    }
+                public void onFocusChange(View v, boolean hasFocus) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("category", "all");
+                    MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
                 }
             });
 
@@ -182,9 +179,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupSeeAllButton(View view) {
+        MaterialButton searchByImage = view.findViewById(R.id.btnSearchByImage);
         Button seeAllBestSeller = view.findViewById(R.id.seeAllBestSeller);
         Button seeAllPopular = view.findViewById(R.id.seeAllPopular);
         Button seeAllNewArrival = view.findViewById(R.id.seeAllNewArrival);
+
+        searchByImage.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            getActivity().startActivityForResult(intent, MainActivity.mlManager.RQ_ML_CODE);
+        });
 
         seeAllBestSeller.setOnClickListener(new View.OnClickListener() {
             @Override
