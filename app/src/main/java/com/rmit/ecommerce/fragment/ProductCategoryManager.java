@@ -173,6 +173,7 @@ public class ProductCategoryManager extends Fragment {
                         if (category.equals("trending")) {
                             cbTrending.setChecked(true);
                             hasTrendingPhoto = true;
+                            fetchTrendingImage(view);
                         }
                         if (category.equals("newarrival")) {
                             cbNewArrival.setChecked(true);
@@ -188,6 +189,11 @@ public class ProductCategoryManager extends Fragment {
                 }
             }
         }
+    }
+
+    private void fetchTrendingImage(View view) {
+        previewImage = view.findViewById(R.id.previewImageView);
+
     }
 
 
