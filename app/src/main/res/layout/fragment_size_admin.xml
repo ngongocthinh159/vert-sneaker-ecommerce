@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="68dp"
+            android:layout_marginEnd="8dp"
             app:boxCornerRadiusBottomEnd="25dp"
             app:boxCornerRadiusBottomStart="25dp"
             app:boxCornerRadiusTopEnd="25dp"
@@ -63,12 +64,10 @@
             android:id="@+id/addSizeBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="16dp"
             android:text="Add"
             app:layout_constraintBottom_toBottomOf="@+id/textInputSize"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textInputSize"
             app:layout_constraintTop_toTopOf="@+id/textInputSize" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -76,13 +75,13 @@
             android:layout_width="409dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputSize"
-            app:layout_constraintVertical_bias="0.0"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"/>
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
