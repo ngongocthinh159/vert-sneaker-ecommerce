@@ -231,7 +231,6 @@ public class PaymentTest extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.context);
         requestQueue.add(stringRequest);
-
     }
 
     private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
