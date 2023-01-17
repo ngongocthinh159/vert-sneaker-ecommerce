@@ -280,7 +280,6 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="?attr/colorPrimary"
         android:text="ORDER HISTORY"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/btnLogout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
