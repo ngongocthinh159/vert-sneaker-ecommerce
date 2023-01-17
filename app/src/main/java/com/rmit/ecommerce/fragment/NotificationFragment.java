@@ -105,15 +105,20 @@ public class NotificationFragment extends Fragment {
                     for (DocumentSnapshot documentSnapshot : snapshot.getDocuments()) {
                         notifications.add(documentSnapshot.toObject(NotificationModel.class));
                     }
-                    Collections.sort(notifications);
-                    System.out.println(notifications);
-                    RecyclerView notiRV = view.findViewById(R.id.notiRV);
-                    NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+                    if (notifications.size() > 1) { // Prevent empty array bug
+                        Collections.sort(notifications); // Sort by timestamp
 
-                    notiRV.setAdapter(notificationRVAdapter);
-                    notiRV.setLayoutManager(layoutManager);
-                    notiRV.setVisibility(View.VISIBLE);
+                        // Prepare rv
+                        RecyclerView notiRV = view.findViewById(R.id.notiRV);
+                        NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+
+                        // Set up rv
+                        notiRV.setAdapter(notificationRVAdapter);
+                        notiRV.setLayoutManager(layoutManager);
+                        notiRV.setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     Log.d("NOTIFICATION", "Current data: null");
                 }

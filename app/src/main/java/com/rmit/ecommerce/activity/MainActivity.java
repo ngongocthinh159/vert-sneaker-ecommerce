@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        System.out.println("Request code: " + requestCode);
+        if (resultCode != RESULT_OK) { return; }
         if (requestCode == UserImageManager.RQ_USER_CODE) {
             userImageManager.getInstance().handlePhotoPick(requestCode, resultCode, data);
         } else if (requestCode == MLManager.RQ_ML_CODE) {
