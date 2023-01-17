@@ -27,11 +27,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/previousBtn"
-        android:layout_width="66dp"
+        android:layout_width="72dp"
         android:layout_height="46dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:drawableTop="@drawable/back_icon"
+        app:icon="@drawable/back_icon"
         android:paddingLeft="30dp"
         android:paddingTop="8dp"
         android:text="back"
@@ -167,7 +167,6 @@
         android:layout_marginBottom="8dp"
         android:padding="10dp"
         android:text="SIGN UP"
-        android:textColor="@color/black"
         app:iconGravity="textEnd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

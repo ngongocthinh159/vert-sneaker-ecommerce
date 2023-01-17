@@ -70,7 +70,6 @@ public class HomeFragment extends Fragment {
     private ProgressDialog pd;
     private boolean isFirstFetch = true;
     private ProgressBar progressBarHome;
-    String demo_image = "https://cdn.media.amplience.net/i/hibbett/DSC07514-1-scaled-e1614293221200";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
