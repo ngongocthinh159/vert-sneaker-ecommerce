@@ -12,14 +12,22 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.slider.LabelFormatter;
+import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -27,7 +35,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.AdminRVAdapter;
-import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.SneakerModel;
 
@@ -44,6 +51,11 @@ import java.util.Map;
 public class HomeAdminFragment extends Fragment {
 
     View view;
+    MaterialButton filterBtn;
+
+    private MaterialCardView sortPicker;
+    private TextInputEditText etSearch;
+    private MaterialCardView rangePicker;
 
     public static final int SORT_TYPE_LTH = 0;
     public static final int SORT_TYPE_HTL = 1;
@@ -106,14 +118,18 @@ public class HomeAdminFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_admin, container, false);
         setupRecyclerView(view);
+        setupButton();
+        setupRangePicker();
+        setupSearchBar();
 
         Button addBtn = view.findViewById(R.id.addBtn);
         Button sortBtn = view.findViewById(R.id.btnSort);
         Button logoutBtn = view.findViewById(R.id.logOutBtn);
-        Button filterBtn = view.findViewById(R.id.btnFilter);
+        filterBtn = view.findViewById(R.id.btnFilter);
         Button notiBtn = view.findViewById(R.id.addNoti);
-        View sortPicker = view.findViewById(R.id.sortPicker);
-        View rangePicker = view.findViewById(R.id.rangePicker);
+
+        sortPicker = view.findViewById(R.id.sortPicker);
+        rangePicker = view.findViewById(R.id.rangePicker);
 
         logoutBtn.setOnClickListener(v -> {
             Dialog dialog = createDialog();
@@ -137,17 +153,143 @@ public class HomeAdminFragment extends Fragment {
             }
         });
 
-        filterBtn.setOnClickListener(v -> {
-            if (sortPicker.getVisibility() == View.VISIBLE) { sortPicker.setVisibility(View.GONE); }
-            if (rangePicker.getVisibility() == View.VISIBLE) {
-                rangePicker.setVisibility(View.GONE);
-            } else {
-                rangePicker.setVisibility(View.VISIBLE);
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    private void setupSearchBar() {
+        // Request focus
+        etSearch = view.findViewById(R.id.adminSearchBar);
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchString = etSearch.getText().toString();
+                filterNow();
+            }
+        });
+    }
+
+    private void setupRangePicker() {
+        // Setup range slider
+        RangeSlider rangeSlider = view.findViewById(R.id.rangeSlider);
+        rangeSlider.setValueFrom((float) RANGE_MIN_VALUE);
+        rangeSlider.setValueTo((float) RANGE_MAX_VALUE);
+        rangeSlider.setStepSize((float) RANGE_STEP);
+        rangeSlider.setValues((float) RANGE_MIN_VALUE, (float) RANGE_MAX_VALUE);
+        rangeSlider.setLabelFormatter(new LabelFormatter() { // Change label formatter
+            @NonNull
+            @Override
+            public String getFormattedValue(float value) {
+                return Helper.getFormattedAmount((int) value);
             }
         });
 
-        // Inflate the layout for this fragment
-        return view;
+        // Setup filter button
+        Button btnFilter = view.findViewById(R.id.btnFilter);
+        rangePicker = view.findViewById(R.id.rangePicker);
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortPicker.setVisibility(View.GONE);
+
+                int visibility = rangePicker.getVisibility();
+                if (visibility == View.GONE) {
+                    rangePicker.setVisibility(View.VISIBLE);
+                } else rangePicker.setVisibility(View.GONE);
+            }
+        });
+
+        // Setup reset button
+        Button btnReset = view.findViewById(R.id.btnReset);
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rangeSlider.setValues((float) RANGE_MIN_VALUE, (float) RANGE_MAX_VALUE);
+                rangePicker.setVisibility(View.GONE);
+
+                range_lower_bound = rangeSlider.getValues().get(0);
+                range_upper_bound = rangeSlider.getValues().get(1);
+
+                filterNow();
+            }
+        });
+
+        // Setup apply button
+        Button btnApply = view.findViewById(R.id.btnApply);
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rangePicker.setVisibility(View.GONE);
+
+                range_lower_bound = rangeSlider.getValues().get(0);
+                range_upper_bound = rangeSlider.getValues().get(1);
+
+                filterNow();
+            }
+        });
+    }
+
+    private void setupButton() {
+        Button btnSortPriceLTH = view.findViewById(R.id.btnSortPriceLTH);
+        Button btnSortPriceHTL = view.findViewById(R.id.btnSortPriceHTL);
+        Button btnSortPriceATZ = view.findViewById(R.id.btnSortPriceATZ);
+        Button btnSortPriceZTA = view.findViewById(R.id.btnSortPriceZTA);
+
+        btnSortPriceLTH.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortPicker.setVisibility(View.GONE);
+                sortType = SORT_TYPE_LTH;
+
+                filterNow();
+            }
+        });
+
+        btnSortPriceHTL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortPicker.setVisibility(View.GONE);
+                sortType = SORT_TYPE_HTL;
+
+                filterNow();
+            }
+        });
+
+        btnSortPriceATZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortPicker.setVisibility(View.GONE);
+                sortType = SORT_TYPE_ATZ;
+
+                filterNow();
+            }
+        });
+
+        btnSortPriceZTA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortPicker.setVisibility(View.GONE);
+                sortType = SORT_TYPE_ZTA;
+
+                filterNow();
+            }
+        });
+    }
+
+    private void filterNow() {
+        currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
+        RecyclerView rVSearch = view.findViewById(R.id.rVSearch);
+        rVSearch.setAdapter(new AdminRVAdapter(currentList));
     }
 
     private Dialog createDialog() {
@@ -199,8 +341,11 @@ public class HomeAdminFragment extends Fragment {
                                 MainActivity.repositoryManager.setShouldFetch(false);
                                 MainActivity.repositoryManager.setSneakers(sneakers);
 
+                                originalList = MainActivity.repositoryManager.getSneakers();
+                                currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
+
                                 // Handle RecyclerView
-                                AdminRVAdapter adminRVAdapter = new AdminRVAdapter(sneakers);
+                                AdminRVAdapter adminRVAdapter = new AdminRVAdapter(currentList);
                                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
                                 rVSearch.setAdapter(adminRVAdapter);
                                 rVSearch.setLayoutManager(gridLayoutManager);
@@ -211,7 +356,7 @@ public class HomeAdminFragment extends Fragment {
                     });
         } else {
             // Reuse data
-            AdminRVAdapter adminRVAdapter = new AdminRVAdapter(MainActivity.repositoryManager.getSneakers());
+            AdminRVAdapter adminRVAdapter = new AdminRVAdapter(currentList);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
             rVSearch.setAdapter(adminRVAdapter);
             rVSearch.setLayoutManager(gridLayoutManager);

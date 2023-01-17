@@ -129,13 +129,24 @@
         <action
             android:id="@+id/action_homeAdminFragment_to_addProductFragment"
             app:destination="@id/addProductFragment"
-            app:enterAnim="@anim/fade_in" />
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_homeAdminFragment_to_productManageFragment"
-            app:destination="@id/productManageFragment" />
+            app:destination="@id/productManageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_homeAdminFragment_to_notificationManager"
-            app:destination="@id/notificationManager" />
+            app:destination="@id/notificationManager"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/addProductFragment"
@@ -148,13 +159,25 @@
         tools:layout="@layout/fragment_product_manage" >
         <action
             android:id="@+id/action_productManageFragment_to_sizeAdminFragment"
-            app:destination="@id/sizeAdminFragment" />
+            app:destination="@id/sizeAdminFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_productManageFragment_to_updateAdminFragment"
-            app:destination="@id/updateAdminFragment" />
+            app:destination="@id/updateAdminFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_productManageFragment_to_productCategoryManager"
-            app:destination="@id/productCategoryManager" />
+            app:destination="@id/productCategoryManager"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/sizeAdminFragment"
