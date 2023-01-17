@@ -179,6 +179,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="892 Coloseum Street"
+                        android:maxLines="2"
+                        android:ellipsize="end"
                         app:iconTint="?attr/colorOnSurface" />
 
                     <TextView
@@ -224,7 +226,7 @@
                         android:id="@+id/tvUserCardNum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1234 5678 4312 123"
+                        android:text="4242 4242 4242 4242"
                         app:iconTint="?attr/colorOnSurface" />
 
                     <TextView

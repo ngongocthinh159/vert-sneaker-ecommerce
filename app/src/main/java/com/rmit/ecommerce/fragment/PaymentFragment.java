@@ -121,6 +121,9 @@ public class PaymentFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_payment, container, false);
 
+        // Map text data
+        mapTextData();
+
         // Show loading dialog for initialize KEYs in stripe
         pd = new ProgressDialog(MainActivity.context);
         pd.setMessage("loading");
@@ -183,6 +186,27 @@ public class PaymentFragment extends Fragment {
 
         // Initialize stripe
         initializeStripe();
+    }
+
+    private void mapTextData() {
+        TextView tvUserEmail = view.findViewById(R.id.tvUserEmail);
+        TextView tvUserPhone = view.findViewById(R.id.tvUserPhone);
+        TextView tvUserAddress = view.findViewById(R.id.tvUserAddress);
+
+        // Phone
+        if (MainActivity.repositoryManager.getUser().getPhone() != null
+                && !MainActivity.repositoryManager.getUser().getPhone().isEmpty()) {
+            tvUserPhone.setText(MainActivity.repositoryManager.getUser().getPhone().substring(0, 3) + "-" + MainActivity.repositoryManager.getUser().getPhone().substring(3));
+        }
+
+        // Email
+        tvUserEmail.setText(MainActivity.userManager.getUser().getEmail());
+
+        // Address
+        if (MainActivity.repositoryManager.getUser().getAddress() != null
+                && !MainActivity.repositoryManager.getUser().getAddress().isEmpty()) {
+            tvUserAddress.setText(MainActivity.repositoryManager.getUser().getAddress());
+        }
     }
 
     private void initializeStripe(){
