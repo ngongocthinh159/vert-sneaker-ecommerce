@@ -2,19 +2,28 @@ package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-import com.rmit.ecommerce.NotificationRVAdapter;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.rmit.ecommerce.adapter.NotificationRVAdapter;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.repository.NotificationModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +31,8 @@ import com.rmit.ecommerce.R;
  * create an instance of this fragment.
  */
 public class NotificationFragment extends Fragment {
-
+    ListenerRegistration listenerRegistration;
+    ArrayList<NotificationModel> notifications = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -67,27 +77,57 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
-        Button clearNotiBtn = view.findViewById(R.id.clearNotiBtn);
+        listenNotification(view);
         setupRecyclerView(view);
-        clearNotiBtn.setOnClickListener(v -> {
-            // TODO: Clear local notification
-            System.out.println("CLEARED");
-        });
         // Inflate the layout for this fragment
+
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        listenerRegistration.remove();
+    }
+
+    private void listenNotification(View view) {
+        FirebaseFirestore fs = FirebaseFirestore.getInstance();
+        listenerRegistration = fs.collection("notifications").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("NOTIFICATION", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && !snapshot.isEmpty()) {
+                    notifications.clear();
+                    for (DocumentSnapshot documentSnapshot : snapshot.getDocuments()) {
+                        notifications.add(documentSnapshot.toObject(NotificationModel.class));
+                    }
+                    if (notifications.size() > 1) { // Prevent empty array bug
+                        Collections.sort(notifications); // Sort by timestamp
+
+                        // Prepare rv
+                        RecyclerView notiRV = view.findViewById(R.id.notiRV);
+                        NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+
+                        // Set up rv
+                        notiRV.setAdapter(notificationRVAdapter);
+                        notiRV.setLayoutManager(layoutManager);
+                        notiRV.setVisibility(View.VISIBLE);
+                    }
+
+                } else {
+                    Log.d("NOTIFICATION", "Current data: null");
+                }
+            }
+        });
     }
 
     private void setupRecyclerView(View view) {
         RecyclerView notiRV = view.findViewById(R.id.notiRV);
-        ArrayList<String> notifications = new ArrayList<String>();
-        notifications.add("1");
-        notifications.add("2");
-        NotificationRVAdapter notificationRVAdapter = new NotificationRVAdapter(notifications);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
-
-        notiRV.setAdapter(notificationRVAdapter);
-        notiRV.setLayoutManager(layoutManager);
-
+        notiRV.setVisibility(View.GONE);
     }
 }

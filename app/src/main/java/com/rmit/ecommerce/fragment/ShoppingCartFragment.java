@@ -97,6 +97,7 @@ public class ShoppingCartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
+        setupInitRecyclerView();
 
         // Get refs
         subtotal = view.findViewById(R.id.subtotal);
@@ -122,6 +123,15 @@ public class ShoppingCartFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void setupInitRecyclerView() {
+        // This function solves skipping frames bug from RecyclerView
+        RecyclerView rv = view.findViewById(R.id.rv);
+        adapter2 = new MyRecyclerViewAdapter2(new ArrayList<>());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        rv.setAdapter(adapter2);
+        rv.setLayoutManager(linearLayoutManager);
     }
 
     private void setupRecyclerView() {

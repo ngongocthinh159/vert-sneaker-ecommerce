@@ -23,7 +23,18 @@ public class AdminCrudService {
     public static AdminCrudService adminCrudService = new AdminCrudService();
     private List<Uri> imagesEncodedList = new ArrayList<>();
     private String currentSneakerId;
+    private Uri selectedImage;
+
+    public Uri getSelectedImage() {
+        return selectedImage;
+    }
+
+    public void setSelectedImage(Uri selectedImage) {
+        this.selectedImage = selectedImage;
+    }
+
     public static int ADMIN_RQ_CODE = 96780;
+    public static int ADMIN_RQ_SINGLE = 712391;
 
     public String getCurrentSneakerId() {
         return currentSneakerId;
@@ -47,11 +58,12 @@ public class AdminCrudService {
         return adminCrudService;
     }
 
+    public void handleTrendingPhotoPick(int requestCode, int resultCode, @Nullable Intent data) {
+        assert data != null;
+        setSelectedImage(data.getData());
+    }
+
     public void handlePhotosPick(int requestCode, int resultCode, @Nullable Intent data, ContentResolver contentResolver)  {
-        System.out.println("START ACTIVITY RESULT");
-        System.out.println(resultCode); // -1 = success
-        System.out.println(requestCode);
-        System.out.println(data.getData());
         try {
             // When an Image is picked
             if (resultCode == RESULT_OK

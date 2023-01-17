@@ -94,7 +94,7 @@ public class AddProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_product, container, false);
         Button prevBtn = view.findViewById(R.id.previousBtn3);
         Button selectImageBtn = view.findViewById(R.id.selectImageBtn);
-        Button submitBtn = view.findViewById(R.id.saveBtn);
+        Button submitBtn = view.findViewById(R.id.publishBtn);
         loadingView = view.findViewById(R.id.loadingOverlay);
         loadingView.setVisibility(View.GONE);
         imageSlider = view.findViewById(R.id.imageSlider);
@@ -190,6 +190,7 @@ public class AddProductFragment extends Fragment {
     private void handleUploadFireStore(String title, String brand, String image, String description, double price) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         SneakerBase sneakerModel = new SneakerBase(title, brand, image, description, price, new ArrayList<>());
+        sneakerModel.setCategory(new ArrayList<>());
         firestore.collection("sneakers").add(sneakerModel)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

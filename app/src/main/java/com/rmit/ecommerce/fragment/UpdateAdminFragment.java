@@ -21,10 +21,8 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -32,10 +30,8 @@ import com.google.firebase.storage.UploadTask;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.SneakerModel;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.io.IOUtils;
-import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -101,7 +97,7 @@ public class UpdateAdminFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_update_admin, container, false);
         Button previousBtn = view.findViewById(R.id.previousBtn3);
-        Button saveBtn = view.findViewById(R.id.saveBtn);
+        Button saveBtn = view.findViewById(R.id.publishBtn);
         Button deleteBtn = view.findViewById(R.id.deleteBtn);
         Button selectImagesBtn = view.findViewById(R.id.selectImageBtn);
         TextInputEditText title = view.findViewById(R.id.title);
@@ -327,7 +323,6 @@ public class UpdateAdminFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
                     public void onSuccess(ListResult listResult) {
-                        System.out.println("UH OH I HAVE TO FETCH AGAIN");
                         for (StorageReference imageRef : listResult.getItems()) {
                             imageRef.delete()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -95,12 +95,17 @@ public class HomeAdminFragment extends Fragment {
         Button sortBtn = view.findViewById(R.id.btnSort);
         Button logoutBtn = view.findViewById(R.id.logOutBtn);
         Button filterBtn = view.findViewById(R.id.btnFilter);
+        Button notiBtn = view.findViewById(R.id.addNoti);
         View sortPicker = view.findViewById(R.id.sortPicker);
         View rangePicker = view.findViewById(R.id.rangePicker);
 
         logoutBtn.setOnClickListener(v -> {
             Dialog dialog = createDialog();
             dialog.show();
+        });
+
+        notiBtn.setOnClickListener(v -> {
+            MainActivity.navController.navigate(R.id.action_homeAdminFragment_to_notificationManager);
         });
 
         addBtn.setOnClickListener(v -> {
