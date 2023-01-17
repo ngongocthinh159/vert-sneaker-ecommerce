@@ -39,7 +39,7 @@ public class ArFragment extends Fragment {
 
     private boolean mUserRequestedInstall = true;
 
-    String MODEL_3D_SNEAKER = "https://drive.google.com/uc?export=download&id=1K2A3s2zhHMumMkDL8JHWxOmQSC-VLfTz";
+    String MODEL_3D_SNEAKER = "https://drive.google.com/uc?export=download&id=1v84AJkB2I7V5NBvh6QEmfVVAd23qJhIF";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

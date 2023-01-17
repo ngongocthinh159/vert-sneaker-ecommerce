@@ -176,6 +176,13 @@
         android:name="com.rmit.ecommerce.fragment.PaymentFragment"
         android:label="fragment_payment"
         tools:layout="@layout/fragment_payment" />
+
+    <fragment
+        android:id="@+id/paymentTest"
+        android:name="com.rmit.ecommerce.fragment.PaymentTest"
+        android:label="fragment_payment_test"
+        tools:layout="@layout/fragment_payment_test" />
+
     <fragment
         android:id="@+id/orderHistoryFragment"
         android:name="com.rmit.ecommerce.fragment.OrderHistoryFragment"
@@ -196,6 +203,10 @@
         android:name="com.rmit.ecommerce.NotificationManager"
         android:label="fragment_notification_manager"
         tools:layout="@layout/fragment_notification_manager" />
+
+
+
+
 
     <!--Activity destination-->
 
