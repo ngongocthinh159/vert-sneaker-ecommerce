@@ -489,8 +489,6 @@ public class PaymentFragment extends Fragment {
 
     private boolean isNotValidTransaction() {
 
-
-
         MainActivity.navController.navigateUp();
         return true;
     }
