@@ -45,6 +45,22 @@ public class HomeAdminFragment extends Fragment {
 
     View view;
 
+    public static final int SORT_TYPE_LTH = 0;
+    public static final int SORT_TYPE_HTL = 1;
+    public static final int SORT_TYPE_ATZ = 2;
+    public static final int SORT_TYPE_ZTA = 3;
+    int sortType = SORT_TYPE_ATZ;
+
+    private static final double RANGE_MIN_VALUE = 0.0;
+    private static final double RANGE_MAX_VALUE = 10000.0;
+    private static final double RANGE_STEP = 50.0;
+    private static final String[] LOCAL_COUNTRY = {"US", "$"};
+    private double range_lower_bound = RANGE_MIN_VALUE;
+    private double range_upper_bound = RANGE_MAX_VALUE;
+    private ArrayList<SneakerModel> originalList = new ArrayList<>();
+    private ArrayList<SneakerModel> currentList = new ArrayList<>();
+    private String searchString = "";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
