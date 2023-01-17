@@ -286,7 +286,8 @@
                     app:iconPadding="10dp"
                     app:iconGravity="textEnd"
                     app:icon="@drawable/ic_baseline_add_shopping_cart_24"
-                    android:id="@+id/btnAddToCart"/>
+                    android:id="@+id/btnAddToCart"
+                    android:layout_marginBottom="18dp"/>
             </LinearLayout>
 
 

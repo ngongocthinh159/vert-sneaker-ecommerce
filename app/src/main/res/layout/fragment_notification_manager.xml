@@ -13,16 +13,14 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/previousBtn"
-            android:layout_width="52dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="340dp"
-            android:backgroundTint="@color/primary_color"
-            android:drawableTop="@drawable/back_icon"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="12dp"
             android:paddingLeft="30dp"
             android:paddingTop="8dp"
             android:text="back"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:icon="@drawable/back_icon"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +57,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Nofication title"
-                android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="201dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -86,7 +83,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Nofication content"
-                android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="201dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -121,10 +117,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/primary_color"
             android:paddingVertical="16dp"
             android:text="PUBLISH"
-            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

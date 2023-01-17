@@ -102,7 +102,8 @@
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="?attr/colorOnSurface" />
+                    app:iconTint="?attr/colorOnSurface"
+                    android:visibility="invisible"/>
 
             </LinearLayout>
 
@@ -148,7 +149,8 @@
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="?attr/colorOnSurface" />
+                    app:iconTint="?attr/colorOnSurface"
+                    android:visibility="invisible"/>
             </LinearLayout>
 
             <LinearLayout
@@ -193,7 +195,8 @@
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="?attr/colorOnSurface" />
+                    app:iconTint="?attr/colorOnSurface"
+                    android:visibility="invisible"/>
             </LinearLayout>
 
             <LinearLayout
@@ -238,7 +241,8 @@
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_baseline_edit_24"
                     app:iconSize="28dp"
-                    app:iconTint="?attr/colorOnSurface" />
+                    app:iconTint="?attr/colorOnSurface"
+                    android:visibility="invisible"/>
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

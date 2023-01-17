@@ -4,10 +4,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -28,18 +28,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.progressindicator.CircularProgressIndicatorSpec;
-import com.google.android.material.progressindicator.IndeterminateDrawable;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.CartModel;
-import com.rmit.ecommerce.repository.PaymentManager;
-import com.rmit.ecommerce.repository.RepositoryManager;
 import com.rmit.ecommerce.repository.SneakerModel;
 import com.rmit.ecommerce.repository.UserModel;
 import com.stripe.android.PaymentConfiguration;
@@ -68,13 +63,12 @@ public class PaymentFragment extends Fragment {
     String PUBLISH_KEY = "pk_test_51MNr5AL5lHyfXOrhTe0MXdiw33twWQyZvzmskpbJvYIxBjdIQV26bPrGPyPhzWTrLL4l1Z5mtQHY6avZJBHD7xJE00o9tnlPGJ";
 
     PaymentSheet paymentSheet;
-    PaymentManager paymentManager;
 
     String customerID;
     String EphericalKey;
     String ClientSecret;
 
-    String amount = "12304";
+    String amount = "2481";
     String currency = "usd";
     boolean payed = false;
 
@@ -138,9 +132,6 @@ public class PaymentFragment extends Fragment {
         btnPayment = view.findViewById(R.id.btnPayment);
         TextView total = view.findViewById(R.id.totalPayment);
 
-        // Initialize stripe
-        initializeStripe();
-
         // Setup total money
         if (getArguments() != null) {
             String temp = getArguments().getString("total");
@@ -186,6 +177,14 @@ public class PaymentFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Initialize stripe
+        initializeStripe();
+    }
+
     private void initializeStripe(){
         PaymentConfiguration.init(MainActivity.context, PUBLISH_KEY);
 
@@ -201,7 +200,6 @@ public class PaymentFragment extends Fragment {
                         try {
                             JSONObject object = new JSONObject(response);
                             customerID = object.getString("id");
-                            Toast.makeText(MainActivity.context, customerID,Toast.LENGTH_SHORT).show();
                             getEphericalKey(customerID);
                         }
                         catch (JSONException e){
@@ -235,7 +233,6 @@ public class PaymentFragment extends Fragment {
                         try {
                             JSONObject object = new JSONObject(response);
                             EphericalKey = object.getString("secret");
-                            Toast.makeText(MainActivity.context, EphericalKey, Toast.LENGTH_SHORT).show();
                             getClientSecret(customerID,EphericalKey);
                         }
                         catch (JSONException e){
@@ -244,7 +241,7 @@ public class PaymentFragment extends Fragment {
                     }} ,new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error ){
-                Log.w("error in response", "Error: " + error.getMessage());
+                Log.w("2 error in response", "Error: " + error.getMessage());
             }
         }){
             @Override
@@ -287,7 +284,8 @@ public class PaymentFragment extends Fragment {
                     }} ,new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error ){
-                Log.w("error in response", "Error: " + error.getMessage());
+                Log.w("3 error in response", "Error: " + error.getMessage());
+                pd.dismiss();
             }
         }){
             @Override
@@ -302,7 +300,7 @@ public class PaymentFragment extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<>();
                 params.put("customer", customerID);
-                params.put("amount", amount);
+                params.put("amount", "248100");
                 params.put("currency", currency);
                 params.put("automatic_payment_methods[enabled]", "true");
                 return params;

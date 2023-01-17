@@ -24,16 +24,13 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/previousBtn"
-            android:layout_width="52dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="340dp"
-            android:backgroundTint="@color/primary_color"
-            android:drawableTop="@drawable/back_icon"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
             android:paddingLeft="30dp"
             android:paddingTop="8dp"
-            android:text="back"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:icon="@drawable/back_icon"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="New size"
-                android:textColor="@color/white"
+                android:inputType="number"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="201dp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -68,9 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:backgroundTint="@color/primary_color"
             android:text="Add"
-            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/textInputSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textInputSize"
@@ -85,7 +80,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputSize"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.0"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

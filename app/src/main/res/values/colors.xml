@@ -17,7 +17,7 @@
 
     <!--    Colors for material design 3 -->
     <color name="seed">#4976c7</color>
-    <color name="md_theme_light_primary">#1c304d</color>
+    <color name="md_theme_light_primary">#495970</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#D8E2FF</color>
     <color name="md_theme_light_onPrimaryContainer">#001A41</color>

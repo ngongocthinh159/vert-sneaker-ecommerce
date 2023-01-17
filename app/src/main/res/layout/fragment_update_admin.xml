@@ -8,17 +8,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/back_ground_color">
+        android:layout_height="match_parent">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/previousBtn3"
-            android:layout_width="52dp"
+            android:layout_width="72dp"
             android:layout_height="48dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:backgroundTint="@color/primary_color"
-            android:drawableTop="@drawable/back_icon"
+            android:backgroundTint="?attr/colorPrimary"
+            app:icon="@drawable/back_icon"
             android:paddingLeft="30dp"
             android:paddingTop="8dp"
             android:text="back"
@@ -48,8 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:maxLines="1"
-                android:textColor="@color/white" />
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -75,8 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:maxLines="1"
-                android:textColor="@color/white" />
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -102,8 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:maxLines="1"
-                android:textColor="@color/white" />
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -130,8 +126,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:lines="4"
-                android:maxLines="4"
-                android:textColor="@color/white" />
+                android:maxLines="4" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -143,7 +138,6 @@
             android:layout_marginEnd="8dp"
             android:paddingVertical="24dp"
             android:text="SELECT PHOTOS"
-            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutDescription" />
@@ -155,10 +149,8 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/primary_color"
             android:paddingVertical="16dp"
             android:text="SAVE"
-            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
