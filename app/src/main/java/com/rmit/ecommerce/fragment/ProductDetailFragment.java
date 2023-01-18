@@ -165,7 +165,7 @@ public class ProductDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 while (MainActivity.navController.getCurrentDestination().getId() != R.id.homeFragment) {
-                    MainActivity.navController.navigateUp();
+                    MainActivity.navController.popBackStack();
                 }
                 MainActivity.navController.navigate(R.id.shoppingCartFragment);
             }

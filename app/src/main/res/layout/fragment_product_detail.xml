@@ -44,7 +44,8 @@
                 app:icon="@drawable/ic_baseline_shopping_cart_24"
                 app:iconSize="24dp"
                 style="@style/Widget.Material3.Button.TextButton"
-                android:id="@+id/btnCart" />
+                android:id="@+id/btnCart"
+                android:visibility="invisible"/>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
