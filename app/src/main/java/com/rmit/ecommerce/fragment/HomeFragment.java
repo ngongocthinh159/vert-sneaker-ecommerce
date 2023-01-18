@@ -141,18 +141,16 @@ public class HomeFragment extends Fragment {
             // Setup recycler view
             setupRecyclerView();
 
-            tiLayout = view.findViewById(R.id.tiLayout);
-            tiLayout.setClickable(false);
-            tiLayout.setActivated(false);
-
             // Setup search bar
             TextInputEditText searchBar = view.findViewById(R.id.searchBar);
             searchBar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("category", "all");
-                    MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
+                    if (MainActivity.navController.getCurrentDestination().getId() != R.id.searchFragment) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("category", "all");
+                        MainActivity.navController.navigate(R.id.action_global_searchFragment, bundle);
+                    }
                 }
             });
 

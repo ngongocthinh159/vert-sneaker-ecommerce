@@ -323,7 +323,11 @@ public class SearchFragment extends Fragment {
     private void setupSearchBar() {
         // Request focus
         etSearch = view.findViewById(R.id.searchBar);
-        etSearch.requestFocus();
+        if (getArguments() != null) {
+            if (getArguments().getString("category") != null && getArguments().getString("category").equals("all")) {
+                etSearch.requestFocus();
+            }
+        }
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
