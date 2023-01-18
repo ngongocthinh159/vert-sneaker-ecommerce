@@ -118,6 +118,13 @@ public class LoginFragment extends Fragment {
     }
 
     private void setupLoginBtn() {
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.navController.navigate(R.id.action_loginFragment_to_resetPasswordFragment);
+            }
+        });
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

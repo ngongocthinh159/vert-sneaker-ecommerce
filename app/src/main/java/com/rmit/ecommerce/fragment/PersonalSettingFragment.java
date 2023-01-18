@@ -230,12 +230,12 @@ public class PersonalSettingFragment extends Fragment {
         }
 
         // Card number
-//        if (MainActivity.repositoryManager.getUser().getCardNumber() != null
-//                && !MainActivity.repositoryManager.getUser().getCardNumber().isEmpty()) {
-//            String temp = MainActivity.repositoryManager.getUser().getCardNumber();
-//            String cardNum_formatted = temp.substring(0, 4) + " " + temp.substring(4, 8) + " " + temp.substring(8, 12) + " " + temp.substring(12, 16);
-//            tvCardNum.setText(cardNum_formatted);
-//        }
+        if (MainActivity.repositoryManager.getUser().getCardNumber() != null
+                && !MainActivity.repositoryManager.getUser().getCardNumber().isEmpty()) {
+            String temp = MainActivity.repositoryManager.getUser().getCardNumber();
+            String cardNum_formatted = temp.substring(0, 4) + " " + temp.substring(4, 8) + " " + temp.substring(8, 12) + " " + temp.substring(12, 16);
+            tvCardNum.setText(cardNum_formatted);
+        }
     }
 
     private void setupEditButton(View view) {
@@ -293,13 +293,12 @@ public class PersonalSettingFragment extends Fragment {
 
         // Setup button Edit card number
         MaterialButton btnEditCardNumber = view.findViewById(R.id.editCard);
-//        btnEditCardNumber.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showEditTextDialog("Update card number", "cardnumber");
-//            }
-//        });
-        btnEditCardNumber.setVisibility(View.INVISIBLE);
+        btnEditCardNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEditTextDialog("Update card number", "cardnumber");
+            }
+        });
     }
 
     private void showEditTextDialog(String title, String type) {

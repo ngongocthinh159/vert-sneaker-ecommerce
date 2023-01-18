@@ -52,7 +52,15 @@
         android:id="@+id/loginFragment"
         android:name="com.rmit.ecommerce.fragment.LoginFragment"
         android:label="Login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.rmit.ecommerce.fragment.WelcomeFragment"
@@ -220,9 +228,11 @@
         android:name="com.rmit.ecommerce.fragment.NotificationManager"
         android:label="fragment_notification_manager"
         tools:layout="@layout/fragment_notification_manager" />
-
-
-
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.rmit.ecommerce.fragment.ResetPasswordFragment"
+        android:label="fragment_reset_password"
+        tools:layout="@layout/fragment_reset_password" />
 
 
     <!--Activity destination-->
