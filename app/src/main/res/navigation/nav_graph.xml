@@ -217,7 +217,7 @@
         tools:layout="@layout/fragment_product_category_manager" />
     <fragment
         android:id="@+id/notificationManager"
-        android:name="com.rmit.ecommerce.NotificationManager"
+        android:name="com.rmit.ecommerce.fragment.NotificationManager"
         android:label="fragment_notification_manager"
         tools:layout="@layout/fragment_notification_manager" />
 

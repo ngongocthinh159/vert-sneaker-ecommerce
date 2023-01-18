@@ -190,10 +190,6 @@ public class UpdateAdminFragment extends Fragment {
             return false;
         }
 
-        if (MainActivity.adminCrudService.getInstance().getImagesEncodedList().size() == 0) {
-            fireValidationToast("No image is selected");
-            return false;
-        }
         return true;
     }
 

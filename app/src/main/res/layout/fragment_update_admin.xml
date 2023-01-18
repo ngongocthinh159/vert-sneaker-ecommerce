@@ -126,6 +126,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:lines="4"
+                android:gravity="top"
                 android:maxLines="4" />
         </com.google.android.material.textfield.TextInputLayout>
 

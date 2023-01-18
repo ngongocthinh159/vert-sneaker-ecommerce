@@ -1,4 +1,4 @@
-package com.rmit.ecommerce;
+package com.rmit.ecommerce.fragment;
 
 import android.os.Bundle;
 
@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.adapter.NotificationRVAdapter;
 import com.rmit.ecommerce.repository.NotificationModel;
