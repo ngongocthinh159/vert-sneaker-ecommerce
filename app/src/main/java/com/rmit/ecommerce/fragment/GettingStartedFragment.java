@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.rmit.ecommerce.SaveSharedPreference;
 import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.R;
-import com.rmit.ecommerce.helper.Helper;
 
 /**
  * A simple {@link Fragment} subclass.
