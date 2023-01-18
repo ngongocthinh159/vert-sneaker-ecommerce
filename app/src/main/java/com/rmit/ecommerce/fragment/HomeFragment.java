@@ -41,9 +41,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.rmit.ecommerce.adapter.HomeItemRVAdapter;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.SneakerModel;
 import com.squareup.picasso.Picasso;
@@ -299,14 +299,14 @@ public class HomeFragment extends Fragment {
         RecyclerView rV3 = view.findViewById(R.id.rV3);
 
         // Adapter
-        MyRecyclerViewAdapter myRecyclerViewAdapter3 = new MyRecyclerViewAdapter(sneakers_newArrival, "new_arrivals");
+        HomeItemRVAdapter homeItemRVAdapter3 = new HomeItemRVAdapter(sneakers_newArrival, "new_arrivals");
 
         // Layout
         LinearLayoutManager layoutManager3
                 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
 
         // Bind adapter and layout
-        rV3.setAdapter(myRecyclerViewAdapter3);
+        rV3.setAdapter(homeItemRVAdapter3);
         rV3.setLayoutManager(layoutManager3);
     }
 
@@ -324,14 +324,14 @@ public class HomeFragment extends Fragment {
         RecyclerView rV2 = view.findViewById(R.id.rV2);
 
         // Adapter
-        MyRecyclerViewAdapter myRecyclerViewAdapter2 = new MyRecyclerViewAdapter(sneakers_popular, "popular_sneakers");
+        HomeItemRVAdapter homeItemRVAdapter2 = new HomeItemRVAdapter(sneakers_popular, "popular_sneakers");
 
         // Layout
         LinearLayoutManager layoutManager2
                 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
 
         // Bind adapter and layout
-        rV2.setAdapter(myRecyclerViewAdapter2);
+        rV2.setAdapter(homeItemRVAdapter2);
         rV2.setLayoutManager(layoutManager2);
     }
 
@@ -377,10 +377,10 @@ public class HomeFragment extends Fragment {
                 temp.add(sneakers_best.get(i));
             }
             RecyclerView rV1 = view.findViewById(R.id.rV1);
-            MyRecyclerViewAdapter myRecyclerViewAdapter1 = new MyRecyclerViewAdapter(temp, "best_seller");
+            HomeItemRVAdapter homeItemRVAdapter1 = new HomeItemRVAdapter(temp, "best_seller");
             LinearLayoutManager layoutManager1
                     = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-            rV1.setAdapter(myRecyclerViewAdapter1);
+            rV1.setAdapter(homeItemRVAdapter1);
             rV1.setLayoutManager(layoutManager1);
         }
 

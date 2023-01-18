@@ -13,11 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -27,12 +25,11 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter;
+import com.rmit.ecommerce.adapter.HomeItemRVAdapter;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.SneakerModel;
 
@@ -48,7 +45,7 @@ public class SearchFragment extends Fragment {
 
     private View view;
     private RecyclerView rVSearch;
-    private MyRecyclerViewAdapter myRecyclerViewAdapter;
+    private HomeItemRVAdapter homeItemRVAdapter;
 
     private MaterialCardView sortPicker;
     private TextInputEditText etSearch;
@@ -248,7 +245,7 @@ public class SearchFragment extends Fragment {
 
     private void filterNow() {
         currentList = Helper.getFilterList(sortType, range_lower_bound, range_upper_bound, searchString, originalList);
-        rVSearch.setAdapter(new MyRecyclerViewAdapter(currentList, "search"));
+        rVSearch.setAdapter(new HomeItemRVAdapter(currentList, "search"));
     }
 
     private void setupSortPicker() {
@@ -393,13 +390,13 @@ public class SearchFragment extends Fragment {
         }
 
         // Adapter
-        myRecyclerViewAdapter = new MyRecyclerViewAdapter(currentList, "search");
+        homeItemRVAdapter = new HomeItemRVAdapter(currentList, "search");
 
         // Layout
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
         // Bind adapter and layout
-        rVSearch.setAdapter(myRecyclerViewAdapter);
+        rVSearch.setAdapter(homeItemRVAdapter);
         rVSearch.setLayoutManager(gridLayoutManager);
 
         // Setup visibility behaviour of sort picker and filter picker

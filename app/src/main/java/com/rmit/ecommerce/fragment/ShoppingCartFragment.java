@@ -3,7 +3,6 @@ package com.rmit.ecommerce.fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,17 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.adapter.MyRecyclerViewAdapter2;
+import com.rmit.ecommerce.adapter.ShoppingCartRVAdapter;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.repository.CartItemModel;
 import com.rmit.ecommerce.repository.CartModel;
@@ -45,7 +42,7 @@ import java.util.Map;
 public class ShoppingCartFragment extends Fragment {
 
     private View view;
-    private static MyRecyclerViewAdapter2 adapter2;
+    private static ShoppingCartRVAdapter adapter2;
     private static TextView subtotal;
     private static TextView shippingFee;
     private static TextView total;
@@ -128,7 +125,7 @@ public class ShoppingCartFragment extends Fragment {
     private void setupInitRecyclerView() {
         // This function solves skipping frames bug from RecyclerView
         RecyclerView rv = view.findViewById(R.id.rv);
-        adapter2 = new MyRecyclerViewAdapter2(new ArrayList<>());
+        adapter2 = new ShoppingCartRVAdapter(new ArrayList<>());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         rv.setAdapter(adapter2);
         rv.setLayoutManager(linearLayoutManager);
@@ -137,7 +134,7 @@ public class ShoppingCartFragment extends Fragment {
     private void setupRecyclerView() {
         // Setup recycler view
         RecyclerView rv = view.findViewById(R.id.rv);
-        adapter2 = new MyRecyclerViewAdapter2(MainActivity.repositoryManager.getCartItems());
+        adapter2 = new ShoppingCartRVAdapter(MainActivity.repositoryManager.getCartItems());
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 

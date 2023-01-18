@@ -2,42 +2,32 @@ package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
-import com.rmit.ecommerce.fragment.HomeFragment;
 import com.rmit.ecommerce.helper.Helper;
 import com.rmit.ecommerce.R;
 import com.rmit.ecommerce.activity.MainActivity;
-import com.rmit.ecommerce.repository.RepositoryManager;
 import com.rmit.ecommerce.repository.SneakerModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
+public class HomeItemRVAdapter extends RecyclerView.Adapter<HomeItemRVAdapter.ViewHolder> {
 
     ArrayList<SneakerModel> sneakers;
     String category;
@@ -87,7 +77,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         }
     }
 
-    public MyRecyclerViewAdapter(ArrayList<SneakerModel> sneakers, String category) {
+    public HomeItemRVAdapter(ArrayList<SneakerModel> sneakers, String category) {
         this.sneakers = sneakers;
         this.category = category;
     }
@@ -107,7 +97,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     // BEGIN_INCLUDE(recyclerViewOnBindViewHolder)
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull MyRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HomeItemRVAdapter.ViewHolder holder, int position) {
         // Get references to View
         MaterialCardView cardView =  holder.getCardView();
         ImageView productImage = holder.getProductImage();

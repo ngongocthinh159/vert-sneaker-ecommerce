@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -24,7 +22,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -36,9 +33,8 @@ import com.rmit.ecommerce.repository.SneakerModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewAdapter2.ViewHolder>{
+public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAdapter.ViewHolder>{
     Context context;
     ArrayList<CartItemModel> cartItems;
 
@@ -134,7 +130,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
         }
     }
 
-    public MyRecyclerViewAdapter2(ArrayList<CartItemModel> cartItems) {
+    public ShoppingCartRVAdapter(ArrayList<CartItemModel> cartItems) {
         this.cartItems = cartItems;
     }
 
@@ -147,7 +143,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
 
         context = parent.getContext();
 
-        return new MyRecyclerViewAdapter2.ViewHolder(v);
+        return new ShoppingCartRVAdapter.ViewHolder(v);
     }
 
     @Override
@@ -261,7 +257,7 @@ public class MyRecyclerViewAdapter2 extends RecyclerView.Adapter<MyRecyclerViewA
                                                         document(itemId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
-                                                                MyRecyclerViewAdapter2.this.notifyDataSetChanged();
+                                                                ShoppingCartRVAdapter.this.notifyDataSetChanged();
                                                                 dialog.dismiss();
                                                             }
                                                         });
