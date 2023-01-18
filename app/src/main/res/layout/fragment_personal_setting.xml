@@ -16,9 +16,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/cardUserImage"
-        app:cardCornerRadius="50dp"
+        app:cardCornerRadius="40dp"
         style="?attr/materialCardViewElevatedStyle"
-        app:cardElevation="4dp">
+        app:cardElevation="4dp"
+        app:strokeWidth="6dp"
+        app:strokeColor="?attr/colorPrimary">
 
         <ImageView
             android:id="@+id/ivUserImage"
