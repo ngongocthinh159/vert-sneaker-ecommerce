@@ -154,6 +154,11 @@ public class PaymentFragment extends Fragment {
         btnPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isValidUserInformation()) {
+                    Toast.makeText(MainActivity.context, "Personal information is not valid!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.context);
                 builder.setTitle("Confirm payment")
                         .setMessage("Do you want to proceed payment?")
@@ -188,10 +193,31 @@ public class PaymentFragment extends Fragment {
         initializeStripe();
     }
 
+    private boolean isValidUserInformation() {
+        TextView tvUserPhone = view.findViewById(R.id.tvUserPhone);
+        TextView tvUserAddress = view.findViewById(R.id.tvUserAddress);
+        TextView tvUserCardNum = view.findViewById(R.id.tvUserCardNum);
+
+        if (tvUserPhone.getText().toString().equals("Add your phone number")) {
+            return false;
+        }
+
+        if (tvUserAddress.getText().toString().equals("Add your address")) {
+            return false;
+        }
+
+        if (tvUserCardNum.getText().toString().equals("Add your card number")) {
+            return false;
+        }
+
+        return true;
+    }
+
     private void mapTextData() {
         TextView tvUserEmail = view.findViewById(R.id.tvUserEmail);
         TextView tvUserPhone = view.findViewById(R.id.tvUserPhone);
         TextView tvUserAddress = view.findViewById(R.id.tvUserAddress);
+        TextView tvUserCardNum = view.findViewById(R.id.tvUserCardNum);
 
         // Phone
         if (MainActivity.repositoryManager.getUser().getPhone() != null
@@ -206,6 +232,16 @@ public class PaymentFragment extends Fragment {
         if (MainActivity.repositoryManager.getUser().getAddress() != null
                 && !MainActivity.repositoryManager.getUser().getAddress().isEmpty()) {
             tvUserAddress.setText(MainActivity.repositoryManager.getUser().getAddress());
+        }
+
+        System.out.println("1111111111111111111111111111111111111");
+
+        // Card number
+        if (MainActivity.repositoryManager.getUser().getCardNumber() != null
+                && !MainActivity.repositoryManager.getUser().getCardNumber().isEmpty()) {
+            String temp = MainActivity.repositoryManager.getUser().getCardNumber();
+            String cardNum_formatted = temp.substring(0, 4) + " " + temp.substring(4, 8) + " " + temp.substring(8, 12) + " " + temp.substring(12, 16);
+            tvUserCardNum.setText(cardNum_formatted);
         }
     }
 

@@ -176,7 +176,7 @@ public class SignUpFragment extends Fragment {
                                     });
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(MainActivity.context, "Failed to create your account!",
+                            Toast.makeText(MainActivity.context, "Failed to create your account: Try another email!",
                                     Toast.LENGTH_SHORT).show();
                             submitBtn.setIcon(null);
                             enableAllButtons();

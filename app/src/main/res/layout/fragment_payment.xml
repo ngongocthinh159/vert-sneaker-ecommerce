@@ -132,7 +132,7 @@
                         android:id="@+id/tvUserPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+88-9923457"
+                        android:text="Add your phone number"
                         app:iconTint="?attr/colorOnSurface" />
 
                     <TextView
@@ -178,7 +178,7 @@
                         android:id="@+id/tvUserAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="892 Coloseum Street"
+                        android:text="Add your address"
                         android:maxLines="2"
                         android:ellipsize="end"
                         app:iconTint="?attr/colorOnSurface" />
