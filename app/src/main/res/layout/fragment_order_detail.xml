@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.OrderDetailFragment"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginTop="9dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="58dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/back_icon"
+            android:id="@+id/btnBackOrderDetail"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Order Detail"
+            android:textSize="22sp"
+            android:textStyle="bold|italic"
+            android:gravity="center"
+            android:layout_marginEnd="62dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time: "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:id="@+id/timeOderDetail"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total: "
+        android:textSize="18sp"
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:id="@+id/totalOderDetail"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Order ID: "
+        android:textSize="18sp"
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:id="@+id/idOderDetail"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status: success"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="18dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:id="@+id/rvOrderDetail"/>
+</LinearLayout>

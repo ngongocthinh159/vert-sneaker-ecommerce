@@ -190,7 +190,6 @@ public class ShoppingCartFragment extends Fragment {
     }
 
     public void fetchCartItems() {
-        Log.d("mytag", "fetch");
         CollectionReference collection = MainActivity.repositoryManager.
                 getFireStore().
                 collection("cartItems");

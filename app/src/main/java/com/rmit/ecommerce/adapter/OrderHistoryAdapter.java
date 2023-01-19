@@ -1,6 +1,7 @@
 package com.rmit.ecommerce.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.rmit.ecommerce.R;
+import com.rmit.ecommerce.activity.MainActivity;
 import com.rmit.ecommerce.repository.CartModel;
 
 import java.text.ParseException;
@@ -44,7 +47,10 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         TextView purchaseDate = holder.getPurchaseDate();
         TextView totalPurchase = holder.getTotalPurchase();
         TextView status = holder.getStatus();
+        TextView orderId = holder.getOrderId();
+        MaterialCardView card = holder.getCard();
 
+        // Map text data
         try {
             Date date = orderList.get(position).getPurchaseDate().toDate();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -57,6 +63,17 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         if (orderList.get(position).getStatus()) {
             status.setText("Status: success");
         } else status.setText("Status: failed");
+        orderId.setText("Order ID: " + orderList.get(position).getId());
+
+        // Set card view action
+        card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("orderId", orderList.get(position).getId());
+                MainActivity.navController.navigate(R.id.action_orderHistoryFragment_to_orderDetailFragment, bundle);
+            }
+        });
     }
 
     @Override
@@ -68,6 +85,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         private TextView purchaseDate;
         private TextView totalPurchase;
         private TextView status;
+        private TextView orderId;
+        private MaterialCardView card;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -75,6 +94,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             purchaseDate = view.findViewById(R.id.purchaseDate);
             totalPurchase = view.findViewById(R.id.totalPurchase);
             status = view.findViewById(R.id.status);
+            orderId = view.findViewById(R.id.orderId);
+            card = view.findViewById(R.id.cardOrderHistory);
         }
 
         public TextView getPurchaseDate() {
@@ -87,6 +108,14 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
         public TextView getStatus() {
             return status;
+        }
+
+        public TextView getOrderId() {
+            return orderId;
+        }
+
+        public MaterialCardView getCard() {
+            return card;
         }
     }
 }

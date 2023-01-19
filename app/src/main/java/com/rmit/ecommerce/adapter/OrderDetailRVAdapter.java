@@ -3,6 +3,8 @@ package com.rmit.ecommerce.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAdapter.ViewHolder>{
+public class OrderDetailRVAdapter extends RecyclerView.Adapter<OrderDetailRVAdapter.ViewHolder>{
     Context context;
     ArrayList<CartItemModel> cartItems;
 
@@ -46,10 +48,6 @@ public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAd
         TextView productPrice;
         TextView productQuantity;
         TextView productSize;
-        TextView productMaxQuantity;
-        MaterialButton btnIncrease;
-        MaterialButton btnDecrease;
-        MaterialButton btnDeleteItem;
         ProgressBar progressBar;
         ProgressBar progressBarAllCartItem;
         LinearLayout layoutItem;
@@ -64,10 +62,6 @@ public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAd
             productPrice = itemView.findViewById(R.id.productPrice);
             productQuantity= itemView.findViewById(R.id.productQuantity);
             productSize = itemView.findViewById(R.id.productSize);
-            productMaxQuantity= itemView.findViewById(R.id.productMaxQuantity);
-            btnIncrease = itemView.findViewById(R.id.btnIncrease);
-            btnDecrease = itemView.findViewById(R.id.btnDecrease);
-            btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
             progressBar = itemView.findViewById(R.id.progressBarItem);
             progressBarAllCartItem = itemView.findViewById(R.id.progressBarAllCartItem);
             layoutItem = itemView.findViewById(R.id.layoutItem);
@@ -101,22 +95,6 @@ public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAd
             return productSize;
         }
 
-        public TextView getProductMaxQuantity() {
-            return productMaxQuantity;
-        }
-
-        public MaterialButton getBtnIncrease() {
-            return btnIncrease;
-        }
-
-        public MaterialButton getBtnDecrease() {
-            return btnDecrease;
-        }
-
-        public MaterialButton getBtnDeleteItem() {
-            return btnDeleteItem;
-        }
-
         public ProgressBar getProgressBar() {
             return progressBar;
         }
@@ -130,7 +108,7 @@ public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAd
         }
     }
 
-    public ShoppingCartRVAdapter(ArrayList<CartItemModel> cartItems) {
+    public OrderDetailRVAdapter(ArrayList<CartItemModel> cartItems) {
         this.cartItems = cartItems;
     }
 
@@ -139,11 +117,11 @@ public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAd
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_view_shopping_item, parent, false);
+                .inflate(R.layout.card_view_order_detail_item, parent, false);
 
         context = parent.getContext();
 
-        return new ShoppingCartRVAdapter.ViewHolder(v);
+        return new OrderDetailRVAdapter.ViewHolder(v);
     }
 
     @Override
@@ -156,19 +134,13 @@ public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAd
         TextView productPrice = holder.getProductPrice();
         TextView productQuantity = holder.getProductQuantity();
         TextView productSize = holder.getProductSize();
-        TextView productMaxQuantity = holder.getProductMaxQuantity();
-        TextView btnIncrease = holder.getBtnIncrease();
-        TextView btnDecrease = holder.getBtnDecrease();
-        MaterialButton btnDeleteItem = holder.getBtnDeleteItem();
         ProgressBar progressBar = holder.getProgressBar();
         ProgressBar progressBarAllCartItem =  holder.getProgressBarAllCartItem();
         LinearLayout layoutItem = holder.getLayoutItem();
 
         // Map text data to view
-        productQuantity.setText(String.valueOf(cartItems.get(position).getQuantity()));
+
         int size = cartItems.get(position).getSize();
-        productSize.setText("Size: " + String.valueOf(size));
-        final int[] maxQuantity = {-1};
         cartItems.get(position).getPid().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -178,100 +150,21 @@ public class ShoppingCartRVAdapter extends RecyclerView.Adapter<ShoppingCartRVAd
                     productBranch.setText(sneakerModel.getBrand());
                     productName.setText(sneakerModel.getTitle());
                     productPrice.setText("$" + String.valueOf(sneakerModel.getPrice()));
-                    maxQuantity[0] = sneakerModel.getSize().get(0).get(size + "");
-                    productMaxQuantity.setText(maxQuantity[0] + " left over");
+                    productQuantity.setText(String.valueOf(cartItems.get(position).getQuantity()));
+                    productSize.setText("Size: " + String.valueOf(size));
 
                     // Hide progressbar
                     progressBarAllCartItem.setVisibility(View.GONE);
                     layoutItem.setVisibility(View.VISIBLE);
-
-                    // Setup button visibility
-                    if (Integer.parseInt(productQuantity.getText().toString()) < maxQuantity[0]) {
-                        btnIncrease.setVisibility(View.VISIBLE);
-                    }
-                    if (Integer.parseInt(productQuantity.getText().toString()) > 1) {
-                        btnDecrease.setVisibility(View.VISIBLE);
-                    }
+                } else {
+                    String unavailable_text = "Unavailable";
+                    productBranch.setText(unavailable_text);
+                    productName.setText(unavailable_text);
+                    productPrice.setText(unavailable_text);
+                    productQuantity.setText("?");
+                    productSize.setText(unavailable_text);
+                    cardView.setCardBackgroundColor(Color.parseColor("#696969"));
                 }
-            }
-        });
-
-        // Setup button action
-        btnIncrease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productQuantity.setText(String.valueOf(Integer.parseInt(productQuantity.getText().toString()) + 1));
-                cartItems.get(position).setQuantity(cartItems.get(position).getQuantity() + 1);
-                ShoppingCartFragment.updatePrice();
-
-                if (Integer.parseInt(productQuantity.getText().toString()) == maxQuantity[0]) {
-                    btnIncrease.setVisibility(View.INVISIBLE);
-                }
-
-                if (btnDecrease.getVisibility() == View.INVISIBLE) btnDecrease.setVisibility(View.VISIBLE);
-            }
-        });
-
-        btnDecrease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productQuantity.setText(String.valueOf(Integer.parseInt(productQuantity.getText().toString()) - 1));
-                cartItems.get(position).setQuantity(cartItems.get(position).getQuantity() - 1);
-                ShoppingCartFragment.updatePrice();
-
-                if (Integer.parseInt(productQuantity.getText().toString()) == 1) {
-                    btnDecrease.setVisibility(View.INVISIBLE);
-                }
-
-                if (btnIncrease.getVisibility() == View.INVISIBLE) btnIncrease.setVisibility(View.VISIBLE);
-            }
-        });
-
-        btnDeleteItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.context);
-                alertDialogBuilder.setTitle("Confirm")
-                        .setMessage("Do you want to delete this item?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Delete item Id from cart object's cartItemIDs list
-                                String itemId = cartItems.get(position).getId();
-                                ArrayList<String> itemIds = MainActivity.repositoryManager.getCartObject().getCartItemIds();
-                                ArrayList<String> newList = new ArrayList<>();
-                                for (String id : itemIds) {
-                                    if (!id.equals(itemId)) newList.add(id);
-                                }
-                                MainActivity.repositoryManager.getCartObject().setCartItemIds(newList); // Update local
-                                MainActivity.repositoryManager.getFireStore() // Update remote
-                                        .collection("carts")
-                                        .document(MainActivity.repositoryManager.getUser().getCurrentCartId())
-                                        .update("cartItemIds", newList).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                // Delete cart item
-                                                cartItems.remove(position); // Update local
-                                                MainActivity.repositoryManager.getFireStore(). // Update remote
-                                                        collection("cartItems").
-                                                        document(itemId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-                                                                ShoppingCartRVAdapter.this.notifyDataSetChanged();
-                                                                dialog.dismiss();
-                                                            }
-                                                        });
-                                            }
-                                        });
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialogBuilder.show();
             }
         });
 

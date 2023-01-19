@@ -212,7 +212,15 @@
         android:id="@+id/orderHistoryFragment"
         android:name="com.rmit.ecommerce.fragment.OrderHistoryFragment"
         android:label="fragment_order_history"
-        tools:layout="@layout/fragment_order_history" />
+        tools:layout="@layout/fragment_order_history" >
+        <action
+            android:id="@+id/action_orderHistoryFragment_to_orderDetailFragment"
+            app:destination="@id/orderDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <fragment
         android:id="@+id/updateAdminFragment"
         android:name="com.rmit.ecommerce.fragment.UpdateAdminFragment"
@@ -233,6 +241,11 @@
         android:name="com.rmit.ecommerce.fragment.ResetPasswordFragment"
         android:label="fragment_reset_password"
         tools:layout="@layout/fragment_reset_password" />
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.rmit.ecommerce.fragment.OrderDetailFragment"
+        android:label="fragment_order_detail"
+        tools:layout="@layout/fragment_order_detail" />
 
 
     <!--Activity destination-->

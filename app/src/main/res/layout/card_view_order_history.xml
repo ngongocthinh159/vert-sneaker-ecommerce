@@ -10,7 +10,8 @@
     android:layout_marginBottom="4.5dp"
     app:cardCornerRadius="20dp"
     app:cardElevation="4dp"
-    style="@style/Widget.Material3.CardView.Elevated">
+    style="@style/Widget.Material3.CardView.Elevated"
+    android:id="@+id/cardOrderHistory">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,6 +35,13 @@
             android:layout_height="wrap_content"
             android:text="Total: $320.0"
             android:id="@+id/totalPurchase"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Order ID:"
+            android:id="@+id/orderId"
             android:layout_marginTop="8dp"/>
 
         <TextView
