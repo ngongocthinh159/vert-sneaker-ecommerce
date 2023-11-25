@@ -121,7 +121,7 @@ public class AddProductFragment extends Fragment {
                 // Handle upload firestore
                 handleUploadFireStore(title.getText().toString(),
                         brand.getText().toString(),
-                        "gs://vert-ecommerce.appspot.com/images/" + folderName,
+                        "gs://vert-sneaker.appspot.com/images/" + folderName,
                         description.getText().toString(),
                         Double.parseDouble(price.getText().toString()));
             }
