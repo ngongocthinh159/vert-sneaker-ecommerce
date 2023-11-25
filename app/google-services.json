@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "134024525059",
-    "project_id": "vert-ecommerce",
-    "storage_bucket": "vert-ecommerce.appspot.com"
+    "project_number": "782410951195",
+    "project_id": "vert-sneaker",
+    "storage_bucket": "vert-sneaker.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:134024525059:android:12e9a24ca8092fe29f2536",
+        "mobilesdk_app_id": "1:782410951195:android:214feb6578bfebad21e6be",
         "android_client_info": {
           "package_name": "com.rmit.ecommerce"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "134024525059-kvsgugslumpciphhb7ig6n1u7mno73ja.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAUVIedgQP8NovtGUPB-jpG3muw09w969A"
+          "current_key": "AIzaSyDRR-HSNuUnI75BiaGCOpvYHG0cIoncTLc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "134024525059-kvsgugslumpciphhb7ig6n1u7mno73ja.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
